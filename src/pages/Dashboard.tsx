@@ -20,8 +20,8 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  // Mock user tier - in real app this would come from backend
-  const userTier = user.subscriptions?.length > 0 ? 'pro' : 'free';
+  // Update userTier type to include 'expert'
+  const userTier: 'free' | 'pro' | 'expert' = user.tier || 'free';
   const projectLimit = userTier === 'free' ? 3 : null;
   const currentProjects = 2; // Mock data
 
@@ -32,7 +32,7 @@ const Dashboard = () => {
       description: 'Kalkulator materiałów budowlanych',
       icon: '/placeholder.svg',
       status: user.subscriptions?.includes('calcreno') ? 'active' : 'inactive',
-      price: '30 zł/mies'
+      price: '20-40 zł/mies'
     },
     {
       id: 'renotimeline',
@@ -40,7 +40,7 @@ const Dashboard = () => {
       description: 'Zarządzanie projektami remontowymi',
       icon: '/placeholder.svg',
       status: user.subscriptions?.includes('renotimeline') ? 'active' : 'inactive',
-      price: '35 zł/mies'
+      price: '20-40 zł/mies'
     }
   ];
 
@@ -62,7 +62,7 @@ const Dashboard = () => {
         return {
           name: 'Expert',
           color: 'bg-reno-purple',
-          features: ['Wszystkie aplikacje', 'Wsparcie zespołu', 'Premium support', 'API dostęp']
+          features: ['Wszystkie aplikacje', 'Wsparcie zespołu 2-3 osoby', 'Premium support', 'Wczesny dostęp']
         };
       default:
         return { name: 'Free', color: 'bg-gray-600', features: [] };
@@ -103,11 +103,16 @@ const Dashboard = () => {
                   <div className="flex-1">
                     <h3 className="text-white font-semibold mb-1">Zwiększ swoje możliwości!</h3>
                     <p className="text-gray-300 text-sm mb-3">
-                      Używasz {currentProjects} z {projectLimit} dostępnych projektów. Przejdź na plan Pro, aby uzyskać nielimitowany dostęp.
+                      Używasz {currentProjects} z {projectLimit} dostępnych projektów. Przejdź na plan Pro lub Expert, aby uzyskać więcej możliwości.
                     </p>
-                    <Button size="sm" className="gradient-bg hover:opacity-90">
-                      Przejdź na Pro - od 20 zł/mies
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button size="sm" className="gradient-bg hover:opacity-90">
+                        Pro - od 20 zł/app/mies
+                      </Button>
+                      <Button size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                        Expert - 200 zł/mies
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -148,7 +153,7 @@ const Dashboard = () => {
                   <div>
                     <p className="text-gray-400 text-sm">Miesięczny koszt</p>
                     <p className="text-2xl font-bold text-white">
-                      {userTier === 'free' ? '0' : userTier === 'pro' ? '30' : '210'} zł
+                      {userTier === 'free' ? '0' : userTier === 'pro' ? '20-40' : '200'} zł
                     </p>
                   </div>
                   <DollarSign className="w-8 h-8 text-reno-mint" />
@@ -260,7 +265,7 @@ const Dashboard = () => {
                       <div className="flex justify-between items-center py-2 border-b border-white/10">
                         <span className="text-gray-300">Miesięczna opłata</span>
                         <span className="text-white font-semibold">
-                          {userTier === 'pro' ? '30' : '210'} zł
+                          {userTier === 'pro' ? '20-40' : '200'} zł
                         </span>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-white/10">
@@ -276,9 +281,14 @@ const Dashboard = () => {
                   
                   <div className="pt-4 space-y-2">
                     {userTier === 'free' ? (
-                      <Button className="w-full gradient-bg hover:opacity-90">
-                        Przejdź na plan Pro
-                      </Button>
+                      <div className="space-y-2">
+                        <Button className="w-full gradient-bg hover:opacity-90">
+                          Plan Pro - od 20 zł/app/mies
+                        </Button>
+                        <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+                          Plan Expert - 200 zł/mies
+                        </Button>
+                      </div>
                     ) : (
                       <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20">
                         Zmień plan
