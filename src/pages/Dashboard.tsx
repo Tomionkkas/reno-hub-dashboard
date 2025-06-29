@@ -6,7 +6,7 @@ import Navigation from '@/components/Navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Folder, BarChart, CreditCard, DollarSign, Download } from 'lucide-react';
+import { Folder, BarChart, CreditCard, DollarSign, Download, Crown, AlertTriangle } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -20,22 +20,56 @@ const Dashboard = () => {
 
   if (!user) return null;
 
+  // Mock user tier - in real app this would come from backend
+  const userTier = user.subscriptions?.length > 0 ? 'pro' : 'free';
+  const projectLimit = userTier === 'free' ? 3 : null;
+  const currentProjects = 2; // Mock data
+
   const apps = [
     {
       id: 'calcreno',
       name: 'CalcReno',
       description: 'Kalkulator materiałów budowlanych',
-      icon: Folder,
-      status: user.subscriptions?.includes('calcreno') ? 'active' : 'inactive'
+      icon: '/placeholder.svg',
+      status: user.subscriptions?.includes('calcreno') ? 'active' : 'inactive',
+      price: '30 zł/mies'
     },
     {
       id: 'renotimeline',
       name: 'RenoTimeline',
       description: 'Zarządzanie projektami remontowymi',
-      icon: BarChart,
-      status: user.subscriptions?.includes('renotimeline') ? 'active' : 'inactive'
+      icon: '/placeholder.svg',
+      status: user.subscriptions?.includes('renotimeline') ? 'active' : 'inactive',
+      price: '35 zł/mies'
     }
   ];
+
+  const getTierInfo = () => {
+    switch (userTier) {
+      case 'free':
+        return {
+          name: 'Free',
+          color: 'bg-gray-600',
+          features: ['Podstawowe funkcje', 'Maksymalnie 3 projekty', 'Ograniczone eksporty']
+        };
+      case 'pro':
+        return {
+          name: 'Pro',
+          color: 'bg-reno-blue',
+          features: ['Pełen dostęp do aplikacji', 'Nielimitowane projekty', 'Eksport PDF/Excel']
+        };
+      case 'expert':
+        return {
+          name: 'Expert',
+          color: 'bg-reno-purple',
+          features: ['Wszystkie aplikacje', 'Wsparcie zespołu', 'Premium support', 'API dostęp']
+        };
+      default:
+        return { name: 'Free', color: 'bg-gray-600', features: [] };
+    }
+  };
+
+  const tierInfo = getTierInfo();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -44,11 +78,41 @@ const Dashboard = () => {
       <div className="pt-24 px-4">
         <div className="container mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
-              Witaj, {user.email}!
-            </h1>
-            <p className="text-gray-300 text-lg">Zarządzaj swoimi aplikacjami i subskrypcjami</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-2">
+                  Witaj, {user.email}!
+                </h1>
+                <p className="text-gray-300 text-lg">Zarządzaj swoimi aplikacjami i subskrypcjami</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge className={`${tierInfo.color} text-white`}>
+                  {userTier === 'expert' && <Crown className="w-4 h-4 mr-1" />}
+                  Plan {tierInfo.name}
+                </Badge>
+              </div>
+            </div>
           </div>
+
+          {/* Free Tier Upgrade Prompt */}
+          {userTier === 'free' && (
+            <Card className="glass-card border-yellow-500/50 bg-yellow-500/10 mb-8">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <AlertTriangle className="w-8 h-8 text-yellow-500" />
+                  <div className="flex-1">
+                    <h3 className="text-white font-semibold mb-1">Zwiększ swoje możliwości!</h3>
+                    <p className="text-gray-300 text-sm mb-3">
+                      Używasz {currentProjects} z {projectLimit} dostępnych projektów. Przejdź na plan Pro, aby uzyskać nielimitowany dostęp.
+                    </p>
+                    <Button size="sm" className="gradient-bg hover:opacity-90">
+                      Przejdź na Pro - od 20 zł/mies
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Quick Stats */}
           <div className="grid md:grid-cols-4 gap-6 mb-8">
@@ -68,8 +132,10 @@ const Dashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-400 text-sm">Dostępne aplikacje</p>
-                    <p className="text-2xl font-bold text-white">2</p>
+                    <p className="text-gray-400 text-sm">Projekty</p>
+                    <p className="text-2xl font-bold text-white">
+                      {currentProjects}{userTier === 'free' && `/${projectLimit}`}
+                    </p>
                   </div>
                   <Folder className="w-8 h-8 text-reno-purple" />
                 </div>
@@ -81,7 +147,9 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-400 text-sm">Miesięczny koszt</p>
-                    <p className="text-2xl font-bold text-white">59 zł</p>
+                    <p className="text-2xl font-bold text-white">
+                      {userTier === 'free' ? '0' : userTier === 'pro' ? '30' : '210'} zł
+                    </p>
                   </div>
                   <DollarSign className="w-8 h-8 text-reno-mint" />
                 </div>
@@ -93,7 +161,7 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-400 text-sm">Plan</p>
-                    <p className="text-2xl font-bold text-white">Premium</p>
+                    <p className="text-xl font-bold text-white">{tierInfo.name}</p>
                   </div>
                   <BarChart className="w-8 h-8 text-reno-blue" />
                 </div>
@@ -112,11 +180,18 @@ const Dashboard = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
-                            <app.icon className="w-6 h-6 text-white" />
+                            <img 
+                              src={app.icon} 
+                              alt={`${app.name} Logo`} 
+                              className="w-8 h-8 object-contain"
+                            />
                           </div>
                           <div>
                             <CardTitle className="text-white">{app.name}</CardTitle>
                             <CardDescription className="text-gray-300">{app.description}</CardDescription>
+                            {app.status === 'inactive' && (
+                              <p className="text-sm text-reno-blue font-medium">{app.price}</p>
+                            )}
                           </div>
                         </div>
                         <Badge 
@@ -139,8 +214,8 @@ const Dashboard = () => {
                           </Button>
                         </div>
                       ) : (
-                        <Button size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                          Wykup subskrypcję
+                        <Button size="sm" className="gradient-bg hover:opacity-90">
+                          Wykup subskrypcję - {app.price}
                         </Button>
                       )}
                     </CardContent>
@@ -154,32 +229,66 @@ const Dashboard = () => {
               <h2 className="text-2xl font-bold text-white mb-6">Zarządzanie Subskrypcją</h2>
               <Card className="glass-card border-white/10">
                 <CardHeader>
-                  <CardTitle className="text-white">Plan Premium</CardTitle>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    Plan {tierInfo.name}
+                    {userTier === 'expert' && <Crown className="w-5 h-5 text-yellow-500" />}
+                  </CardTitle>
                   <CardDescription className="text-gray-300">
-                    Dostęp do wszystkich aplikacji i funkcji premium
+                    {userTier === 'free' 
+                      ? 'Podstawowy dostęp z ograniczeniami' 
+                      : userTier === 'pro' 
+                      ? 'Pełny dostęp do wybranej aplikacji'
+                      : 'Dostęp do wszystkich aplikacji i funkcji premium'
+                    }
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center py-2 border-b border-white/10">
-                    <span className="text-gray-300">Miesięczna opłata</span>
-                    <span className="text-white font-semibold">59 zł</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-white/10">
-                    <span className="text-gray-300">Następna płatność</span>
-                    <span className="text-white font-semibold">15.02.2024</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-white/10">
-                    <span className="text-gray-300">Status</span>
-                    <Badge className="bg-reno-mint text-black">Aktywna</Badge>
+                  <div className="space-y-2">
+                    <h4 className="text-white font-medium">Twoje korzyści:</h4>
+                    <ul className="text-sm text-gray-300 space-y-1">
+                      {tierInfo.features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-reno-mint rounded-full"></div>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                   
+                  {userTier !== 'free' && (
+                    <>
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-gray-300">Miesięczna opłata</span>
+                        <span className="text-white font-semibold">
+                          {userTier === 'pro' ? '30' : '210'} zł
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-gray-300">Następna płatność</span>
+                        <span className="text-white font-semibold">15.02.2024</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-gray-300">Status</span>
+                        <Badge className="bg-reno-mint text-black">Aktywna</Badge>
+                      </div>
+                    </>
+                  )}
+                  
                   <div className="pt-4 space-y-2">
-                    <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20">
-                      Zmień plan
-                    </Button>
-                    <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
-                      Historia płatności
-                    </Button>
+                    {userTier === 'free' ? (
+                      <Button className="w-full gradient-bg hover:opacity-90">
+                        Przejdź na plan Pro
+                      </Button>
+                    ) : (
+                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20">
+                        Zmień plan
+                      </Button>
+                    )}
+                    {userTier !== 'free' && (
+                      <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+                        Historia płatności
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

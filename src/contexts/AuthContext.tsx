@@ -6,6 +6,7 @@ interface User {
   email: string;
   role: 'user' | 'admin';
   subscriptions?: string[];
+  tier?: 'free' | 'pro' | 'expert';
 }
 
 interface AuthContextType {
@@ -49,7 +50,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: '1',
       email,
       role: email === 'admin@renoapp.com' ? 'admin' : 'user',
-      subscriptions: email === 'admin@renoapp.com' ? [] : ['calcreno']
+      subscriptions: email === 'admin@renoapp.com' ? [] : email === 'pro@test.com' ? ['calcreno'] : [],
+      tier: email === 'admin@renoapp.com' ? 'expert' : email === 'pro@test.com' ? 'pro' : 'free'
     };
     
     setUser(userData);
@@ -66,7 +68,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: Date.now().toString(),
       email,
       role: 'user',
-      subscriptions: []
+      subscriptions: [],
+      tier: 'free'
     };
     
     setUser(userData);

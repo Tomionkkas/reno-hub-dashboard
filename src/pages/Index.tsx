@@ -3,7 +3,7 @@ import Navigation from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { Folder, BarChart, CreditCard, DollarSign, UserCircle } from 'lucide-react';
+import { Folder, BarChart, CreditCard, DollarSign, UserCircle, Check, X } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -39,8 +39,12 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card className="glass-card border-white/10 hover:border-reno-purple/50 transition-colors">
               <CardHeader>
-                <div className="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mb-4">
-                  <Folder className="w-6 h-6 text-white" />
+                <div className="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-4">
+                  <img 
+                    src="/placeholder.svg" 
+                    alt="CalcReno Logo" 
+                    className="w-10 h-10 object-contain"
+                  />
                 </div>
                 <CardTitle className="text-white text-2xl">CalcReno</CardTitle>
                 <CardDescription className="text-gray-300">
@@ -57,8 +61,12 @@ const Index = () => {
 
             <Card className="glass-card border-white/10 hover:border-reno-purple/50 transition-colors">
               <CardHeader>
-                <div className="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mb-4">
-                  <BarChart className="w-6 h-6 text-white" />
+                <div className="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-4">
+                  <img 
+                    src="/placeholder.svg" 
+                    alt="RenoTimeline Logo" 
+                    className="w-10 h-10 object-contain"
+                  />
                 </div>
                 <CardTitle className="text-white text-2xl">RenoTimeline</CardTitle>
                 <CardDescription className="text-gray-300">
@@ -109,66 +117,121 @@ const Index = () => {
       {/* Pricing Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12 gradient-text">Cennik Subskrypcji</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 gradient-text">Plany Subskrypcyjne</h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Free Tier */}
             <Card className="glass-card border-white/10">
               <CardHeader>
-                <CardTitle className="text-white text-2xl">Basic</CardTitle>
-                <CardDescription className="text-gray-300">Dla małych projektów</CardDescription>
-                <div className="text-3xl font-bold text-white">29 zł<span className="text-lg text-gray-300">/mies</span></div>
+                <CardTitle className="text-white text-2xl">Free</CardTitle>
+                <CardDescription className="text-gray-300">Podstawowe funkcje</CardDescription>
+                <div className="text-3xl font-bold text-white">0 zł<span className="text-lg text-gray-300">/mies</span></div>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• Dostęp do CalcReno</li>
-                  <li>• 5 projektów</li>
-                  <li>• Podstawowe kalkulatory</li>
+                <ul className="space-y-3 text-gray-300 mb-6">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Dostęp do podstawowych funkcji
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Maksymalnie 3 projekty
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Ograniczone eksporty
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <X className="w-4 h-4 text-red-400" />
+                    Brak premium wsparcia
+                  </li>
                 </ul>
-                <Button className="w-full mt-6 bg-white/10 hover:bg-white/20 text-white border border-white/20">
-                  Wybierz plan
+                <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20">
+                  Zacznij za darmo
                 </Button>
               </CardContent>
             </Card>
 
+            {/* Pro Tier */}
             <Card className="glass-card border-reno-purple relative">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 gradient-bg rounded-full text-white text-sm">
                 Najpopularniejszy
               </div>
               <CardHeader>
-                <CardTitle className="text-white text-2xl">Premium</CardTitle>
-                <CardDescription className="text-gray-300">Dla średnich projektów</CardDescription>
-                <div className="text-3xl font-bold text-white">59 zł<span className="text-lg text-gray-300">/mies</span></div>
+                <CardTitle className="text-white text-2xl">Pro</CardTitle>
+                <CardDescription className="text-gray-300">Jedna aplikacja, pełen dostęp</CardDescription>
+                <div className="text-3xl font-bold text-white">20-40 zł<span className="text-lg text-gray-300">/app/mies</span></div>
+                <p className="text-sm text-gray-400">Roczna płatność: -20%</p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• Dostęp do obu aplikacji</li>
-                  <li>• Nielimitowane projekty</li>
-                  <li>• Zaawansowane funkcje</li>
-                  <li>• Eksport do PDF</li>
+                <ul className="space-y-3 text-gray-300 mb-6">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Pełen dostęp do wybranej aplikacji
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Nielimitowane projekty
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Eksport do PDF/Excel
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Standardowe wsparcie
+                  </li>
                 </ul>
-                <Button className="w-full mt-6 gradient-bg hover:opacity-90">
-                  Wybierz plan
+                <Button className="w-full gradient-bg hover:opacity-90">
+                  Wybierz plan Pro
                 </Button>
               </CardContent>
             </Card>
 
+            {/* Expert Tier */}
             <Card className="glass-card border-white/10">
               <CardHeader>
-                <CardTitle className="text-white text-2xl">Enterprise</CardTitle>
-                <CardDescription className="text-gray-300">Dla firm budowlanych</CardDescription>
-                <div className="text-3xl font-bold text-white">99 zł<span className="text-lg text-gray-300">/mies</span></div>
+                <CardTitle className="text-white text-2xl">Expert</CardTitle>
+                <CardDescription className="text-gray-300">Dla zespołów i firm</CardDescription>
+                <div className="text-3xl font-bold text-white">200-220 zł<span className="text-lg text-gray-300">/mies</span></div>
+                <p className="text-sm text-gray-400">Roczna płatność: -25% | Do 3 użytkowników</p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• Wszystkie funkcje Premium</li>
-                  <li>• Zarządzanie zespołem</li>
-                  <li>• API dostęp</li>
-                  <li>• Priorytetowy support</li>
+                <ul className="space-y-3 text-gray-300 mb-6">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Dostęp do wszystkich aplikacji
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Wsparcie dla 2-3 użytkowników
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Premium wsparcie techniczne
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    Wczesny dostęp do nowości
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-reno-mint" />
+                    API dostęp
+                  </li>
                 </ul>
-                <Button className="w-full mt-6 bg-white/10 hover:bg-white/20 text-white border border-white/20">
+                <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20">
                   Skontaktuj się
                 </Button>
               </CardContent>
             </Card>
+          </div>
+          
+          {/* Special Offer Banner */}
+          <div className="mt-12 text-center">
+            <div className="inline-block bg-gradient-to-r from-reno-purple to-reno-blue rounded-xl p-4">
+              <p className="text-white font-semibold">
+                🚀 Oferta startowa: -30% na pierwsze 6 miesięcy dla wszystkich planów!
+              </p>
+            </div>
           </div>
         </div>
       </section>
