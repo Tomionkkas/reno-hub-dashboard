@@ -9,7 +9,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { LazyWrapper } from "@/components/ui/lazy-wrapper";
 import { SEOHead } from "@/components/ui/seo-head";
-import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -56,7 +55,6 @@ const App = () => (
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-                <ScrollToTop />
               </LazyWrapper>
             </BrowserRouter>
           </AuthProvider>
