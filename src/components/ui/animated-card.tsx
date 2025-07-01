@@ -1,7 +1,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 
 interface AnimatedCardProps extends React.HTMLAttributes<HTMLDivElement> {
   hover?: 'lift' | 'glow' | 'scale' | 'none'
@@ -85,10 +85,23 @@ const AnimatedCardContent = React.forwardRef<
 ))
 AnimatedCardContent.displayName = "AnimatedCardContent"
 
+const AnimatedCardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <CardFooter
+    ref={ref}
+    className={cn("animate-fade-in", className)}
+    style={{ animationDelay: '300ms' }}
+    {...props}
+  />
+))
+AnimatedCardFooter.displayName = "AnimatedCardFooter"
+
 export { 
   AnimatedCard, 
   AnimatedCardHeader, 
-  AnimatedCardFooter: CardContent, 
+  AnimatedCardFooter,
   AnimatedCardTitle, 
   AnimatedCardDescription, 
   AnimatedCardContent 
