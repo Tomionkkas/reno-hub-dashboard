@@ -15,7 +15,7 @@ const enhancedButtonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
         ghost: "hover:bg-accent hover:text-accent-foreground transform hover:scale-105",
         link: "text-primary underline-offset-4 hover:underline transform hover:scale-105",
-        gradient: "bg-gradient-to-r from-reno-purple via-reno-blue to-reno-mint text-white shadow-lg hover:shadow-2xl transform hover:-translate-y-1 hover:from-reno-purple/90 hover:via-reno-blue/90 hover:to-reno-mint/90 animate-gradient-shift",
+        gradient: "gradient-bg text-white shadow-lg hover:shadow-2xl transform hover:-translate-y-1 hover:opacity-90",
         floating: "bg-gradient-to-r from-reno-purple to-reno-blue text-white shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 hover:scale-105 border-2 border-white/20 hover:border-white/40 backdrop-blur-sm",
         ripple: "relative overflow-hidden bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transform hover:-translate-y-1 before:absolute before:inset-0 before:bg-white/20 before:opacity-0 before:transition-opacity hover:before:opacity-100 before:animate-ripple"
       },

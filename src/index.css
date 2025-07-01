@@ -153,14 +153,10 @@
   outline-offset: 2px;
 }
 
-/* Button Specific Overrides for Visibility */
-button.bg-gradient-to-r {
+/* Enhanced gradient background class */
+.gradient-bg {
   background: linear-gradient(135deg, #5A4BFF, #7F67FF, #00D4AA) !important;
   color: white !important;
-}
-
-button.bg-gradient-to-r:hover {
-  background: linear-gradient(135deg, rgba(90, 75, 255, 0.9), rgba(127, 103, 255, 0.9), rgba(0, 212, 170, 0.9)) !important;
 }
 
 /* Enhanced Animations */
