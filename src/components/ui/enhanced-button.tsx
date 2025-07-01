@@ -11,7 +11,7 @@ const enhancedButtonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transform hover:-translate-y-1",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg hover:shadow-xl transform hover:-translate-y-1",
-        outline: "border border-transparent bg-gradient-to-r from-white/10 to-white/5 text-white hover:from-white/20 hover:to-white/10 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 backdrop-blur-sm",
+        outline: "border border-transparent bg-gradient-to-r from-white/10 to-white/5 text-white hover:from-white/20 hover:to-white/10 shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-md hover:shadow-lg transform hover:-translate-y-0.5",
         ghost: "hover:bg-accent hover:text-accent-foreground transform hover:scale-105",
         link: "text-primary underline-offset-4 hover:underline transform hover:scale-105",
