@@ -1,6 +1,6 @@
 
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { EnhancedButton } from '@/components/ui/enhanced-button';
 import { useAuth } from '@/contexts/AuthContext';
 import { LogOut, User, LayoutDashboard } from 'lucide-react';
 
@@ -14,9 +14,9 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 glass-card border-b border-white/10">
+    <nav className="fixed top-0 w-full z-50 glass-card border-b border-white/10 backdrop-blur-md">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-bold gradient-text">
+        <Link to="/" className="text-2xl font-bold gradient-text hover-lift">
           RenoApp
         </Link>
         
@@ -24,40 +24,40 @@ const Navigation = () => {
           {user ? (
             <>
               <Link to="/dashboard">
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
+                <EnhancedButton variant="ghost" size="sm" className="text-white hover:bg-white/10 nav-link">
                   <LayoutDashboard className="w-4 h-4 mr-2" />
                   Dashboard
-                </Button>
+                </EnhancedButton>
               </Link>
               {user.role === 'admin' && (
                 <Link to="/admin">
-                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
+                  <EnhancedButton variant="ghost" size="sm" className="text-white hover:bg-white/10 nav-link">
                     <User className="w-4 h-4 mr-2" />
                     Panel Admin
-                  </Button>
+                  </EnhancedButton>
                 </Link>
               )}
-              <Button
+              <EnhancedButton
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                className="text-white hover:bg-white/10"
+                className="text-white hover:bg-white/10 nav-link"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 Wyloguj
-              </Button>
+              </EnhancedButton>
             </>
           ) : (
             <>
               <Link to="/login">
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
+                <EnhancedButton variant="ghost" size="sm" className="text-white hover:bg-white/10 nav-link">
                   Zaloguj się
-                </Button>
+                </EnhancedButton>
               </Link>
               <Link to="/register">
-                <Button size="sm" className="gradient-bg hover:opacity-90 transition-opacity">
+                <EnhancedButton size="sm" variant="gradient">
                   Zarejestruj się
-                </Button>
+                </EnhancedButton>
               </Link>
             </>
           )}
