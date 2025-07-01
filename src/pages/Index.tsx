@@ -195,7 +195,7 @@ const Index = () => {
                       Brak premium wsparcia
                     </li>
                   </ul>
-                  <EnhancedButton className="w-full" variant="outline">
+                  <EnhancedButton className="w-full text-white" variant="outline">
                     Zacznij za darmo
                   </EnhancedButton>
                 </AnimatedCardContent>
@@ -268,7 +268,7 @@ const Index = () => {
                       API dostęp
                     </li>
                   </ul>
-                  <EnhancedButton className="w-full" variant="outline">
+                  <EnhancedButton className="w-full text-white" variant="outline">
                     Skontaktuj się
                   </EnhancedButton>
                 </AnimatedCardContent>
