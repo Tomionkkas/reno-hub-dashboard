@@ -73,14 +73,14 @@
 
 /* Utility Classes */
 .gradient-text {
-  background: linear-gradient(135deg, #5A4BFF, #7F67FF, #00D4AA);
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6, #10B981);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-bg {
-  background: linear-gradient(135deg, #5A4BFF, #7F67FF, #00D4AA);
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6, #10B981);
 }
 
 .glass-card {
@@ -90,7 +90,7 @@
 }
 
 .animated-gradient {
-  background: linear-gradient(-45deg, #5A4BFF, #7F67FF, #00D4AA, #5A4BFF);
+  background: linear-gradient(-45deg, #3B82F6, #8B5CF6, #10B981, #3B82F6);
   background-size: 400% 400%;
   animation: gradient-shift 15s ease infinite;
 }
@@ -114,7 +114,7 @@
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 30px rgba(90, 75, 255, 0.4);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
 }
 
 .card-hover {
@@ -138,7 +138,7 @@
   height: 2px;
   bottom: -4px;
   left: 50%;
-  background: linear-gradient(135deg, #5A4BFF, #7F67FF);
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
   transition: all 0.3s ease;
   transform: translateX(-50%);
 }
@@ -149,7 +149,7 @@
 
 /* Focus Styles for Accessibility */
 .focus-visible:focus-visible {
-  outline: 2px solid #7F67FF;
+  outline: 2px solid #8B5CF6;
   outline-offset: 2px;
 }
 
@@ -171,10 +171,10 @@
 
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(90, 75, 255, 0.3);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
   50% {
-    box-shadow: 0 0 40px rgba(90, 75, 255, 0.6), 0 0 60px rgba(127, 103, 255, 0.3);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.3);
   }
 }
 
