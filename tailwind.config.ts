@@ -68,7 +68,7 @@ export default {
 				},
 				'reno-purple': '#5A4BFF',
 				'reno-blue': '#7F67FF',
-				'reno-mint': '#4ADE80',
+				'reno-mint': '#00D4AA',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
