@@ -153,10 +153,31 @@
   outline-offset: 2px;
 }
 
-/* Enhanced gradient background class */
+/* Enhanced gradient background classes */
 .gradient-bg {
   background: linear-gradient(135deg, #5A4BFF, #7F67FF, #00D4AA) !important;
   color: white !important;
+}
+
+/* Gradient outline button styling */
+.gradient-outline {
+  background: linear-gradient(135deg, rgba(90, 75, 255, 0.2), rgba(127, 103, 255, 0.2), rgba(0, 212, 170, 0.2)) !important;
+  border: 1px solid transparent !important;
+  background-clip: padding-box !important;
+  color: white !important;
+  position: relative !important;
+}
+
+.gradient-outline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: linear-gradient(135deg, #5A4BFF, #7F67FF, #00D4AA);
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
 }
 
 /* Enhanced Animations */
