@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { EnhancedButton } from '@/components/ui/enhanced-button';
+import { LoadingButton } from '@/components/ui/loading-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AnimatedCard, AnimatedCardContent, AnimatedCardDescription, AnimatedCardHeader, AnimatedCardTitle } from '@/components/ui/animated-card';
@@ -75,7 +75,7 @@ const Login = () => {
               />
             </div>
             <div className="animate-scale-in" style={{animationDelay: '500ms'}}>
-              <EnhancedButton
+              <LoadingButton
                 type="submit"
                 className="w-full"
                 variant="gradient"
@@ -83,7 +83,7 @@ const Login = () => {
                 loadingText="Logowanie..."
               >
                 Zaloguj się
-              </EnhancedButton>
+              </LoadingButton>
             </div>
           </form>
           
