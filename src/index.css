@@ -153,9 +153,19 @@
   outline-offset: 2px;
 }
 
-/* Enhanced gradient background class */
+/* Enhanced gradient background class and button fixes */
 .gradient-bg {
   background: linear-gradient(135deg, #5A4BFF, #7F67FF, #00D4AA) !important;
+  color: white !important;
+}
+
+/* Ensure all outline buttons have visible text */
+button[class*="outline"] {
+  color: white !important;
+}
+
+button[class*="outline"]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
   color: white !important;
 }
 
