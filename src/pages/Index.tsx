@@ -1,4 +1,3 @@
-
 import Navigation from '@/components/Navigation';
 import { EnhancedButton } from '@/components/ui/enhanced-button';
 import { AnimatedCard, AnimatedCardContent, AnimatedCardDescription, AnimatedCardHeader, AnimatedCardTitle } from '@/components/ui/animated-card';
@@ -6,10 +5,15 @@ import { TypingAnimation } from '@/components/ui/typing-animation';
 import { FloatingShapes } from '@/components/ui/floating-shapes';
 import { ScrollToTop } from '@/components/ui/scroll-to-top';
 import { SkipLink } from '@/components/ui/accessibility-skip-link';
+import { SEOHead } from '@/components/ui/seo-head';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { usePerformanceMonitor } from '@/hooks/use-performance';
 import { Link } from 'react-router-dom';
 import { Folder, BarChart, CreditCard, DollarSign, UserCircle, Check, X } from 'lucide-react';
 
 const Index = () => {
+  usePerformanceMonitor('Index');
+
   const heroTexts = [
     "Jedna platforma – wszystkie Twoje aplikacje remontowe",
     "Zarządzaj projektami remontowymi profesjonalnie",
@@ -19,6 +23,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative">
+      <SEOHead 
+        title="RenoApp - Platforma aplikacji remontowych"
+        description="Jedna platforma – wszystkie Twoje aplikacje remontowe. CalcReno do obliczeń materiałów i RenoTimeline do zarządzania projektami."
+        keywords="remont, aplikacje remontowe, kalkulatory budowlane, zarządzanie projektami remontowymi, CalcReno, RenoTimeline"
+      />
+      
       <SkipLink href="#main-content">Skip to main content</SkipLink>
       <Navigation />
       
@@ -83,7 +93,7 @@ const Index = () => {
               <AnimatedCard className="glass-card border-white/10 hover:border-reno-purple/50 transition-colors hover:shadow-2xl hover:shadow-reno-purple/20" delay={0} hover="glow" role="article" aria-labelledby="calcreno-title">
                 <AnimatedCardHeader>
                   <div className="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-4 hover-lift animate-glow-pulse">
-                    <img 
+                    <OptimizedImage 
                       src="/placeholder.svg" 
                       alt="CalcReno application icon" 
                       className="w-10 h-10 object-contain"
@@ -105,7 +115,7 @@ const Index = () => {
               <AnimatedCard className="glass-card border-white/10 hover:border-reno-purple/50 transition-colors hover:shadow-2xl hover:shadow-reno-blue/20" delay={200} hover="glow" role="article" aria-labelledby="renotimeline-title">
                 <AnimatedCardHeader>
                   <div className="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-4 hover-lift animate-glow-pulse" style={{animationDelay: '0.5s'}}>
-                    <img 
+                    <OptimizedImage 
                       src="/placeholder.svg" 
                       alt="RenoTimeline application icon" 
                       className="w-10 h-10 object-contain"
@@ -127,7 +137,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Features Section with Enhanced Animations */}
+        {/* Features Section */}
         <section className="py-20 px-4 bg-black/20 relative" aria-labelledby="features-heading">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-reno-purple/5 rounded-full blur-3xl animate-float-random"></div>
@@ -276,7 +286,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* CTA Section with Enhanced Animations */}
+        {/* CTA Section */}
         <section className="py-20 px-4 bg-gradient-to-r from-reno-purple to-reno-blue animated-gradient relative overflow-hidden" aria-labelledby="cta-heading">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-10 left-10 w-20 h-20 border border-white/30 rounded-full animate-float-random"></div>
@@ -298,7 +308,7 @@ const Index = () => {
         </section>
       </main>
 
-      {/* Footer with Subtle Animations */}
+      {/* Footer */}
       <footer className="py-12 px-4 bg-black/30 relative" role="contentinfo">
         <div className="container mx-auto text-center">
           <div className="text-xl md:text-2xl font-bold gradient-text mb-4 animate-fade-in hover-lift">RenoApp</div>
