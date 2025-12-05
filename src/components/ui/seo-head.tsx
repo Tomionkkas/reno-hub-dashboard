@@ -14,16 +14,16 @@ interface SEOHeadProps {
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
-  title = 'RenoApp - Platforma aplikacji remontowych',
+  title = 'RenoHub - Platforma aplikacji remontowych',
   description = 'Jedna platforma – wszystkie Twoje aplikacje remontowe. Zarządzaj projektami, obliczaj materiały i kontroluj koszty.',
-  keywords = 'remont, aplikacje remontowe, kalkulatory budowlane, zarządzanie projektami, RenoApp',
-  author = 'RenoApp Team',
+  keywords = 'remont, aplikacje remontowe, kalkulatory budowlane, zarządzanie projektami, RenoHub',
+  author = 'RenoHub Team',
   ogImage = 'https://lovable.dev/opengraph-image-p98pqg.png',
   ogType = 'website',
   canonical,
   noindex = false
 }) => {
-  const fullTitle = title.includes('RenoApp') ? title : `${title} | RenoApp`;
+  const fullTitle = title.includes('RenoHub') ? title : `${title} | RenoHub`;
 
   return (
     <Helmet>
@@ -51,7 +51,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="theme-color" content="#5A4BFF" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      <meta name="apple-mobile-web-app-title" content="RenoApp" />
+      <meta name="apple-mobile-web-app-title" content="RenoHub" />
       
       {/* Preconnect to external domains */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />

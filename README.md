@@ -1,73 +1,141 @@
-# Welcome to your Lovable project
+# RenoHub 🏗️
 
-## Project info
+**The Ultimate Platform for Renovation & Construction Tools**
 
-**URL**: https://lovable.dev/projects/df61efeb-a67b-49ce-9012-442ea6d75a7f
+RenoHub is a comprehensive platform that brings together powerful applications designed to streamline every aspect of renovation and construction projects. From material calculations to project management and AI-powered investment analysis, RenoHub provides everything you need in one unified ecosystem.
 
-## How can I edit this code?
+## 🚀 Applications
 
-There are several ways of editing your application.
+### CalcReno
+**Material Calculation & Planning Tool**
+- Calculate precise material quantities for construction projects
+- Plan and budget your renovation projects with accuracy
+- Available on iOS and Android
 
-**Use Lovable**
+### RenoTimeline
+**Project Management for Renovations**
+- Plan project stages and track progress
+- Monitor costs and manage timelines
+- Web-based application accessible from any device
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/df61efeb-a67b-49ce-9012-442ea6d75a7f) and start prompting.
+### RenoScout
+**AI-Powered Real Estate Investment Platform** *(Coming Soon)*
+- Automated property opportunity discovery
+- Market trend analysis and investment scoring
+- Data-driven decision making for real estate investors
 
-Changes made via Lovable will be committed automatically to this repo.
+## ✨ Features
 
-**Use your preferred IDE**
+- **Unified Platform**: Access all your renovation tools from one place
+- **Cross-Platform**: Works seamlessly on web, iOS, and Android
+- **Modern UI**: Beautiful, responsive design with smooth animations
+- **Performance Optimized**: Fast, efficient, and built for scale
+- **Accessible**: WCAG compliant with full keyboard navigation support
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛠️ Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Animations**: GSAP
+- **Routing**: React Router
+- **State Management**: React Context API
+- **Backend**: Supabase
 
-Follow these steps:
+## 📦 Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### Prerequisites
+
+- Node.js 18+ and npm (or use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+
+### Installation
+
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd hub
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Build for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Preview Production Build
 
-## What technologies are used for this project?
+```bash
+npm run preview
+```
 
-This project is built with:
+## 🏗️ Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+hub/
+├── src/
+│   ├── components/      # React components
+│   │   ├── animations/  # GSAP animation components
+│   │   ├── sections/    # Page sections
+│   │   └── ui/          # Reusable UI components
+│   ├── contexts/        # React contexts
+│   ├── hooks/           # Custom React hooks
+│   ├── integrations/    # Third-party integrations
+│   ├── lib/             # Utility functions
+│   └── pages/           # Page components
+├── public/              # Static assets
+└── supabase/            # Supabase configuration
+```
 
-## How can I deploy this project?
+## 🎨 Development
 
-Simply open [Lovable](https://lovable.dev/projects/df61efeb-a67b-49ce-9012-442ea6d75a7f) and click on Share -> Publish.
+### Code Style
 
-## Can I connect a custom domain to my Lovable project?
+- TypeScript for type safety
+- ESLint for code quality
+- Prettier for code formatting (configured via `.prettierrc`)
 
-Yes, you can!
+### Key Features
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **Performance Monitoring**: Built-in performance tracking
+- **Accessibility**: Full ARIA support and keyboard navigation
+- **PWA Ready**: Service worker for offline functionality
+- **SEO Optimized**: Meta tags and structured data
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 📱 Applications Overview
+
+### CalcReno
+Mobile-first material calculator for construction professionals and DIY enthusiasts.
+
+### RenoTimeline
+Web-based project management tool for tracking renovation projects from start to finish.
+
+### RenoScout
+AI-powered platform for real estate investors to discover and analyze investment opportunities.
+
+## 🤝 Contributing
+
+This is a private project. For contributions, please contact the development team.
+
+## 📄 License
+
+Proprietary - All rights reserved
+
+## 🔗 Links
+
+- **Website**: [RenoHub Platform](https://renohub.com)
+- **Documentation**: Coming soon
+
+---
+
+Built with ❤️ by the RenoHub Team

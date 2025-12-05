@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'renoapp-v1';
+const CACHE_NAME = 'renohub-v1';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',

@@ -1,12 +1,20 @@
 
-import { useState } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AnimatedCard, AnimatedCardContent, AnimatedCardDescription, AnimatedCardHeader, AnimatedCardTitle } from '@/components/ui/animated-card';
+import { GSAPCard, GSAPCardContent, GSAPCardDescription, GSAPCardHeader, GSAPCardTitle } from '@/components/animations/GSAPCard';
+import { RippleEffect, MagneticEffect } from '@/components/ui/micro-interactions';
+import { GradientBackground, ParticleSystem, FloatingOrbs, GlowEffect } from '@/components/ui/visual-enhancements';
+import { FloatingElements } from '@/components/ui/professional-polish';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { toast } from 'sonner';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +23,10 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
+  
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,87 +48,167 @@ const Register = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Floating background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-20 h-20 bg-reno-purple/10 rounded-full floating-element"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-reno-blue/10 rounded-full floating-element" style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-40 left-20 w-12 h-12 bg-reno-mint/10 rounded-full floating-element" style={{animationDelay: '2s'}}></div>
-      </div>
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Animate section title
+      gsap.fromTo(
+        titleRef.current,
+        {
+          y: 50,
+          opacity: 0,
+          scale: 0.9
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: "power3.out"
+        }
+      );
 
-      <AnimatedCard className="w-full max-w-md glass-card border-white/10 hover:border-reno-purple/30 relative z-10" hover="glow">
-        <AnimatedCardHeader className="text-center">
-          <Link to="/" className="text-3xl font-bold gradient-text mb-4 block hover-lift">
-            RenoApp
-          </Link>
-          <AnimatedCardTitle className="text-2xl text-white">Utwórz konto</AnimatedCardTitle>
-          <AnimatedCardDescription className="text-gray-300">
-            Zarejestruj się aby uzyskać dostęp do aplikacji
-          </AnimatedCardDescription>
-        </AnimatedCardHeader>
-        <AnimatedCardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2 animate-slide-in-left" style={{animationDelay: '300ms'}}>
-              <Label htmlFor="email" className="text-white">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 transition-colors"
-                placeholder="twoj@email.com"
-              />
-            </div>
-            <div className="space-y-2 animate-slide-in-right" style={{animationDelay: '400ms'}}>
-              <Label htmlFor="password" className="text-white">Hasło</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 transition-colors"
-                placeholder="Minimum 8 znaków"
-              />
-            </div>
-            <div className="space-y-2 animate-slide-in-left" style={{animationDelay: '500ms'}}>
-              <Label htmlFor="confirmPassword" className="text-white">Potwierdź hasło</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 transition-colors"
-                placeholder="Powtórz hasło"
-              />
-            </div>
-            <div className="animate-scale-in" style={{animationDelay: '600ms'}}>
-              <LoadingButton
-                type="submit"
-                className="w-full"
-                variant="gradient"
-                loading={isLoading}
-                loadingText="Tworzę konto..."
-              >
-                Utwórz konto
-              </LoadingButton>
-            </div>
-          </form>
+      // Animate register card
+      gsap.fromTo(
+        cardRef.current,
+        {
+          y: 100,
+          opacity: 0,
+          scale: 0.8,
+          rotationY: 20
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotationY: 0,
+          duration: 0.8,
+          ease: "back.out(1.7)",
+          delay: 0.3
+        }
+      );
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <GradientBackground 
+      colors={['from-black', 'via-slate-900', 'to-black']} 
+      direction="to-br" 
+      animated={true}
+      speed={30}
+      className="min-h-screen relative"
+    >
+      {/* Enhanced Background Effects - Memoized to prevent re-renders */}
+      {useMemo(() => (
+        <>
+          <ParticleSystem count={50} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
+          <FloatingOrbs count={12} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
+          <FloatingElements count={20} elements={['star', 'circle', 'triangle']}>
+            <div />
+          </FloatingElements>
+        </>
+      ), [])}
+
+      <section 
+        ref={sectionRef}
+        className="min-h-screen flex items-center justify-center px-4 relative"
+        aria-labelledby="register-heading"
+      >
+        <div className="container mx-auto text-center relative z-10">
+          <h1 
+            ref={titleRef}
+            id="register-heading" 
+            className="text-4xl md:text-6xl font-bold mb-8"
+          >
+            <span className="gradient-text">RenoHub</span>
+          </h1>
           
-          <div className="mt-6 text-center animate-fade-in-up" style={{animationDelay: '700ms'}}>
-            <p className="text-gray-400">
-              Masz już konto?{' '}
-              <Link to="/login" className="text-reno-blue hover:text-reno-purple transition-colors nav-link">
-                Zaloguj się
-              </Link>
-            </p>
+          <div ref={cardRef} className="max-w-md mx-auto">
+            <RippleEffect>
+              <GSAPCard 
+                className="glass-card border-white/10 hover:border-reno-purple/30 hover:shadow-2xl hover:shadow-reno-purple/30 transition-all duration-300" 
+                hover="glow" 
+                trigger="scroll"
+                role="article" 
+                aria-labelledby="register-form-title"
+              >
+                  <GSAPCardHeader className="text-center">
+                    <GSAPCardTitle id="register-form-title" className="text-white text-2xl md:text-3xl mb-2">
+                      Utwórz konto
+                    </GSAPCardTitle>
+                    <GSAPCardDescription className="text-gray-300 text-base">
+                      Zarejestruj się aby uzyskać dostęp do aplikacji
+                    </GSAPCardDescription>
+                  </GSAPCardHeader>
+                  
+                  <GSAPCardContent>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-white font-medium">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                          placeholder="twoj@email.com"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="password" className="text-white font-medium">Hasło</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                          placeholder="Minimum 8 znaków"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="confirmPassword" className="text-white font-medium">Potwierdź hasło</Label>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                          placeholder="Powtórz hasło"
+                        />
+                      </div>
+                      
+                      <LoadingButton
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
+                        loading={isLoading}
+                        loadingText="Tworzę konto..."
+                      >
+                        Utwórz konto
+                      </LoadingButton>
+                    </form>
+                    
+                    <div className="mt-8 text-center space-y-3">
+                      <p className="text-gray-400">
+                        Masz już konto?{' '}
+                        <Link to="/login" className="text-reno-blue hover:text-reno-purple transition-colors font-medium hover-lift">
+                          Zaloguj się
+                        </Link>
+                      </p>
+                    </div>
+                  </GSAPCardContent>
+                </GSAPCard>
+            </RippleEffect>
           </div>
-        </AnimatedCardContent>
-      </AnimatedCard>
-    </div>
+        </div>
+      </section>
+    </GradientBackground>
   );
 };
 

@@ -17,7 +17,7 @@ const Navigation = () => {
     <nav className="fixed top-0 w-full z-50 glass-card border-b border-white/10 backdrop-blur-md">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="text-2xl font-bold gradient-text hover-lift">
-          RenoApp
+          RenoHub
         </Link>
         
         <div className="flex items-center gap-4">
