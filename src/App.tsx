@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { LazyWrapper } from "@/components/ui/lazy-wrapper";
 import { SEOHead } from "@/components/ui/seo-head";
+import { Analytics } from "@vercel/analytics/react";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -44,6 +45,7 @@ const App = () => (
           <SEOHead />
           <Toaster />
           <Sonner />
+          <Analytics />
           <AuthProvider>
             <BrowserRouter>
               <LazyWrapper>
