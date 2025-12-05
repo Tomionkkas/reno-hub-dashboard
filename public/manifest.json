@@ -10,13 +10,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/renotimeline-logo-transparent.png",
+      "src": "/Renohub-logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/renotimeline-logo-transparent.png",
+      "src": "/Renohub-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
