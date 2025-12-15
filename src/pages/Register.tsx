@@ -17,6 +17,8 @@ import { toast } from 'sonner';
 gsap.registerPlugin(ScrollTrigger);
 
 const Register = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -38,7 +40,7 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      await register(email, password);
+      await register(email, password, firstName, lastName);
       toast.success('Konto zostało utworzone pomyślnie!');
       navigate('/dashboard');
     } catch (error) {
@@ -145,6 +147,33 @@ const Register = () => {
                   
                   <GSAPCardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="firstName" className="text-white font-medium">Imię</Label>
+                          <Input
+                            id="firstName"
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            required
+                            className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                            placeholder="Jan"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName" className="text-white font-medium">Nazwisko</Label>
+                          <Input
+                            id="lastName"
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            required
+                            className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                            placeholder="Kowalski"
+                          />
+                        </div>
+                      </div>
+
                       <div className="space-y-2">
                         <Label htmlFor="email" className="text-white font-medium">Email</Label>
                         <Input
