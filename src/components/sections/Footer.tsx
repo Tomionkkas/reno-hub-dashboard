@@ -22,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
           <a href="#" className="nav-link hover:text-white transition-colors hover:gradient-text">
             Regulamin
           </a>
-          <a href="#" className="nav-link hover:text-white transition-colors hover:gradient-text">
+          <a href="/privacy-policy" className="nav-link hover:text-white transition-colors hover:gradient-text">
             Polityka prywatności
           </a>
           <a href="#" className="nav-link hover:text-white transition-colors hover:gradient-text">
