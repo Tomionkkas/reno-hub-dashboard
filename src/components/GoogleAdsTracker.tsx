@@ -27,22 +27,19 @@ export const GoogleAdsTracker = () => {
         // debug_mode: true forces Google to log to console even on localhost
         window.gtag("config", "AW-17946979757", {
             page_path: location.pathname + location.search,
-            debug_mode: true,
         });
         console.log("Google Ads: Page View Triggered for", location.pathname);
 
         // 2. Trigger Conversion Event ONLY on Home Page View ('/')
         if (location.pathname === "/") {
-            // Use a small timeout to ensure the config update processes first
             setTimeout(() => {
                 console.log("Google Ads: Triggering Home Page Conversion Event");
                 window.gtag("event", "conversion", {
-                    send_to: "AW-17946979757/zTg-CI-C3vYbEK3b50lC",
+                    send_to: "AW-17946979757/zTg-CI-C3vYbEK3b5O1C",
                     value: 1.0,
                     currency: "PLN",
-                    debug_mode: true, // Force debug for event too
                 });
-            }, 1000); // Increased timeout to 1s to be safe
+            }, 500);
         }
     }, [location]);
 
