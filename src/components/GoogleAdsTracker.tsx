@@ -24,8 +24,10 @@ export const GoogleAdsTracker = () => {
         }
 
         // 1. Always update the config with the current page path (Critical for SPA)
+        // debug_mode: true forces Google to log to console even on localhost
         window.gtag("config", "AW-17946979757", {
             page_path: location.pathname + location.search,
+            debug_mode: true,
         });
         console.log("Google Ads: Page View Triggered for", location.pathname);
 
@@ -38,8 +40,9 @@ export const GoogleAdsTracker = () => {
                     send_to: "AW-17946979757/zTg-CI-C3vYbEK3b50lC",
                     value: 1.0,
                     currency: "PLN",
+                    debug_mode: true, // Force debug for event too
                 });
-            }, 500);
+            }, 1000); // Increased timeout to 1s to be safe
         }
     }, [location]);
 
