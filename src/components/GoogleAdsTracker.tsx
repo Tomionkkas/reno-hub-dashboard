@@ -23,12 +23,12 @@ export const GoogleAdsTracker = () => {
             return;
         }
 
-        // 1. Always update the config with the current page path (Critical for SPA)
-        // debug_mode: true forces Google to log to console even on localhost
-        window.gtag("config", "AW-17946979757", {
-            page_path: location.pathname + location.search,
-        });
-        console.log("Google Ads: Page View Triggered for", location.pathname);
+        const pagePath = location.pathname + location.search;
+
+        // Update GA4 and Google Ads config on every route change (critical for SPA)
+        window.gtag("config", "G-2HYP54YFFP", { page_path: pagePath });
+        window.gtag("config", "AW-17946979757", { page_path: pagePath });
+        console.log("Analytics: Page View Triggered for", location.pathname);
 
         // 2. Trigger Conversion Event ONLY on Home Page View ('/')
         if (location.pathname === "/") {
