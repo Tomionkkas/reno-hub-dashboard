@@ -18,6 +18,7 @@ import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 import RenoScoutPage from './pages/RenoScout';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import { GoogleAdsTracker } from "./components/GoogleAdsTracker";
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -49,6 +50,7 @@ const App = () => (
           <Analytics />
           <AuthProvider>
             <BrowserRouter>
+              <GoogleAdsTracker />
               <LazyWrapper>
                 <Routes>
                   <Route path="/" element={<Index />} />
