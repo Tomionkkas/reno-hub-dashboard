@@ -23,16 +23,25 @@ export const GoogleAdsTracker = () => {
             return;
         }
 
-        // Trigger Conversion Event on Home Page View ('/')
+        // 1. Always update the config with the current page path (Critical for SPA)
+        window.gtag("config", "AW-17946979757", {
+            page_path: location.pathname + location.search,
+        });
+        console.log("Google Ads: Page View Triggered for", location.pathname);
+
+        // 2. Trigger Conversion Event ONLY on Home Page View ('/')
         if (location.pathname === "/") {
-            console.log("Google Ads: Triggering Home Page Conversion Event");
-            window.gtag("event", "conversion", {
-                send_to: "AW-17946979757/zTg-CI-C3vYbEK3b50lC",
-                value: 1.0,
-                currency: "PLN",
-            });
+            // Use a small timeout to ensure the config update processes first
+            setTimeout(() => {
+                console.log("Google Ads: Triggering Home Page Conversion Event");
+                window.gtag("event", "conversion", {
+                    send_to: "AW-17946979757/zTg-CI-C3vYbEK3b50lC",
+                    value: 1.0,
+                    currency: "PLN",
+                });
+            }, 500);
         }
-    }, [location.pathname]);
+    }, [location]);
 
     return null;
 };
