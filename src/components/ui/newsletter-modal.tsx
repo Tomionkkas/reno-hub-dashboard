@@ -152,7 +152,10 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-[#0b1120] border border-cyan-500/25 text-white w-[calc(100%-32px)] max-w-md max-h-[90dvh] overflow-y-auto overflow-x-hidden p-0 gap-0">
+      <DialogContent
+        className="bg-[#0b1120] border border-cyan-500/25 text-white w-[calc(100%-32px)] max-w-md max-h-[90dvh] overflow-y-auto overflow-x-hidden p-0 gap-0"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
 
         {/* Top accent bar */}
         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent flex-shrink-0" />
@@ -250,7 +253,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
                   placeholder="np. Marcin"
                   required
                   disabled={formState === 'loading'}
-                  className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/25 transition-all duration-200 disabled:opacity-50 text-sm"
+                  className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/25 transition-all duration-200 disabled:opacity-50 text-base"
                 />
               </div>
 
@@ -265,7 +268,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
                   placeholder="np. marcin@example.com"
                   required
                   disabled={formState === 'loading'}
-                  className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/25 transition-all duration-200 disabled:opacity-50 text-sm"
+                  className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/25 transition-all duration-200 disabled:opacity-50 text-base"
                 />
               </div>
 
