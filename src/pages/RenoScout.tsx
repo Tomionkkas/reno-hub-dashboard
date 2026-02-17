@@ -89,18 +89,18 @@ export default function RenoScoutPage() {
       />
 
       {/* ── HERO ──────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative pt-24 pb-20 px-4 flex flex-col items-center text-center overflow-hidden">
+      <section ref={heroRef} className="relative pt-14 pb-10 md:pt-24 md:pb-20 px-4 flex flex-col items-center text-center overflow-hidden">
 
         {/* Glow orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute top-20 right-1/4 w-[300px] h-[300px] bg-cyan-500/8 rounded-full blur-[100px] pointer-events-none" />
 
         {/* Logo */}
-        <div className="hero-item w-24 h-24 bg-gradient-to-br from-[#0c2340] via-[#0e3158] to-[#0a2540] rounded-2xl flex items-center justify-center mb-6 shadow-2xl border border-cyan-500/30 relative">
+        <div className="hero-item w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#0c2340] via-[#0e3158] to-[#0a2540] rounded-2xl flex items-center justify-center mb-4 md:mb-6 shadow-2xl border border-cyan-500/30 relative">
           <OptimizedImage
             src="/Renoscout logo.png"
             alt="RenoScout"
-            className="w-16 h-16 object-contain"
+            className="w-11 h-11 md:w-16 md:h-16 object-contain"
           />
           <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-purple-500/20 border border-purple-400/40 text-purple-300 text-xs font-semibold rounded-full">
             Wkrótce
@@ -108,28 +108,28 @@ export default function RenoScoutPage() {
         </div>
 
         {/* Title */}
-        <h1 className="hero-item text-5xl md:text-6xl font-bold mb-4 gradient-text">RenoScout</h1>
+        <h1 className="hero-item text-4xl md:text-6xl font-bold mb-3 md:mb-4 gradient-text">RenoScout</h1>
 
         {/* Subtitle */}
-        <p className="hero-item text-xl md:text-2xl text-gray-300 font-medium mb-6 max-w-xl">
+        <p className="hero-item text-lg md:text-2xl text-gray-300 font-medium mb-3 md:mb-6 max-w-xl">
           AI-powered platforma inwestycji w nieruchomości
         </p>
 
         {/* Tags */}
-        <div className="hero-item flex gap-2 justify-center mb-8">
+        <div className="hero-item flex gap-2 justify-center mb-4 md:mb-8">
           <Badge className="px-3 py-1 bg-cyan-500/20 text-cyan-400 border-cyan-500/30">Web App</Badge>
           <Badge className="px-3 py-1 bg-purple-500/20 text-purple-400 border-purple-500/30">AI</Badge>
           <Badge className="px-3 py-1 bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Beta wkrótce</Badge>
         </div>
 
         {/* Description */}
-        <p className="hero-item text-gray-400 text-base md:text-lg max-w-2xl leading-relaxed mb-10">
+        <p className="hero-item text-gray-400 text-sm md:text-lg max-w-2xl leading-relaxed mb-5 md:mb-10">
           RenoScout automatycznie wyszukuje, analizuje i ocenia okazje inwestycyjne na polskim rynku nieruchomości.
           Scoring AI, analiza trendów i automatyczne raporty — wszystko w jednym miejscu.
         </p>
 
         {/* Progress */}
-        <div className="hero-item w-full max-w-sm mb-10">
+        <div className="hero-item w-full max-w-sm mb-5 md:mb-10">
           <ProgressIndicator
             progress={60}
             label="Postęp rozwoju"
@@ -152,28 +152,28 @@ export default function RenoScoutPage() {
       </section>
 
       {/* ── FEATURES ──────────────────────────────────────────────────── */}
-      <section ref={featuresRef} className="py-20 px-4 relative">
+      <section ref={featuresRef} className="py-10 md:py-20 px-4 relative">
         <div className="container mx-auto max-w-5xl">
 
-          <div className="text-center mb-12">
+          <div className="text-center mb-6 md:mb-12">
             <p className="text-xs font-bold tracking-[3px] uppercase text-cyan-400 mb-3">Możliwości</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white">
               Co potrafi RenoScout?
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6">
             {features.map((f, i) => (
               <div
                 key={i}
-                className="feature-card group relative p-6 rounded-2xl border border-white/8 bg-white/3 hover:border-cyan-500/40 hover:bg-cyan-500/5 transition-all duration-300"
+                className="feature-card group relative p-3 md:p-6 rounded-2xl border border-white/8 bg-white/3 hover:border-cyan-500/40 hover:bg-cyan-500/5 transition-all duration-300"
               >
                 {/* Icon */}
-                <div className="w-12 h-12 rounded-xl bg-[#0d2535] border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4 group-hover:border-cyan-400/60 transition-colors">
+                <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-[#0d2535] border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-2 md:mb-4 group-hover:border-cyan-400/60 transition-colors">
                   {f.icon}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{f.description}</p>
+                <h3 className="text-sm md:text-lg font-bold text-white mb-1 md:mb-2">{f.title}</h3>
+                <p className="hidden md:block text-gray-400 text-sm leading-relaxed">{f.description}</p>
 
                 {/* Hover accent line */}
                 <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -184,21 +184,21 @@ export default function RenoScoutPage() {
       </section>
 
       {/* ── FOR WHO ───────────────────────────────────────────────────── */}
-      <section className="py-16 px-4">
+      <section className="py-8 md:py-16 px-4">
         <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-10">
+          <div className="text-center mb-5 md:mb-10">
             <p className="text-xs font-bold tracking-[3px] uppercase text-cyan-400 mb-3">Dla kogo</p>
             <h2 className="text-3xl font-bold text-white">Idealne narzędzie dla</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3 md:gap-4">
             {audiences.map((a, i) => (
               <div
                 key={i}
-                className="p-6 rounded-2xl bg-[#0d1526] border border-white/8 hover:border-cyan-500/30 transition-colors text-center"
+                className="p-3 md:p-6 rounded-2xl bg-[#0d1526] border border-white/8 hover:border-cyan-500/30 transition-colors text-center"
               >
-                <p className="text-base font-bold text-cyan-400 mb-1">{a.label}</p>
-                <p className="text-sm text-gray-400">{a.desc}</p>
+                <p className="text-sm md:text-base font-bold text-cyan-400 mb-1">{a.label}</p>
+                <p className="text-xs md:text-sm text-gray-400">{a.desc}</p>
               </div>
             ))}
           </div>
@@ -206,9 +206,9 @@ export default function RenoScoutPage() {
       </section>
 
       {/* ── COMING SOON BANNER ────────────────────────────────────────── */}
-      <section className="py-20 px-4">
+      <section className="py-10 md:py-20 px-4">
         <div className="container mx-auto max-w-2xl">
-          <div className="relative rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-[#0d1f3c] to-[#0a1628] p-10 text-center overflow-hidden">
+          <div className="relative rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-[#0d1f3c] to-[#0a1628] p-6 md:p-10 text-center overflow-hidden">
 
             {/* Background glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 pointer-events-none" />
@@ -222,7 +222,7 @@ export default function RenoScoutPage() {
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                 Wkrótce dostępny
               </h2>
-              <p className="text-gray-400 text-base mb-8 max-w-md mx-auto">
+              <p className="text-gray-400 text-base mb-5 md:mb-8 max-w-md mx-auto">
                 RenoScout jest aktualnie w fazie intensywnego rozwoju. Wróć wkrótce lub zapisz się na newsletter CalcReno, aby być pierwszym w RenoHub.
               </p>
 
