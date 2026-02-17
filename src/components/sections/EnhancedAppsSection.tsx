@@ -141,7 +141,8 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
   return (
     <section
       ref={sectionRef}
-      className={`py-20 px-4 relative ${className || ''}`}
+      id="apps"
+      className={`py-10 md:py-20 px-4 relative ${className || ''}`}
       aria-labelledby="apps-heading"
     >
       <div className="container mx-auto">
