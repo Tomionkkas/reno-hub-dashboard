@@ -51,3 +51,22 @@ Thumbs.db
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# AI agent / tool files (local only)
+.agent/
+GEMINI.md
+CLAUDE.md
+
+# Design system (local reference only)
+design-system/
+
+# Developer docs and plans (not needed for deployment)
+docs/
+
+# Supabase CLI temp files
+supabase/.temp/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
