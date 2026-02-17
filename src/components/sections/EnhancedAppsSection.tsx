@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NewsletterModal } from '@/components/ui/newsletter-modal';
 import { Link } from 'react-router-dom';
+import { AppShowcaseStrip } from './AppShowcaseStrip';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { GSAPCard, GSAPCardContent, GSAPCardDescription, GSAPCardHeader, GSAPCardTitle } from '@/components/animations/GSAPCard';
@@ -153,8 +154,8 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
         >
           Nasze Aplikacje
         </h2>
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {apps.map((app) => {
+        {(() => {
+          const renderAppCard = (app: typeof apps[0]) => {
             const cardContent = (
               <RippleEffect>
                 <GSAPCard
@@ -206,7 +207,6 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
                       ))}
                     </div>
 
-                    {/* Enhanced Progress indicator - only show for RenoScout */}
                     {app.progress && (
                       <div className="mt-4">
                         <ProgressIndicator
@@ -218,7 +218,6 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
                       </div>
                     )}
 
-                    {/* CTA strip */}
                     {app.cta && (
                       <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
                         <span className="text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
@@ -249,30 +248,19 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
                   </div>
                 );
               }
-              return (
-                <div key={app.id} id={`app-${app.id}`}>
-                  {cardContent}
-                </div>
-              );
+              return <div key={app.id} id={`app-${app.id}`}>{cardContent}</div>;
             }
 
             const isExternal = isExternalLink(app.link);
-
             if (isExternal) {
               return (
                 <div key={app.id} id={`app-${app.id}`}>
-                  <a
-                    href={app.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="contents"
-                  >
+                  <a href={app.link} target="_blank" rel="noopener noreferrer" className="contents">
                     {React.cloneElement(cardContent, { className: cardContent.props.className + ' cursor-pointer' })}
                   </a>
                 </div>
               );
             }
-
             return (
               <div key={app.id} id={`app-${app.id}`}>
                 <Link to={app.link} className="contents">
@@ -280,8 +268,30 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
                 </Link>
               </div>
             );
-          })}
-        </div>
+          };
+
+          return (
+            <>
+              {/* Mobile: stacked with showcase strip between CalcReno and RenoTimeline */}
+              <div className="md:hidden flex flex-col gap-8">
+                {renderAppCard(apps[0])}
+                <AppShowcaseStrip />
+                {renderAppCard(apps[1])}
+                {renderAppCard(apps[2])}
+              </div>
+
+              {/* Desktop: 3-col grid + showcase strip below */}
+              <div className="hidden md:block">
+                <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                  {apps.map(app => renderAppCard(app))}
+                </div>
+                <div className="max-w-5xl mx-auto mt-10">
+                  <AppShowcaseStrip />
+                </div>
+              </div>
+            </>
+          );
+        })()}
 
         <NewsletterModal
           open={isNewsletterOpen}
