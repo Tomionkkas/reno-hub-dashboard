@@ -34,7 +34,8 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
       tags: ['Mobile', 'iOS/Android'],
       link: null,
       delay: 0,
-      status: 'In beta soon'
+      status: 'In beta soon',
+      cta: 'Dołącz do listy oczekujących'
     },
     {
       id: 'renotimeline',
@@ -45,7 +46,8 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
       tags: ['Web App', 'Browser'],
       link: 'https://www.renotimeline.com',
       delay: 200,
-      status: 'Available'
+      status: 'Available',
+      cta: 'Otwórz aplikację'
     },
     {
       id: 'renoscout',
@@ -57,7 +59,8 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
       link: '/renoscout',
       delay: 400,
       progress: 60,
-      status: 'Coming Soon'
+      status: 'Coming Soon',
+      cta: 'Dowiedz się więcej'
     }
   ];
 
@@ -154,7 +157,7 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
             const cardContent = (
               <RippleEffect>
                 <GSAPCard
-                  className="app-card hover:border-cyan-500/60 transition-colors hover:shadow-2xl hover:shadow-cyan-500/30"
+                  className="app-card group hover:border-cyan-500/60 transition-colors hover:shadow-2xl hover:shadow-cyan-500/30"
                   delay={app.delay}
                   hover="lift"
                   trigger="scroll"
@@ -211,6 +214,16 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
                           showPercentage={true}
                           animated={true}
                         />
+                      </div>
+                    )}
+
+                    {/* CTA strip */}
+                    {app.cta && (
+                      <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <span className="text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                          {app.cta}
+                        </span>
+                        <span className="text-cyan-400 text-sm transition-transform duration-200 group-hover:translate-x-1">→</span>
                       </div>
                     )}
                   </GSAPCardContent>
