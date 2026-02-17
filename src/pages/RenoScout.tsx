@@ -14,7 +14,7 @@ const features = [
   {
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
       </svg>
     ),
     title: 'Automatyczne wyszukiwanie',
@@ -23,7 +23,7 @@ const features = [
   {
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
       </svg>
     ),
     title: 'Analiza rynku',
@@ -32,7 +32,7 @@ const features = [
   {
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
       </svg>
     ),
     title: 'Scoring inwestycji',
@@ -41,7 +41,7 @@ const features = [
   {
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
       </svg>
     ),
     title: 'Raporty na żądanie',
@@ -61,17 +61,16 @@ export default function RenoScoutPage() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
+      // Animate from slightly offset — elements are already visible via CSS
+      gsap.from(
         heroRef.current?.querySelectorAll('.hero-item'),
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out' }
+        { y: 20, duration: 0.6, stagger: 0.1, ease: 'power3.out' }
       );
 
-      gsap.fromTo(
+      gsap.from(
         featuresRef.current?.querySelectorAll('.feature-card'),
-        { y: 60, opacity: 0 },
         {
-          y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power3.out',
+          y: 30, duration: 0.5, stagger: 0.1, ease: 'power3.out',
           scrollTrigger: { trigger: featuresRef.current, start: 'top bottom-=100' }
         }
       );
@@ -89,7 +88,7 @@ export default function RenoScoutPage() {
       />
 
       {/* ── HERO ──────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative pt-14 pb-10 md:pt-24 md:pb-20 px-4 flex flex-col items-center text-center overflow-hidden">
+      <section ref={heroRef} className="relative pt-14 pb-10 md:pt-24 md:pb-20 px-4 flex flex-col items-center text-center overflow-hidden min-h-[60vh]">
 
         {/* Glow orbs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />

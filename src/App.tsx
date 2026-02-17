@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,15 +18,17 @@ import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { LazyWrapper } from "@/components/ui/lazy-wrapper";
 import { SEOHead } from "@/components/ui/seo-head";
 import { Analytics } from "@vercel/analytics/react";
-import Index from "./pages/Index";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import AdminPanel from "./pages/AdminPanel";
-import NotFound from "./pages/NotFound";
-import RenoScoutPage from './pages/RenoScout';
-import PrivacyPolicy from './pages/PrivacyPolicy';
 import { GoogleAdsTracker } from "./components/GoogleAdsTracker";
+
+// Lazy-loaded pages — each loads as a separate chunk on navigation
+const Index = React.lazy(() => import("./pages/Index"));
+const Login = React.lazy(() => import("./pages/Login"));
+const Register = React.lazy(() => import("./pages/Register"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const AdminPanel = React.lazy(() => import("./pages/AdminPanel"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
+const RenoScoutPage = React.lazy(() => import('./pages/RenoScout'));
+const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({

@@ -21,6 +21,15 @@ import { PremiumShadow, AnimatedBackground, GlowingText, FloatingElements } from
 const Index = () => {
   usePerformanceMonitor('Index');
   const { feedbacks, removeFeedback, success, error, warning, info } = useFeedback();
+  const [showEffects, setShowEffects] = React.useState(false);
+
+  // Defer heavy visual effects until after initial paint
+  React.useEffect(() => {
+    const timer = requestAnimationFrame(() => {
+      setTimeout(() => setShowEffects(true), 100);
+    });
+    return () => cancelAnimationFrame(timer);
+  }, []);
 
   // Demo feedback on component mount
   React.useEffect(() => {
@@ -41,12 +50,16 @@ const Index = () => {
           speed={30}
           className="min-h-screen relative"
         >
-          {/* Enhanced Background Effects */}
-          <ParticleSystem count={50} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-          <FloatingOrbs count={12} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-          <FloatingElements count={20} elements={['star', 'circle', 'triangle']}>
-            <div />
-          </FloatingElements>
+          {/* Deferred Background Effects — load after initial paint for better LCP */}
+          {showEffects && (
+            <>
+              <ParticleSystem count={25} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
+              <FloatingOrbs count={6} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
+              <FloatingElements count={10} elements={['star', 'circle', 'triangle']}>
+                <div />
+              </FloatingElements>
+            </>
+          )}
           <SEOHead
             title="RenoHub - Platforma aplikacji remontowych"
             description="Jedna platforma – wszystkie Twoje aplikacje remontowe. CalcReno do obliczeń materiałów i RenoTimeline do zarządzania projektami."
