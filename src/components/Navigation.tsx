@@ -19,7 +19,7 @@ const Navigation = () => {
         <Link to="/" className="text-2xl font-bold gradient-text hover-lift">
           RenoHub
         </Link>
-        
+
         <div className="flex items-center gap-4">
           {user ? (
             <>

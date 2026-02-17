@@ -21,7 +21,7 @@ gsap.registerPlugin(ScrollTrigger);
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
@@ -96,10 +96,10 @@ const Dashboard = () => {
   // Update userTier type to include 'expert'
   const userTier: 'free' | 'pro' | 'expert' = user.tier || 'free';
   const projectLimit = userTier === 'free' ? 3 : null;
-  
+
   // Calculate current projects from actual app data
   const currentProjects = allApps.reduce((sum, app) => sum + app.projectCount, 0);
-  
+
   // Calculate active subscriptions count
   const activeSubscriptions = allApps.filter(app => app.status === 'active').length;
 
@@ -131,9 +131,9 @@ const Dashboard = () => {
   const tierInfo = getTierInfo();
 
   return (
-    <GradientBackground 
-      colors={['from-black', 'via-slate-900', 'to-black']} 
-      direction="to-br" 
+    <GradientBackground
+      colors={['from-black', 'via-slate-900', 'to-black']}
+      direction="to-br"
       animated={true}
       speed={30}
       className="min-h-screen relative"
@@ -147,8 +147,8 @@ const Dashboard = () => {
       ), [])}
 
       <Navigation />
-      
-      <section 
+
+      <section
         ref={sectionRef}
         className="pt-24 px-4 relative"
         aria-labelledby="dashboard-heading"
@@ -157,9 +157,9 @@ const Dashboard = () => {
           <div className="mb-12">
             <div className="flex items-center justify-between">
               <div>
-                <h1 
+                <h1
                   ref={titleRef}
-                  id="dashboard-heading" 
+                  id="dashboard-heading"
                   className="text-4xl md:text-5xl font-bold text-white mb-3"
                 >
                   Witaj, {user.email}!
@@ -196,15 +196,15 @@ const Dashboard = () => {
 
           {/* Free Tier Upgrade Prompt */}
           {userTier === 'free' && (
-                          <RippleEffect>
-                <GSAPCard className="glass-card border-yellow-500/50 bg-yellow-500/10 mb-8 hover:border-yellow-400/60 transition-all duration-200">
+            <RippleEffect>
+              <GSAPCard className="glass-card border-yellow-500/50 bg-yellow-500/10 mb-8 hover:border-yellow-400/60 transition-all duration-200">
                 <GSAPCardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <AlertTriangle className="w-8 h-8 text-yellow-500" />
                     <div className="flex-1">
                       <h3 className="text-white font-semibold mb-1">Zwiększ swoje możliwości!</h3>
                       <p className="text-gray-300 text-sm mb-3">
-                        {projectLimit 
+                        {projectLimit
                           ? `Używasz ${currentProjects} z ${projectLimit} dostępnych projektów. Przejdź na plan Pro lub Expert, aby uzyskać więcej możliwości.`
                           : `Masz ${currentProjects} projektów.`}
                       </p>
@@ -309,89 +309,89 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {apps.map((app) => (
-                  <RippleEffect key={app.id}>
-                    <GSAPCard className="app-card glass-card border-white/10 hover:border-reno-purple/30 hover:shadow-lg transition-all duration-200">
-                      <GSAPCardHeader>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-700 rounded-xl flex items-center justify-center shadow-xl border border-cyan-500/40">
-                              <OptimizedImage 
-                                src={app.icon} 
-                                alt={`${app.name} Logo`} 
-                                className={`object-contain ${app.name === 'CalcReno' ? 'w-14 h-14 -mt-0.5' : 'w-12 h-12'}`}
-                              />
+                    <RippleEffect key={app.id}>
+                      <GSAPCard className="app-card glass-card border-white/10 hover:border-reno-purple/30 hover:shadow-lg transition-all duration-200">
+                        <GSAPCardHeader>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="w-16 h-16 bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-700 rounded-xl flex items-center justify-center shadow-xl border border-cyan-500/40">
+                                <OptimizedImage
+                                  src={app.icon}
+                                  alt={`${app.name} Logo`}
+                                  className={`object-contain ${app.name === 'CalcReno' ? 'w-14 h-14 -mt-0.5' : 'w-12 h-12'}`}
+                                />
+                              </div>
+                              <div>
+                                <GSAPCardTitle className="text-white">{app.name}</GSAPCardTitle>
+                                <GSAPCardDescription className="text-gray-300">{app.description}</GSAPCardDescription>
+                                {app.projectCount > 0 && (
+                                  <p className="text-sm text-gray-400 mt-1">
+                                    {app.projectCount} {app.projectCount === 1 ? 'projekt' : app.projectCount < 5 ? 'projekty' : 'projektów'}
+                                  </p>
+                                )}
+                                {app.status === 'inactive' && (
+                                  <p className="text-sm text-reno-blue font-medium">{app.price}</p>
+                                )}
+                                {app.status === 'coming_soon' && (
+                                  <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-200/20 text-blue-500 text-xs font-semibold animate-glow-pulse">Wkrótce</span>
+                                )}
+                              </div>
                             </div>
-                            <div>
-                              <GSAPCardTitle className="text-white">{app.name}</GSAPCardTitle>
-                              <GSAPCardDescription className="text-gray-300">{app.description}</GSAPCardDescription>
-                              {app.projectCount > 0 && (
-                                <p className="text-sm text-gray-400 mt-1">
-                                  {app.projectCount} {app.projectCount === 1 ? 'projekt' : app.projectCount < 5 ? 'projekty' : 'projektów'}
-                                </p>
-                              )}
-                              {app.status === 'inactive' && (
-                                <p className="text-sm text-reno-blue font-medium">{app.price}</p>
-                              )}
-                              {app.status === 'coming_soon' && (
-                                <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-200/20 text-blue-500 text-xs font-semibold animate-glow-pulse">Wkrótce</span>
-                              )}
-                            </div>
-                          </div>
-                          <Badge 
-                            variant={app.status === 'active' ? 'default' : app.status === 'limited' ? 'secondary' : 'secondary'}
-                            className={
-                              app.status === 'active' 
-                                ? 'bg-reno-mint text-black' 
+                            <Badge
+                              variant={app.status === 'active' ? 'default' : app.status === 'limited' ? 'secondary' : 'secondary'}
+                              className={
+                                app.status === 'active'
+                                  ? 'bg-reno-mint text-black'
+                                  : app.status === 'limited'
+                                    ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                                    : app.status === 'coming_soon'
+                                      ? 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+                                      : 'bg-gray-600 text-white'
+                              }
+                            >
+                              {app.status === 'active'
+                                ? 'Aktywna'
                                 : app.status === 'limited'
-                                ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-                                : app.status === 'coming_soon'
-                                ? 'bg-purple-500/20 text-purple-400 border-purple-500/30'
-                                : 'bg-gray-600 text-white'
-                            }
-                          >
-                            {app.status === 'active' 
-                              ? 'Aktywna' 
-                              : app.status === 'limited'
-                              ? 'Ograniczona'
-                              : app.status === 'coming_soon' 
-                              ? 'Wkrótce' 
-                              : 'Nieaktywna'}
-                          </Badge>
-                        </div>
-                      </GSAPCardHeader>
-                      <GSAPCardContent>
-                        {app.status === 'active' ? (
-                          <div className="flex gap-2">
-                            <EnhancedButton size="sm" className="gradient-bg hover:opacity-90">
-                              <Download className="w-4 h-4 mr-2" />
-                              Pobierz
-                            </EnhancedButton>
-                            <EnhancedButton size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                              Otwórz
-                            </EnhancedButton>
+                                  ? 'Ograniczona'
+                                  : app.status === 'coming_soon'
+                                    ? 'Wkrótce'
+                                    : 'Nieaktywna'}
+                            </Badge>
                           </div>
-                        ) : app.status === 'limited' ? (
-                          <div className="flex gap-2">
-                            <EnhancedButton size="sm" variant="outline" className="border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10">
-                              <Download className="w-4 h-4 mr-2" />
-                              Eksportuj tylko
+                        </GSAPCardHeader>
+                        <GSAPCardContent>
+                          {app.status === 'active' ? (
+                            <div className="flex gap-2">
+                              <EnhancedButton size="sm" className="gradient-bg hover:opacity-90">
+                                <Download className="w-4 h-4 mr-2" />
+                                Pobierz
+                              </EnhancedButton>
+                              <EnhancedButton size="sm" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                                Otwórz
+                              </EnhancedButton>
+                            </div>
+                          ) : app.status === 'limited' ? (
+                            <div className="flex gap-2">
+                              <EnhancedButton size="sm" variant="outline" className="border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10">
+                                <Download className="w-4 h-4 mr-2" />
+                                Eksportuj tylko
+                              </EnhancedButton>
+                              <EnhancedButton size="sm" className="gradient-bg hover:opacity-90">
+                                Wykup subskrypcję
+                              </EnhancedButton>
+                            </div>
+                          ) : app.status === 'coming_soon' ? (
+                            <EnhancedButton size="sm" variant="outline" className="border-blue-400/40 text-blue-400 cursor-not-allowed opacity-70">
+                              Wkrótce dostępne
                             </EnhancedButton>
+                          ) : (
                             <EnhancedButton size="sm" className="gradient-bg hover:opacity-90">
-                              Wykup subskrypcję
+                              Wykup subskrypcję - {app.price}
                             </EnhancedButton>
-                          </div>
-                        ) : app.status === 'coming_soon' ? (
-                          <EnhancedButton size="sm" variant="outline" className="border-blue-400/40 text-blue-400 cursor-not-allowed opacity-70">
-                            Wkrótce dostępne
-                          </EnhancedButton>
-                        ) : (
-                          <EnhancedButton size="sm" className="gradient-bg hover:opacity-90">
-                            Wykup subskrypcję - {app.price}
-                          </EnhancedButton>
-                        )}
-                      </GSAPCardContent>
-                    </GSAPCard>
-                  </RippleEffect>
+                          )}
+                        </GSAPCardContent>
+                      </GSAPCard>
+                    </RippleEffect>
                   ))}
                 </div>
               )}
@@ -408,11 +408,11 @@ const Dashboard = () => {
                       {userTier === 'expert' && <Crown className="w-5 h-5 text-yellow-500" />}
                     </GSAPCardTitle>
                     <GSAPCardDescription className="text-gray-300">
-                      {userTier === 'free' 
-                        ? 'Podstawowy dostęp z ograniczeniami' 
-                        : userTier === 'pro' 
-                        ? 'Pełny dostęp do wybranej aplikacji'
-                        : 'Dostęp do wszystkich aplikacji i funkcji premium'
+                      {userTier === 'free'
+                        ? 'Podstawowy dostęp z ograniczeniami'
+                        : userTier === 'pro'
+                          ? 'Pełny dostęp do wybranej aplikacji'
+                          : 'Dostęp do wszystkich aplikacji i funkcji premium'
                       }
                     </GSAPCardDescription>
                   </GSAPCardHeader>
@@ -428,7 +428,7 @@ const Dashboard = () => {
                         ))}
                       </ul>
                     </div>
-                    
+
                     {userTier !== 'free' && (
                       <>
                         <div className="flex justify-between items-center py-2 border-b border-white/10">
@@ -447,7 +447,7 @@ const Dashboard = () => {
                         </div>
                       </>
                     )}
-                    
+
                     <div className="pt-4 space-y-2">
                       {userTier === 'free' ? (
                         <div className="space-y-2">

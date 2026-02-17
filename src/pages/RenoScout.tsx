@@ -10,7 +10,7 @@ RenoScout to nowoczesna platforma AI, która rewolucjonizuje proces wyszukiwania
 export default function RenoScoutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative flex flex-col">
-      <SEOHead 
+      <SEOHead
         title="RenoScout – AI dla inwestorów nieruchomości | RenoHub"
         description="RenoScout – platforma AI do wyszukiwania i analizy okazji inwestycyjnych na rynku nieruchomości. Automatyzacja, scoring, dane rynkowe. Już wkrótce!"
         keywords="RenoScout, inwestycje, nieruchomości, AI, analiza rynku, scoring, remonty"
@@ -31,9 +31,9 @@ export default function RenoScoutPage() {
         <AnimatedCard className="glass-card border-white/10 hover:border-blue-400/60 transition-colors hover:shadow-2xl hover:shadow-blue-400/20 max-w-xl w-full text-center animate-scale-in">
           <div className="flex flex-col items-center gap-4 p-8">
             <div className="w-24 h-24 bg-gradient-to-br from-blue-200 via-blue-100 to-blue-50 rounded-2xl flex items-center justify-center mb-2 hover-lift animate-glow-pulse shadow-xl border border-blue-300/60">
-              <OptimizedImage 
-                src="/Renoscout logo.png" 
-                alt="RenoScout application icon" 
+              <OptimizedImage
+                src="/Renoscout logo.png"
+                alt="RenoScout application icon"
                 className="w-16 h-16 object-contain"
               />
             </div>
@@ -42,7 +42,7 @@ export default function RenoScoutPage() {
               <span className="px-3 py-1 bg-reno-mint/20 text-reno-mint rounded-full text-sm hover-lift transition-all duration-300 hover:bg-reno-mint/30">Web App</span>
               <span className="px-3 py-1 bg-purple-200/20 text-purple-500 rounded-full text-sm hover-lift transition-all duration-300 hover:bg-purple-200/30">AI</span>
             </div>
-            <p className="text-gray-300 text-base md:text-lg mb-8 animate-fade-in-up" style={{animationDelay: '200ms'}}>{renoscoutDescription}</p>
+            <p className="text-gray-300 text-base md:text-lg mb-8 animate-fade-in-up" style={{ animationDelay: '200ms' }}>{renoscoutDescription}</p>
             <div className="flex flex-col items-center justify-center w-full">
               <div
                 className="text-2xl md:text-3xl font-bold text-white mb-2"

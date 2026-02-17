@@ -36,7 +36,7 @@ const enhancedButtonVariants = cva(
 
 export interface EnhancedButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof enhancedButtonVariants> {
+  VariantProps<typeof enhancedButtonVariants> {
   asChild?: boolean
   loading?: boolean
   ripple?: boolean
@@ -45,7 +45,7 @@ export interface EnhancedButtonProps
 const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
   ({ className, variant, size, asChild = false, loading = false, ripple = false, children, onClick, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
-    
+
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (ripple && !disabled && !loading) {
         const button = e.currentTarget
@@ -53,7 +53,7 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
         const size = Math.max(rect.width, rect.height)
         const x = e.clientX - rect.left - size / 2
         const y = e.clientY - rect.top - size / 2
-        
+
         const rippleElement = document.createElement('span')
         rippleElement.style.cssText = `
           position: absolute;
@@ -67,14 +67,14 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
           left: ${x}px;
           top: ${y}px;
         `
-        
+
         button.appendChild(rippleElement)
-        
+
         setTimeout(() => {
           rippleElement.remove()
         }, 600)
       }
-      
+
       if (onClick && !disabled && !loading) {
         onClick(e)
       }

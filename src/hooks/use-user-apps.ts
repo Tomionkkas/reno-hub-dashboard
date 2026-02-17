@@ -23,27 +23,27 @@ export const useUserApps = () => {
 
   // Create queries for each app that has a table and schema
   const appsWithTables = APP_CONFIGS.filter(app => app.tableName && app.userIdColumn && app.schema);
-  
+
   // Debug logging
   console.log('[useUserApps] User:', user);
   console.log('[useUserApps] IS_BETA_MODE:', IS_BETA_MODE);
   console.log('[useUserApps] Apps with tables:', appsWithTables.map(a => a.id));
-  
+
   const projectQueries = useQueries({
     queries: user
       ? appsWithTables.map(app => ({
-          queryKey: ['projectCount', app.id, user.id],
-          queryFn: () => {
-            console.log(`[useUserApps] Fetching project count for ${app.id} with userId: ${user.id}`);
-            return getProjectCount(app.id, user.id);
-          },
-          enabled: !!user?.id,
-          staleTime: 30000, // 30 seconds
-          gcTime: 300000, // 5 minutes
-        }))
+        queryKey: ['projectCount', app.id, user.id],
+        queryFn: () => {
+          console.log(`[useUserApps] Fetching project count for ${app.id} with userId: ${user.id}`);
+          return getProjectCount(app.id, user.id);
+        },
+        enabled: !!user?.id,
+        staleTime: 30000, // 30 seconds
+        gcTime: 300000, // 5 minutes
+      }))
       : [],
   });
-  
+
   // Debug query results
   projectQueries.forEach((query, index) => {
     if (query.data !== undefined) {
@@ -80,7 +80,7 @@ export const useUserApps = () => {
     // Get project count from query results
     if (user && config.tableName) {
       const queryIndex = appsWithTables.findIndex(a => a.id === config.id);
-      
+
       if (queryIndex >= 0 && queryIndex < projectQueries.length) {
         const query = projectQueries[queryIndex];
         projectCount = query.data ?? 0;
@@ -137,7 +137,7 @@ export const useUserApps = () => {
     console.log(`[useUserApps] App ${app.id}: status=${app.status}, hasProjects=${app.hasProjects}, hasSubscription=${app.hasSubscription}, shouldShow=${shouldShow}`);
     return shouldShow;
   });
-  
+
   console.log('[useUserApps] Visible apps:', visibleApps.map(a => ({ id: a.id, status: a.status, projectCount: a.projectCount })));
 
   // Determine loading state

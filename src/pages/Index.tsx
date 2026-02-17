@@ -34,9 +34,9 @@ const Index = () => {
   return (
     <GSAPPerformance autoRefresh={true} refreshPriority="high" throttleTime={16}>
       <AccessibilityEnhancer skipToContent={true} announceChanges={true}>
-        <GradientBackground 
-          colors={['from-black', 'via-slate-900', 'to-black']} 
-          direction="to-br" 
+        <GradientBackground
+          colors={['from-black', 'via-slate-900', 'to-black']}
+          direction="to-br"
           animated={true}
           speed={30}
           className="min-h-screen relative"

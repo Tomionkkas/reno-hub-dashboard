@@ -83,7 +83,7 @@ const GSAPCard = React.forwardRef<HTMLDivElement, GSAPCardProps>(
                 ease: "power2.out"
               });
             },
-            none: () => {}
+            none: () => { }
           };
 
           const resetAnimations = {
@@ -109,7 +109,7 @@ const GSAPCard = React.forwardRef<HTMLDivElement, GSAPCardProps>(
                 ease: "power2.out"
               });
             },
-            none: () => {}
+            none: () => { }
           };
 
           card.addEventListener('mouseenter', hoverAnimations[hover]);

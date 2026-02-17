@@ -43,7 +43,7 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
       id: 'pro',
       title: 'Pro',
       description: 'Jedna aplikacja, pełen dostęp',
-      price: '49 zł',
+      price: '29 zł',
       period: '/app/mies',
       discount: 'Roczna płatność: -20%',
       features: [
@@ -64,7 +64,7 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
       id: 'expert',
       title: 'Expert',
       description: 'Dla zespołów i firm',
-      price: '200-220 zł',
+      price: '99-129 zł',
       period: '/mies',
       discount: 'Roczna płatność: -25% | Do 3 użytkowników',
       features: [
@@ -163,24 +163,24 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
   };
 
   return (
-    <section 
+    <section
       ref={sectionRef}
-      className={`py-20 px-4 ${className || ''}`} 
+      className={`py-12 md:py-20 px-4 ${className || ''}`}
       aria-labelledby="pricing-heading"
     >
       <div className="container mx-auto">
-        <h2 
+        <h2
           ref={titleRef}
-          id="pricing-heading" 
-          className="text-3xl md:text-4xl font-bold text-center mb-4 gradient-text"
+          id="pricing-heading"
+          className="text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12 gradient-text"
         >
           Plany Subskrypcyjne
         </h2>
-        
+
         {/* Beta Status Banner */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-reno-purple/20 to-reno-blue/20 border border-reno-purple/30 rounded-xl px-6 py-3 mb-4">
-            <div className="w-8 h-8 bg-reno-purple/30 rounded-full flex items-center justify-center">
+        <div className="text-center mb-8 md:mb-12">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-reno-purple/20 to-reno-blue/20 border border-reno-purple/30 rounded-xl px-4 py-3 md:px-6 md:py-4 mb-4 max-w-full">
+            <div className="w-8 h-8 bg-reno-purple/30 rounded-full flex items-center justify-center flex-shrink-0">
               <Info className="w-4 h-4 text-reno-purple" />
             </div>
             <div className="text-left">
@@ -192,49 +192,49 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
               </p>
             </div>
           </div>
-          
-          <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto">
-            Poniższe ceny będą obowiązywać po zakończeniu fazy beta. 
-            <span className="text-reno-mint font-medium"> Obecnie wszystkie aplikacje są dostępne za darmo!</span>
+
+          <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto px-2">
+            Poniższe ceny będą obowiązywać po zakończeniu fazy beta.
+            <span className="text-reno-mint font-medium block md:inline mt-1 md:mt-0"> Obecnie wszystkie aplikacje są dostępne za darmo!</span>
           </p>
         </div>
-        
-        <div 
+
+        <div
           ref={plansRef}
-          className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto"
         >
           {plans.map((plan) => (
-            <GSAPCard 
+            <GSAPCard
               key={plan.id}
-              className={`pricing-card ${getColorClasses(plan.color)} ${plan.popular ? 'relative scale-105 hover:scale-110 transition-transform duration-300' : ''}`} 
+              className={`pricing-card ${getColorClasses(plan.color)} ${plan.popular ? 'relative lg:scale-105 lg:hover:scale-110 transition-transform duration-300' : ''}`}
               delay={plan.delay}
               hover="lift"
               trigger="scroll"
             >
               {plan.popular && (
-                <div className="popular-badge absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 gradient-bg rounded-full text-white text-sm">
-                  <Zap className="w-3 h-3 inline mr-1" />
-                  Najpopularniejszy
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="px-4 py-1 gradient-bg rounded-full text-white text-sm shadow-lg flex items-center gap-1 whitespace-nowrap">
+                    <Zap className="w-3 h-3" />
+                    Najpopularniejszy
+                  </div>
                 </div>
               )}
-              
+
               {/* Future Pricing Badge */}
               <div className="absolute -top-2 -right-2">
                 <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 text-xs">
                   Po fazie beta
                 </Badge>
               </div>
-              
+
               <GSAPCardHeader>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    plan.color === 'purple' ? 'bg-reno-purple/20' : 
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${plan.color === 'purple' ? 'bg-reno-purple/20' :
                     plan.color === 'gold' ? 'bg-yellow-500/20' : 'bg-blue-500/20'
-                  }`}>
-                    <plan.icon className={`w-6 h-6 ${
-                      plan.color === 'purple' ? 'text-reno-purple' : 
+                    }`}>
+                    <plan.icon className={`w-6 h-6 ${plan.color === 'purple' ? 'text-reno-purple' :
                       plan.color === 'gold' ? 'text-yellow-500' : 'text-blue-500'
-                    }`} />
+                      }`} />
                   </div>
                   <div>
                     <GSAPCardTitle className="text-white text-xl md:text-2xl">
@@ -245,7 +245,7 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
                     </GSAPCardDescription>
                   </div>
                 </div>
-                
+
                 <div className="text-2xl md:text-3xl font-bold text-white">
                   {plan.price}<span className="text-base md:text-lg text-gray-300">{plan.period}</span>
                 </div>
@@ -253,7 +253,7 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
                   <p className="text-sm text-gray-400">{plan.discount}</p>
                 )}
               </GSAPCardHeader>
-              
+
               <GSAPCardContent>
                 <ul className="space-y-3 text-gray-300 mb-6 text-sm md:text-base">
                   {plan.features.map((feature, index) => (
@@ -269,12 +269,12 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
                     </li>
                   ))}
                 </ul>
-                
+
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <EnhancedButton 
-                        className="w-full text-white opacity-60 cursor-not-allowed" 
+                      <EnhancedButton
+                        className="w-full text-white opacity-60 cursor-not-allowed"
                         variant={plan.buttonVariant}
                         disabled
                       >
@@ -290,7 +290,7 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
             </GSAPCard>
           ))}
         </div>
-        
+
         {/* Enhanced Special Offer Banner */}
         <div className="mt-12 text-center">
           <div className="inline-block bg-gradient-to-r from-reno-purple to-reno-blue rounded-xl p-6 hover-lift relative overflow-hidden group">
