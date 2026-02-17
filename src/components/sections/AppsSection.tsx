@@ -13,7 +13,7 @@ const AppsSection: React.FC<AppsSectionProps> = ({ className }) => {
       id: 'calcreno',
       title: 'CalcReno',
       description: 'Narzędzie do obliczeń materiałów budowlanych. Zaplanuj projekt i oblicz dokładne ilości potrzebnych materiałów.',
-      image: '/calcreno-logo-full-transparent.png',
+      image: '/calcreno-logo-full-transparent.webp',
       imageAlt: 'CalcReno application icon',
       tags: ['Mobile', 'iOS/Android'],
       link: null,
@@ -23,7 +23,7 @@ const AppsSection: React.FC<AppsSectionProps> = ({ className }) => {
       id: 'renotimeline',
       title: 'RenoTimeline',
       description: 'Narzędzie do zarządzania projektami remontowymi. Planuj etapy, śledź postępy i kontroluj koszty.',
-      image: '/renotimeline-logo-transparent.png',
+      image: '/renotimeline-logo-transparent.webp',
       imageAlt: 'RenoTimeline application icon',
       tags: ['Web App', 'Browser'],
       link: null,
@@ -33,7 +33,7 @@ const AppsSection: React.FC<AppsSectionProps> = ({ className }) => {
       id: 'renoscout',
       title: 'RenoScout',
       description: 'Nowoczesna platforma AI do wyszukiwania, analizy i oceny okazji inwestycyjnych na rynku nieruchomości w Polsce. Automatyzuje zbieranie danych, analizę rynku i scoring inwestycji.',
-      image: '/Renoscout logo.png',
+      image: '/renoscout-logo.webp',
       imageAlt: 'RenoScout application icon',
       tags: ['Web App', 'AI'],
       link: '/renoscout',
@@ -50,18 +50,18 @@ const AppsSection: React.FC<AppsSectionProps> = ({ className }) => {
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {apps.map((app) => {
             const cardContent = (
-              <AnimatedCard 
-                className="glass-card border-white/10 hover:border-blue-400/60 transition-colors hover:shadow-2xl hover:shadow-blue-400/20" 
-                delay={app.delay} 
-                hover="glow" 
-                role="article" 
+              <AnimatedCard
+                className="glass-card border-white/10 hover:border-blue-400/60 transition-colors hover:shadow-2xl hover:shadow-blue-400/20"
+                delay={app.delay}
+                hover="glow"
+                role="article"
                 aria-labelledby={`${app.id}-title`}
               >
                 <AnimatedCardHeader>
                   <div className="w-20 h-20 bg-gradient-to-br from-purple-200 via-purple-100 to-purple-50 rounded-xl flex items-center justify-center mb-4 hover-lift animate-glow-pulse shadow-xl border border-purple-300/60">
-                    <OptimizedImage 
-                      src={app.image} 
-                      alt={app.imageAlt} 
+                    <OptimizedImage
+                      src={app.image}
+                      alt={app.imageAlt}
                       className="w-[4.5rem] h-[4.5rem] object-contain -mt-0.5"
                     />
                   </div>
@@ -75,7 +75,7 @@ const AppsSection: React.FC<AppsSectionProps> = ({ className }) => {
                 <AnimatedCardContent>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {app.tags.map((tag, index) => (
-                      <span 
+                      <span
                         key={index}
                         className="px-3 py-1 bg-reno-mint/20 text-reno-mint rounded-full text-sm hover-lift transition-all duration-300 hover:bg-reno-mint/30"
                       >

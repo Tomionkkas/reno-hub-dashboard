@@ -20,8 +20,10 @@ import { SEOHead } from "@/components/ui/seo-head";
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAdsTracker } from "./components/GoogleAdsTracker";
 
-// Lazy-loaded pages — each loads as a separate chunk on navigation
-const Index = React.lazy(() => import("./pages/Index"));
+// Landing page loaded eagerly — it's the critical path, must not waterfall
+import Index from "./pages/Index";
+
+// Secondary pages lazy-loaded — each loads as a separate chunk on navigation
 const Login = React.lazy(() => import("./pages/Login"));
 const Register = React.lazy(() => import("./pages/Register"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));

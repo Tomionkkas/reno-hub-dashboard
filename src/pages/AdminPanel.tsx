@@ -22,7 +22,7 @@ gsap.registerPlugin(ScrollTrigger);
 const AdminPanel = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const metricsRef = useRef<HTMLDivElement>(null);
@@ -97,37 +97,37 @@ const AdminPanel = () => {
   ];
 
   const recentSubscriptions = [
-    { 
-      id: 1, 
-      email: 'jan.kowalski@gmail.com', 
-      date: '2024-01-15', 
+    {
+      id: 1,
+      email: 'jan.kowalski@gmail.com',
+      date: '2024-01-15',
       tier: 'Expert',
       app: 'Wszystkie aplikacje',
       revenue: 200,
       status: 'active'
     },
-    { 
-      id: 2, 
-      email: 'anna.nowak@onet.pl', 
-      date: '2024-01-14', 
+    {
+      id: 2,
+      email: 'anna.nowak@onet.pl',
+      date: '2024-01-14',
       tier: 'Pro',
       app: 'CalcReno',
       revenue: 49,
       status: 'active'
     },
-    { 
-      id: 3, 
-      email: 'piotr.wisnia@wp.pl', 
-      date: '2024-01-13', 
+    {
+      id: 3,
+      email: 'piotr.wisnia@wp.pl',
+      date: '2024-01-13',
       tier: 'Pro',
       app: 'RenoTimeline',
       revenue: 49,
       status: 'active'
     },
-    { 
-      id: 4, 
-      email: 'maria.dabrowska@gmail.com', 
-      date: '2024-01-12', 
+    {
+      id: 4,
+      email: 'maria.dabrowska@gmail.com',
+      date: '2024-01-12',
       tier: 'Expert',
       app: 'Wszystkie aplikacje',
       revenue: 200,
@@ -160,9 +160,9 @@ const AdminPanel = () => {
   };
 
   return (
-    <GradientBackground 
-      colors={['from-black', 'via-slate-900', 'to-black']} 
-      direction="to-br" 
+    <GradientBackground
+      colors={['from-black', 'via-slate-900', 'to-black']}
+      direction="to-br"
       animated={true}
       speed={30}
       className="min-h-screen relative"
@@ -176,17 +176,17 @@ const AdminPanel = () => {
       ), [])}
 
       <Navigation />
-      
-      <section 
+
+      <section
         ref={sectionRef}
         className="pt-24 px-4 relative"
         aria-labelledby="admin-heading"
       >
         <div className="container mx-auto">
           <div className="mb-12">
-            <h1 
+            <h1
               ref={titleRef}
-              id="admin-heading" 
+              id="admin-heading"
               className="text-4xl md:text-5xl font-bold text-white mb-3"
             >
               Panel Administratora
@@ -280,16 +280,16 @@ const AdminPanel = () => {
                           <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                           <XAxis dataKey="month" stroke="#9CA3AF" />
                           <YAxis stroke="#9CA3AF" />
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'rgba(0,0,0,0.8)', 
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'rgba(0,0,0,0.8)',
                               border: '1px solid #374151',
                               borderRadius: '8px'
                             }}
                           />
-                          <Line 
-                            dataKey="revenue" 
-                            stroke="#5A4BFF" 
+                          <Line
+                            dataKey="revenue"
+                            stroke="#5A4BFF"
                             strokeWidth={3}
                             dot={{ fill: '#5A4BFF', strokeWidth: 2, r: 4 }}
                           />
@@ -320,9 +320,9 @@ const AdminPanel = () => {
                               <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'rgba(0,0,0,0.8)', 
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'rgba(0,0,0,0.8)',
                               border: '1px solid #374151',
                               borderRadius: '8px'
                             }}
@@ -333,8 +333,8 @@ const AdminPanel = () => {
                         {subscriptionDistribution.map((plan, index) => (
                           <div key={index} className="text-center">
                             <div className="flex items-center gap-2 justify-center mb-1">
-                              <div 
-                                className="w-3 h-3 rounded-full" 
+                              <div
+                                className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: plan.color }}
                               />
                               <span className="text-gray-300 text-sm font-medium">{plan.name}</span>
@@ -361,7 +361,7 @@ const AdminPanel = () => {
                             {plan.name === 'Expert' && <Crown className="w-5 h-5 text-yellow-500" />}
                             <h3 className="text-white font-semibold text-lg">Plan {plan.name}</h3>
                           </div>
-                          <Badge 
+                          <Badge
                             className={`${plan.name === 'Expert' ? 'bg-reno-purple' : plan.name === 'Pro' ? 'bg-reno-blue' : 'bg-gray-600'} text-white`}
                           >
                             {plan.value}%
@@ -375,9 +375,9 @@ const AdminPanel = () => {
                           <div className="flex justify-between">
                             <span className="text-gray-400">Przychód/miesiąc</span>
                             <span className="text-white font-bold">
-                              {plan.name === 'Free' ? '0 zł' : 
-                               plan.name === 'Pro' ? `${Math.round(plan.users * 49)} zł` : 
-                               `${plan.users * 200} zł`}
+                              {plan.name === 'Free' ? '0 zł' :
+                                plan.name === 'Pro' ? `${Math.round(plan.users * 49)} zł` :
+                                  `${plan.users * 200} zł`}
                             </span>
                           </div>
                         </div>
@@ -439,9 +439,9 @@ const AdminPanel = () => {
                       <GSAPCardHeader>
                         <GSAPCardTitle className="text-white flex items-center gap-4">
                           <div className="w-14 h-14 bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-700 rounded-lg flex items-center justify-center shadow-xl border border-cyan-500/40">
-                            <OptimizedImage 
-                              src={app.name === 'CalcReno' ? '/calcreno-logo-full-transparent.png' : app.name === 'RenoTimeline' ? '/renotimeline-logo-transparent.png' : '/Renoscout logo.png'} 
-                              alt={`${app.name} Logo`} 
+                            <OptimizedImage
+                              src={app.name === 'CalcReno' ? '/calcreno-logo-full-transparent.webp' : app.name === 'RenoTimeline' ? '/renotimeline-logo-transparent.webp' : '/renoscout-logo.webp'}
+                              alt={`${app.name} Logo`}
                               className={`object-contain ${app.name === 'CalcReno' ? 'w-12 h-12 -mt-0.5' : 'w-10 h-10'}`}
                             />
                           </div>
@@ -461,7 +461,7 @@ const AdminPanel = () => {
                           <span className="text-reno-mint font-bold">{app.percentage}%</span>
                         </div>
                         <div className="w-full bg-gray-700 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-gradient-to-r from-reno-blue to-reno-purple h-2 rounded-full transition-all duration-300"
                             style={{ width: `${app.percentage}%` }}
                           />

@@ -71,42 +71,42 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
           ease: "elastic.out(1, 0.3)"
         }
       )
-      .fromTo(
-        subtitleRef.current,
-        {
-          y: 50,
-          opacity: 0
-        },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8
-        },
-        "-=0.6"
-      )
-      .fromTo(
-        buttonsRef.current?.children,
-        {
-          y: 30,
-          opacity: 0,
-          scale: 0.9
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.6,
-          stagger: 0.2,
-          ease: "back.out(1.7)"
-        },
-        "-=0.4"
-      )
-      .fromTo(
-        peekStripRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-        "-=0.3"
-      );
+        .fromTo(
+          subtitleRef.current,
+          {
+            y: 50,
+            opacity: 0
+          },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8
+          },
+          "-=0.6"
+        )
+        .fromTo(
+          buttonsRef.current?.children,
+          {
+            y: 30,
+            opacity: 0,
+            scale: 0.9
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.2,
+            ease: "back.out(1.7)"
+          },
+          "-=0.4"
+        )
+        .fromTo(
+          peekStripRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+          "-=0.3"
+        );
 
       // Parallax effect for background elements
       gsap.to(orbsRef.current?.children, {
@@ -144,7 +144,7 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
     {
       id: 'calcreno',
       name: 'CalcReno',
-      image: '/calcreno-logo-full-transparent.png',
+      image: '/calcreno-logo-full-transparent.webp',
       status: 'Beta soon',
       statusColor: 'text-yellow-400',
       scrollTarget: 'app-calcreno',
@@ -152,7 +152,7 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
     {
       id: 'renotimeline',
       name: 'RenoTimeline',
-      image: '/renotimeline-logo-transparent.png',
+      image: '/renotimeline-logo-transparent.webp',
       status: 'Available',
       statusColor: 'text-blue-400',
       scrollTarget: 'app-renotimeline',
@@ -160,7 +160,7 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
     {
       id: 'renoscout',
       name: 'RenoScout',
-      image: '/Renoscout logo.png',
+      image: '/renoscout-logo.webp',
       status: 'Coming Soon',
       statusColor: 'text-purple-400',
       scrollTarget: 'app-renoscout',
@@ -170,12 +170,12 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
   return (
     <section
       ref={heroRef}
-      className={`pt-20 pb-12 md:pt-32 md:pb-20 px-4 relative overflow-hidden ${className || ''}`} 
+      className={`pt-20 pb-12 md:pt-32 md:pb-20 px-4 relative overflow-hidden ${className || ''}`}
       aria-labelledby="hero-heading"
     >
       {/* Enhanced Floating Background Elements */}
       <FloatingShapes count={8} className="opacity-30" />
-      
+
       {/* Animated gradient orbs with GSAP */}
       <div ref={orbsRef} className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-reno-purple/20 rounded-full blur-xl"></div>
@@ -183,22 +183,22 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
         <div className="absolute bottom-40 left-20 w-20 h-20 bg-reno-mint/20 rounded-full blur-md"></div>
         <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-br from-reno-purple/10 to-reno-blue/10 rounded-full blur-2xl"></div>
       </div>
-      
+
       <div className="container mx-auto text-center relative z-10">
-        <h1 
+        <h1
           ref={titleRef}
-          id="hero-heading" 
+          id="hero-heading"
           className="text-4xl md:text-6xl font-bold mb-6"
         >
           <span className="gradient-text">RenoHub</span>
         </h1>
-        
+
         {/* Enhanced Hero Description with Typing Animation */}
-        <div 
+        <div
           ref={subtitleRef}
           className="text-xl md:text-2xl text-gray-300 mb-8 min-h-[3rem] flex items-center justify-center"
         >
-          <TypingAnimation 
+          <TypingAnimation
             texts={heroTexts}
             className="gradient-text font-semibold"
             speed={80}
@@ -206,21 +206,21 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
             pauseDuration={3000}
           />
         </div>
-        
+
         <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link to="/register">
-            <EnhancedButton 
-              size="xl" 
-              variant="floating" 
+            <EnhancedButton
+              size="xl"
+              variant="floating"
               className="w-full sm:w-auto"
               aria-label="Start using RenoHub"
             >
               Zacznij teraz
             </EnhancedButton>
           </Link>
-          <EnhancedButton 
-            size="xl" 
-            variant="outline" 
+          <EnhancedButton
+            size="xl"
+            variant="outline"
             className="border-white/20 text-white hover:bg-white/10 hover:border-white/40 hover-glow w-full sm:w-auto"
             aria-label="View available applications"
             onClick={scrollToApps}

@@ -22,7 +22,7 @@ export const APP_CONFIGS: AppConfig[] = [
     tableName: 'calcreno_projects',
     userIdColumn: 'user_id',
     externalUrl: null,
-    icon: '/calcreno-logo-full-transparent.png',
+    icon: '/calcreno-logo-full-transparent.webp',
     tags: ['Mobile', 'iOS/Android'],
     status: 'available',
   },
@@ -34,7 +34,7 @@ export const APP_CONFIGS: AppConfig[] = [
     tableName: 'projects',
     userIdColumn: 'user_id',
     externalUrl: 'https://www.renotimeline.com',
-    icon: '/renotimeline-logo-transparent.png',
+    icon: '/renotimeline-logo-transparent.webp',
     tags: ['Web App', 'Browser'],
     status: 'available',
   },
@@ -46,13 +46,13 @@ export const APP_CONFIGS: AppConfig[] = [
     tableName: null,
     userIdColumn: null,
     externalUrl: null,
-    icon: '/Renoscout logo.png',
+    icon: '/renoscout-logo.webp',
     tags: ['Web App', 'AI'],
     status: 'coming_soon',
   },
 ];
 
-export const IS_BETA_MODE = import.meta.env.VITE_IS_BETA_MODE === 'true' || 
+export const IS_BETA_MODE = import.meta.env.VITE_IS_BETA_MODE === 'true' ||
   import.meta.env.VITE_IS_BETA_MODE === undefined; // Default to beta mode if not set
 
 export const getAppConfig = (appId: AppId): AppConfig | undefined => {

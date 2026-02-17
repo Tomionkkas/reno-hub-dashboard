@@ -20,7 +20,7 @@ type FormState = 'idle' | 'loading' | 'success' | 'error' | 'duplicate';
 function BellIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
     </svg>
   );
 }
@@ -28,7 +28,7 @@ function BellIcon() {
 function ZapIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
     </svg>
   );
 }
@@ -36,7 +36,7 @@ function ZapIcon() {
 function ShieldIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     </svg>
   );
 }
@@ -44,7 +44,7 @@ function ShieldIcon() {
 function LockIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>
   );
 }
@@ -52,7 +52,7 @@ function LockIcon() {
 function CheckIcon() {
   return (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12"/>
+      <polyline points="20 6 9 17 4 12" />
     </svg>
   );
 }
@@ -60,7 +60,7 @@ function CheckIcon() {
 function StarIcon() {
   return (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   );
 }
@@ -168,7 +168,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
               <div className="absolute inset-0 rounded-xl bg-cyan-500/20 blur-xl" />
               <div className="relative w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-900 via-[#0c3050] to-cyan-800 rounded-xl flex items-center justify-center shadow-2xl border border-cyan-500/40">
                 <img
-                  src="/calcreno-logo-full-transparent.png"
+                  src="/calcreno-logo-full-transparent.webp"
                   alt="CalcReno"
                   className="w-10 h-10 sm:w-11 sm:h-11 object-contain"
                 />
@@ -284,7 +284,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
                 {formState === 'loading' ? (
                   <>
                     <svg className="animate-spin" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                     </svg>
                     Zapisywanie...
                   </>

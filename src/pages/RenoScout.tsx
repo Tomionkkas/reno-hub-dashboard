@@ -97,7 +97,7 @@ export default function RenoScoutPage() {
         {/* Logo */}
         <div className="hero-item w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#0c2340] via-[#0e3158] to-[#0a2540] rounded-2xl flex items-center justify-center mb-4 md:mb-6 shadow-2xl border border-cyan-500/30 relative">
           <OptimizedImage
-            src="/Renoscout logo.png"
+            src="/renoscout-logo.webp"
             alt="RenoScout"
             className="w-11 h-11 md:w-16 md:h-16 object-contain"
           />
