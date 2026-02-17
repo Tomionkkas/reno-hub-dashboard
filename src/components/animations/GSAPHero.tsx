@@ -20,6 +20,7 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const orbsRef = useRef<HTMLDivElement>(null);
+  const chevronRef = useRef<HTMLButtonElement>(null);
 
   const scrollToApps = () => {
     document.getElementById('apps')?.scrollIntoView({ behavior: 'smooth' });
@@ -100,6 +101,12 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
           ease: "back.out(1.7)"
         },
         "-=0.4"
+      )
+      .fromTo(
+        chevronRef.current,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.5 },
+        "-=0.2"
       );
 
       // Parallax effect for background elements
@@ -196,6 +203,16 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
           </EnhancedButton>
         </div>
       </div>
+
+      {/* Scroll chevron — mobile only */}
+      <button
+        ref={chevronRef}
+        onClick={scrollToApps}
+        className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 text-white/40 hover:text-white/70 transition-colors animate-bounce z-10"
+        aria-label="Przewiń do aplikacji"
+      >
+        <ChevronDown size={28} />
+      </button>
     </section>
   );
 };
