@@ -201,12 +201,12 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
 
         <div
           ref={plansRef}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto"
+          className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-4 -mx-4 px-4 pt-6 pb-4 lg:grid lg:grid-cols-3 lg:gap-8 lg:overflow-visible lg:snap-none lg:max-w-6xl lg:mx-auto lg:px-0 lg:pt-0 lg:pb-0"
         >
           {plans.map((plan) => (
+            <div key={plan.id} className="flex-shrink-0 w-[84vw] max-w-sm snap-center lg:flex-shrink lg:w-auto lg:max-w-none">
             <GSAPCard
-              key={plan.id}
-              className={`pricing-card ${getColorClasses(plan.color)} ${plan.popular ? 'relative lg:scale-105 lg:hover:scale-110 transition-transform duration-300' : ''}`}
+              className={`pricing-card h-full ${getColorClasses(plan.color)} ${plan.popular ? 'relative lg:scale-105 lg:hover:scale-110 transition-transform duration-300' : ''}`}
               delay={plan.delay}
               hover="lift"
               trigger="scroll"
@@ -288,7 +288,18 @@ const EnhancedPricingSection: React.FC<EnhancedPricingSectionProps> = ({ classNa
                 </Tooltip>
               </GSAPCardContent>
             </GSAPCard>
+            </div>
           ))}
+        </div>
+
+        {/* Swipe indicator — mobile only */}
+        <div className="lg:hidden flex flex-col items-center gap-1.5 mt-3 mb-2">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-white/25" />
+            <div className="w-4 h-1.5 rounded-full bg-white/50" />
+            <div className="w-1.5 h-1.5 rounded-full bg-white/25" />
+          </div>
+          <p className="text-[11px] text-white/30 tracking-wider">przesuń aby zobaczyć więcej</p>
         </div>
 
         {/* Enhanced Special Offer Banner */}

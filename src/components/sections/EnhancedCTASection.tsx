@@ -15,7 +15,7 @@ interface EnhancedCTASectionProps {
 const EnhancedCTASection: React.FC<EnhancedCTASectionProps> = ({ className }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const subtitleRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
 
@@ -192,14 +192,14 @@ const EnhancedCTASection: React.FC<EnhancedCTASectionProps> = ({ className }) =>
           </GSAPTextReveal>
         </h2>
         
-        <p 
+        <div
           ref={subtitleRef}
           className="text-lg md:text-xl text-white/80 mb-8"
         >
           <GSAPTextReveal type="character" duration={0.6} stagger={0.03}>
             Dołącz do tysięcy zadowolonych użytkowników
           </GSAPTextReveal>
-        </p>
+        </div>
         
         <div ref={buttonRef}>
           <Link to="/register">

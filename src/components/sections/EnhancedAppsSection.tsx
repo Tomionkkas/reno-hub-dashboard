@@ -237,6 +237,7 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
                 return (
                   <div
                     key={app.id}
+                    id={`app-${app.id}`}
                     onClick={() => setIsNewsletterOpen(true)}
                     className="cursor-pointer"
                     role="button"
@@ -249,7 +250,7 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
                 );
               }
               return (
-                <div key={app.id}>
+                <div key={app.id} id={`app-${app.id}`}>
                   {cardContent}
                 </div>
               );
@@ -259,22 +260,25 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
 
             if (isExternal) {
               return (
-                <a
-                  key={app.id}
-                  href={app.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="contents"
-                >
-                  {React.cloneElement(cardContent, { className: cardContent.props.className + ' cursor-pointer' })}
-                </a>
+                <div key={app.id} id={`app-${app.id}`}>
+                  <a
+                    href={app.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="contents"
+                  >
+                    {React.cloneElement(cardContent, { className: cardContent.props.className + ' cursor-pointer' })}
+                  </a>
+                </div>
               );
             }
 
             return (
-              <Link key={app.id} to={app.link} className="contents">
-                {React.cloneElement(cardContent, { className: cardContent.props.className + ' cursor-pointer' })}
-              </Link>
+              <div key={app.id} id={`app-${app.id}`}>
+                <Link to={app.link} className="contents">
+                  {React.cloneElement(cardContent, { className: cardContent.props.className + ' cursor-pointer' })}
+                </Link>
+              </div>
             );
           })}
         </div>

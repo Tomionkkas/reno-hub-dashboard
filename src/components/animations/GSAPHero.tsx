@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { EnhancedButton } from '@/components/ui/enhanced-button';
 import { TypingAnimation } from '@/components/ui/typing-animation';
 import { FloatingShapes } from '@/components/ui/floating-shapes';
-import { ChevronDown } from 'lucide-react';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -20,7 +19,6 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const orbsRef = useRef<HTMLDivElement>(null);
-  const chevronRef = useRef<HTMLButtonElement>(null);
   const peekStripRef = useRef<HTMLDivElement>(null);
 
   const scrollToApps = () => {
@@ -104,12 +102,6 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
         "-=0.4"
       )
       .fromTo(
-        chevronRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.5 },
-        "-=0.2"
-      )
-      .fromTo(
         peekStripRef.current,
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
@@ -154,21 +146,24 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
       name: 'CalcReno',
       image: '/calcreno-logo-full-transparent.png',
       status: 'Beta soon',
-      statusClass: 'bg-yellow-500/15 border-yellow-500/30 text-yellow-400',
+      statusColor: 'text-yellow-400',
+      scrollTarget: 'app-calcreno',
     },
     {
       id: 'renotimeline',
       name: 'RenoTimeline',
       image: '/renotimeline-logo-transparent.png',
       status: 'Available',
-      statusClass: 'bg-blue-500/15 border-blue-500/30 text-blue-400',
+      statusColor: 'text-blue-400',
+      scrollTarget: 'app-renotimeline',
     },
     {
       id: 'renoscout',
       name: 'RenoScout',
       image: '/Renoscout logo.png',
       status: 'Coming Soon',
-      statusClass: 'bg-purple-500/15 border-purple-500/30 text-purple-400',
+      statusColor: 'text-purple-400',
+      scrollTarget: 'app-renoscout',
     },
   ];
 
@@ -237,43 +232,26 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
         {/* App peek strip — mobile only */}
         <div
           ref={peekStripRef}
-          className="md:hidden mt-8 -mx-4 px-4 flex gap-3 overflow-x-auto scrollbar-hide pb-2"
+          className="md:hidden mt-6 grid grid-cols-3 gap-3"
         >
           {peekApps.map((app) => (
             <button
               key={app.id}
-              onClick={scrollToApps}
-              className="flex-shrink-0 w-[148px] text-left flex flex-col gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/10 hover:border-cyan-500/40 hover:bg-white/[0.07] transition-all duration-200 active:scale-95"
+              onClick={() => document.getElementById(app.scrollTarget)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+              className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.07] active:scale-95 transition-all duration-200"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-900 to-cyan-800 border border-cyan-500/30 flex items-center justify-center flex-shrink-0">
-                  <img
-                    src={app.image}
-                    alt={app.name}
-                    className="w-5 h-5 object-contain"
-                  />
-                </div>
-                <span className="text-white text-sm font-semibold leading-tight">{app.name}</span>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-900 to-cyan-800 border border-cyan-500/30 flex items-center justify-center shadow-lg shadow-cyan-900/30">
+                <img src={app.image} alt={app.name} className="w-7 h-7 object-contain" />
               </div>
-              <span className={`text-[11px] px-2 py-0.5 rounded-full self-start font-medium border ${app.statusClass}`}>
-                {app.status}
-              </span>
+              <div className="flex flex-col items-center gap-0.5">
+                <span className="text-white/85 text-[11px] font-semibold leading-tight text-center">{app.name}</span>
+                <span className={`text-[10px] font-medium ${app.statusColor}`}>{app.status}</span>
+              </div>
             </button>
           ))}
-          {/* Trailing spacer so last card doesn't hug the edge */}
-          <div className="flex-shrink-0 w-2" />
         </div>
       </div>
 
-      {/* Scroll chevron — mobile only */}
-      <button
-        ref={chevronRef}
-        onClick={scrollToApps}
-        className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 text-white/40 hover:text-white/70 transition-colors animate-bounce z-10"
-        aria-label="Przewiń do aplikacji"
-      >
-        <ChevronDown size={28} />
-      </button>
     </section>
   );
 };

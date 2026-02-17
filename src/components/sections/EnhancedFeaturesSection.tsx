@@ -98,45 +98,45 @@ const EnhancedFeaturesSection: React.FC<EnhancedFeaturesSectionProps> = ({ class
   return (
     <section
       ref={sectionRef}
-      className={`py-24 px-4 relative ${className || ''}`}
+      className={`py-12 md:py-24 px-4 relative ${className || ''}`}
       aria-labelledby="features-heading"
     >
       <div className="container mx-auto max-w-6xl">
         <h2
           ref={titleRef}
           id="features-heading"
-          className="text-3xl md:text-4xl font-bold text-center mb-16 text-white"
+          className="text-3xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-white"
         >
           Dlaczego RenoHub?
         </h2>
 
         <div
           ref={featuresRef}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
         >
           {features.map((feature, index) => (
             <div
               key={index}
               className="feature-card group"
             >
-              <div className="h-full p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-300">
+              <div className="h-full p-4 md:p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-300">
                 {/* Icon */}
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-reno-purple to-reno-blue flex items-center justify-center mb-5">
-                  <feature.icon className="w-6 h-6 text-white" aria-hidden="true" />
+                <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-reno-purple to-reno-blue flex items-center justify-center mb-3 md:mb-5">
+                  <feature.icon className="w-5 h-5 md:w-6 md:h-6 text-white" aria-hidden="true" />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-sm md:text-lg font-semibold text-white mb-1 md:mb-2 leading-snug">
                   {feature.title}
                 </h3>
 
-                {/* Description */}
-                <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                {/* Description — hidden on mobile 2-col to keep cards compact */}
+                <p className="hidden sm:block text-gray-400 text-sm leading-relaxed mb-4">
                   {feature.desc}
                 </p>
 
                 {/* Highlight */}
-                <span className="inline-block text-xs font-medium text-reno-mint/90 bg-reno-mint/10 px-3 py-1 rounded-full">
+                <span className="inline-block text-[11px] md:text-xs font-medium text-reno-mint/90 bg-reno-mint/10 px-2 md:px-3 py-0.5 md:py-1 rounded-full mt-2 md:mt-0">
                   {feature.highlight}
                 </span>
               </div>
