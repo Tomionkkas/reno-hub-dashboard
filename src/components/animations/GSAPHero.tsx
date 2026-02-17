@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { EnhancedButton } from '@/components/ui/enhanced-button';
 import { TypingAnimation } from '@/components/ui/typing-animation';
 import { FloatingShapes } from '@/components/ui/floating-shapes';
+import { ChevronDown } from 'lucide-react';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -19,6 +20,10 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const orbsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToApps = () => {
+    document.getElementById('apps')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const heroTexts = [
     "Jedna platforma – wszystkie Twoje aplikacje remontowe",
@@ -132,7 +137,7 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
   return (
     <section 
       ref={heroRef}
-      className={`pt-32 pb-20 px-4 relative overflow-hidden ${className || ''}`} 
+      className={`pt-20 pb-12 md:pt-32 md:pb-20 px-4 relative overflow-hidden ${className || ''}`} 
       aria-labelledby="hero-heading"
     >
       {/* Enhanced Floating Background Elements */}
@@ -185,6 +190,7 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
             variant="outline" 
             className="border-white/20 text-white hover:bg-white/10 hover:border-white/40 hover-glow w-full sm:w-auto"
             aria-label="View available applications"
+            onClick={scrollToApps}
           >
             Zobacz aplikacje
           </EnhancedButton>
@@ -195,5 +201,3 @@ const GSAPHero: React.FC<GSAPHeroProps> = ({ className }) => {
 };
 
 export default GSAPHero;
-
-
