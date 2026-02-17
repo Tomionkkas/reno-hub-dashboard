@@ -59,19 +59,19 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-[#0f1729] border border-cyan-500/30 text-white max-w-md">
+      <DialogContent className="bg-[#0f1729] border border-cyan-500/30 text-white w-[calc(100%-32px)] max-w-md max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
-          <div className="w-16 h-16 bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-700 rounded-xl flex items-center justify-center mb-2 shadow-xl border border-cyan-500/40">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-700 rounded-xl flex items-center justify-center mb-2 shadow-xl border border-cyan-500/40">
             <img
               src="/calcreno-logo-full-transparent.png"
               alt="CalcReno"
-              className="w-12 h-12 object-contain"
+              className="w-9 h-9 sm:w-12 sm:h-12 object-contain"
             />
           </div>
-          <DialogTitle className="text-xl font-bold text-white">
+          <DialogTitle className="text-lg sm:text-xl font-bold text-white">
             Bądź pierwszy!
           </DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogDescription className="text-gray-300 text-sm sm:text-base">
             CalcReno — mobilny kalkulator materiałów budowlanych — jest w przygotowaniu.
             Zapisz się, aby otrzymać powiadomienie o starcie beta i pełnym uruchomieniu.
           </DialogDescription>
