@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { NewsletterModal } from '@/components/ui/newsletter-modal';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -21,6 +22,7 @@ interface EnhancedAppsSectionProps {
 const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
 
   const apps = [
     {
@@ -32,7 +34,7 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
       tags: ['Mobile', 'iOS/Android'],
       link: null,
       delay: 0,
-      status: 'Available'
+      status: 'In beta soon'
     },
     {
       id: 'renotimeline',
@@ -122,6 +124,7 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
       case 'Live':
         return 'bg-green-500/20 text-green-400 border-green-500/30';
       case 'Beta':
+      case 'In beta soon':
         return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
       case 'Coming Soon':
         return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
@@ -133,15 +136,15 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
   };
 
   return (
-    <section 
+    <section
       ref={sectionRef}
-      className={`py-20 px-4 relative ${className || ''}`} 
+      className={`py-20 px-4 relative ${className || ''}`}
       aria-labelledby="apps-heading"
     >
       <div className="container mx-auto">
-        <h2 
+        <h2
           ref={titleRef}
-          id="apps-heading" 
+          id="apps-heading"
           className="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text"
         >
           Nasze Aplikacje
@@ -150,74 +153,87 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
           {apps.map((app) => {
             const cardContent = (
               <RippleEffect>
-                <MagneticEffect strength={0.05}>
-                                     <GSAPCard 
-                     className="app-card hover:border-cyan-500/60 transition-colors hover:shadow-2xl hover:shadow-cyan-500/30"  
-                    delay={app.delay} 
-                    hover="glow" 
-                    trigger="scroll"
-                    role="article" 
-                    aria-labelledby={`${app.id}-title`}
-                  >
-                <GSAPCardHeader>
-                  <div className="relative">
-                                         <div className="w-20 h-20 bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-700 rounded-xl flex items-center justify-center mb-4 hover-lift shadow-xl border border-cyan-500/40">
-                      <OptimizedImage 
-                        src={app.image} 
-                        alt={app.imageAlt} 
-                        className="w-[4.5rem] h-[4.5rem] object-contain -mt-0.5"
-                      />
+                <GSAPCard
+                  className="app-card hover:border-cyan-500/60 transition-colors hover:shadow-2xl hover:shadow-cyan-500/30"
+                  delay={app.delay}
+                  hover="lift"
+                  trigger="scroll"
+                  role="article"
+                  aria-labelledby={`${app.id}-title`}
+                >
+                  <GSAPCardHeader>
+                    <div className="relative">
+                      <div className="w-20 h-20 bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-700 rounded-xl flex items-center justify-center mb-4 hover-lift shadow-xl border border-cyan-500/40">
+                        <OptimizedImage
+                          src={app.image}
+                          alt={app.imageAlt}
+                          className="w-[4.5rem] h-[4.5rem] object-contain -mt-0.5"
+                        />
+                      </div>
+                      <Badge
+                        className={`absolute -top-2 -right-2 ${getStatusColor(app.status)} border`}
+                        variant="outline"
+                      >
+                        {app.status}
+                      </Badge>
                     </div>
-                    <Badge 
-                      className={`absolute -top-2 -right-2 ${getStatusColor(app.status)} border`}
-                      variant="outline"
-                    >
-                      {app.status}
-                    </Badge>
-                  </div>
-                  <GSAPCardTitle id={`${app.id}-title`} className="text-white text-xl md:text-2xl">
-                    {app.title}
-                  </GSAPCardTitle>
-                  <GSAPCardDescription className="text-gray-300 text-sm md:text-base">
-                    {app.description}
-                  </GSAPCardDescription>
-                </GSAPCardHeader>
-                <GSAPCardContent>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {app.tags.map((tag, index) => (
-                      <Tooltip key={index}>
-                        <TooltipTrigger asChild>
-                                                     <Badge 
-                             className="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm hover-lift transition-all duration-300 hover:bg-cyan-500/30 cursor-help"
-                           >
-                            {tag}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Platforma: {tag}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ))}
-                  </div>
-                  
-                  {/* Enhanced Progress indicator - only show for RenoScout */}
-                  {app.progress && (
-                    <div className="mt-4">
-                      <ProgressIndicator 
-                        progress={app.progress} 
-                        label="Rozwój" 
-                        showPercentage={true}
-                        animated={true}
-                      />
+                    <GSAPCardTitle id={`${app.id}-title`} className="text-white text-xl md:text-2xl">
+                      {app.title}
+                    </GSAPCardTitle>
+                    <GSAPCardDescription className="text-gray-300 text-sm md:text-base">
+                      {app.description}
+                    </GSAPCardDescription>
+                  </GSAPCardHeader>
+                  <GSAPCardContent>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {app.tags.map((tag, index) => (
+                        <Tooltip key={index}>
+                          <TooltipTrigger asChild>
+                            <Badge
+                              className="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm hover-lift transition-all duration-300 hover:bg-cyan-500/30 cursor-help"
+                            >
+                              {tag}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Platforma: {tag}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
                     </div>
-                  )}
-                                  </GSAPCardContent>
+
+                    {/* Enhanced Progress indicator - only show for RenoScout */}
+                    {app.progress && (
+                      <div className="mt-4">
+                        <ProgressIndicator
+                          progress={app.progress}
+                          label="Rozwój"
+                          showPercentage={true}
+                          animated={true}
+                        />
+                      </div>
+                    )}
+                  </GSAPCardContent>
                 </GSAPCard>
-                </MagneticEffect>
               </RippleEffect>
             );
 
             if (!app.link) {
+              if (app.id === 'calcreno') {
+                return (
+                  <div
+                    key={app.id}
+                    onClick={() => setIsNewsletterOpen(true)}
+                    className="cursor-pointer"
+                    role="button"
+                    aria-label="Zapisz się na newsletter CalcReno"
+                    tabIndex={0}
+                    onKeyDown={(e) => e.key === 'Enter' && setIsNewsletterOpen(true)}
+                  >
+                    {cardContent}
+                  </div>
+                );
+              }
               return (
                 <div key={app.id}>
                   {cardContent}
@@ -248,6 +264,11 @@ const EnhancedAppsSection: React.FC<EnhancedAppsSectionProps> = ({ className }) 
             );
           })}
         </div>
+
+        <NewsletterModal
+          open={isNewsletterOpen}
+          onOpenChange={setIsNewsletterOpen}
+        />
       </div>
     </section>
   );
