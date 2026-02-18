@@ -192,9 +192,6 @@ const Login = () => {
                         Zarejestruj się
                       </Link>
                     </p>
-                    <p className="text-sm text-gray-500">
-                      Demo: admin@renohub.com / user@test.com
-                    </p>
                   </div>
                 </GSAPCardContent>
               </GSAPCard>

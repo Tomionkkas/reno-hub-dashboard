@@ -61,8 +61,14 @@ const BrowserFrame: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 // ─── Main strip ───────────────────────────────────────────────────────────────
 
-export const AppShowcaseStrip: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<AppKey>('calcreno');
+interface AppShowcaseStripProps {
+  /** Restrict which app tabs are shown. Defaults to all tabs. */
+  tabs?: AppKey[];
+}
+
+export const AppShowcaseStrip: React.FC<AppShowcaseStripProps> = ({ tabs }) => {
+  const visibleTabs = tabs ? TABS.filter(t => tabs.includes(t.key)) : TABS;
+  const [activeTab, setActiveTab] = useState<AppKey>(visibleTabs[0]?.key ?? 'calcreno');
   const [index, setIndex] = useState(0);
   const [frameVisible, setFrameVisible] = useState(true);
   const [contentVisible, setContentVisible] = useState(true);
@@ -125,10 +131,11 @@ export const AppShowcaseStrip: React.FC = () => {
         See it in action
       </p>
 
-      {/* Tab switcher */}
+      {/* Tab switcher — hidden when only one app is shown */}
+      {visibleTabs.length > 1 && (
       <div className="flex justify-center mb-6">
         <div className="flex bg-slate-800/60 rounded-full p-1 gap-1 border border-slate-700/60">
-          {TABS.map(tab => (
+          {visibleTabs.map(tab => (
             <button
               key={tab.key}
               onClick={() => handleTabChange(tab.key)}
@@ -145,6 +152,7 @@ export const AppShowcaseStrip: React.FC = () => {
           ))}
         </div>
       </div>
+      )}
 
       {/* Device frame */}
       <div

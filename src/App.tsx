@@ -1,5 +1,4 @@
-
-import React from "react";
+﻿import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -31,6 +30,8 @@ const AdminPanel = React.lazy(() => import("./pages/AdminPanel"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 const RenoScoutPage = React.lazy(() => import('./pages/RenoScout'));
 const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
+const WaitlistPage = React.lazy(() => import('./pages/Waitlist'));
+const AboutPage = React.lazy(() => import('./pages/About'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -73,6 +74,8 @@ const App = () => (
                   <Route path="/admin" element={<AdminPanel />} />
                   <Route path="/renoscout" element={<RenoScoutPage />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/waitlist" element={<WaitlistPage />} />
+                  <Route path="/o-nas" element={<AboutPage />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

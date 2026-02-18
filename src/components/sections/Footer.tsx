@@ -14,19 +14,19 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
         <p className="text-gray-400 mb-6 animate-fade-in-up text-sm md:text-base" style={{animationDelay: '100ms'}}>
           Jedna platforma – wszystkie Twoje aplikacje remontowe
         </p>
-        <nav 
-          className="flex flex-wrap justify-center gap-4 md:gap-8 text-sm text-gray-400 animate-fade-in-up" 
-          style={{animationDelay: '200ms'}} 
+        <nav
+          className="flex flex-wrap justify-center gap-4 md:gap-8 text-sm text-gray-400 animate-fade-in-up"
+          style={{animationDelay: '200ms'}}
           aria-label="Footer navigation"
         >
-          <a href="#" className="nav-link hover:text-white transition-colors hover:gradient-text">
-            Regulamin
+          <a href="/o-nas" className="nav-link hover:text-white transition-colors hover:gradient-text">
+            O nas
           </a>
           <a href="/privacy-policy" className="nav-link hover:text-white transition-colors hover:gradient-text">
             Polityka prywatności
           </a>
-          <a href="#" className="nav-link hover:text-white transition-colors hover:gradient-text">
-            Kontakt
+          <a href="/waitlist" className="nav-link hover:text-white transition-colors hover:gradient-text">
+            Dołącz do bety
           </a>
         </nav>
       </div>
