@@ -97,6 +97,16 @@ export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
     annotationTimerRef.current = setTimeout(() => setAnnotationsVisible(true), 300);
   }, []);
 
+  // Preload all slide images on first open so swipes are instant
+  useEffect(() => {
+    if (open) {
+      SLIDES.forEach(slide => {
+        const img = new Image();
+        img.src = slide.src;
+      });
+    }
+  }, [open]);
+
   // Mount/unmount with enter and exit animation
   useEffect(() => {
     if (unmountTimerRef.current) clearTimeout(unmountTimerRef.current);
