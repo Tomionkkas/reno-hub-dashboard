@@ -3,6 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes demo-glow {
+  0%, 100% { box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3); }
+  50%       { box-shadow: 0 4px 24px rgba(99, 102, 241, 0.65), 0 0 12px rgba(168, 85, 247, 0.35); }
+}
+.demo-glow {
+  animation: demo-glow 6s ease-in-out infinite;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -261,8 +261,8 @@ export default {
 						transform: 'translateY(-100px) translateX(100px)',
 						opacity: '0'
 					}
-				}
-			},
+				},
+				},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',

@@ -4,10 +4,10 @@ import { PhoneFrame } from '@/components/sections/AppShowcaseStrip';
 
 interface Annotation {
   text: string;
-  /** CSS top value relative to the PhoneFrame outer div */
   top: string;
-  /** CSS left value relative to the PhoneFrame outer div */
-  left: string;
+  left?: string;
+  right?: string;
+  wide?: boolean;
 }
 
 interface DemoSlide {
@@ -17,51 +17,55 @@ interface DemoSlide {
 
 const SLIDES: DemoSlide[] = [
   {
+    // Page 1: top-left + bottom-left (quiet area below cards)
     src: '/calcreno/screenshots/Home page project lists.PNG',
     annotations: [
-      { text: 'Wszystkie projekty w jednym miejscu', top: '12%', left: '6%' },
-      { text: 'Szybki podgląd statusu remontu', top: '68%', left: '6%' },
+      { text: 'Wszystkie projekty w jednym miejscu', top: '10%', left: '4%' },
+      { text: 'Szybki podgląd statusu remontu', top: '78%', left: '4%' },
     ],
   },
   {
+    // Page 2: top right only
     src: '/calcreno/screenshots/Project detail.PNG',
     annotations: [
-      { text: 'Pełna lista pomieszczeń', top: '12%', left: '6%' },
-      { text: 'Materiały i wymiary w jednym widoku', top: '65%', left: '6%' },
+      { text: 'Pełna lista pomieszczeń', top: '12%', right: '4%' },
     ],
   },
   {
+    // Page 3: top right only
     src: '/calcreno/screenshots/Room editor.PNG',
     annotations: [
-      { text: 'Edytuj wymiary każdego pokoju', top: '12%', left: '6%' },
-      { text: 'Dodaj materiały bezpośrednio', top: '68%', left: '6%' },
+      { text: 'Edytuj wymiary każdego pokoju', top: '12%', right: '4%' },
     ],
   },
   {
+    // Page 4: one wider annotation, top right
     src: '/calcreno/screenshots/Material calculator.PNG',
     annotations: [
-      { text: 'Oblicz farby, płytki i więcej', top: '12%', left: '6%' },
-      { text: 'Zero ręcznych obliczeń', top: '68%', left: '6%' },
+      { text: 'Oblicz szacowanie ilości materiałów. Aktualne ceny brane z największych sklepów w Polsce.', top: '10%', right: '4%', wide: true },
     ],
   },
   {
+    // Page 5: updated text
     src: '/calcreno/screenshots/Material details modal.PNG',
     annotations: [
-      { text: 'Szczegółowe dane z jednostkami', top: '14%', left: '6%' },
+      { text: 'Szczegółowe ilości/ceny materiałów w projekcie/pomieszczeniu', top: '14%', left: '6%', wide: true },
     ],
   },
   {
+    // Page 6: bottom annotation updated
     src: '/calcreno/screenshots/2D planner.PNG',
     annotations: [
       { text: 'Wizualny plan pomieszczeń', top: '10%', left: '6%' },
-      { text: 'Automatyczny układ ścian i drzwi', top: '70%', left: '6%' },
+      { text: 'Możliwość eksportu PNG/SVG', top: '70%', left: '6%' },
     ],
   },
   {
+    // Page 7: bottom annotation moved up and left to avoid the blue button
     src: '/calcreno/screenshots/Cost summary.PNG',
     annotations: [
       { text: 'Pełne zestawienie kosztów', top: '12%', left: '6%' },
-      { text: 'Eksportuj lub udostępnij listę', top: '68%', left: '6%' },
+      { text: 'Eksportuj lub udostępnij listę', top: '58%', left: '4%' },
     ],
   },
 ];
@@ -71,12 +75,17 @@ interface DemoModalProps {
   onClose: () => void;
 }
 
+const TRANSITION_MS = 280;
+
 export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
+  const [mounted, setMounted] = useState(false);
+  const [show, setShow] = useState(false);
   const [index, setIndex] = useState(0);
   const [contentVisible, setContentVisible] = useState(true);
   const [annotationsVisible, setAnnotationsVisible] = useState(false);
   const touchStartX = useRef(0);
   const annotationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const unmountTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clearAnnotationTimer = () => {
     if (annotationTimerRef.current) clearTimeout(annotationTimerRef.current);
@@ -88,20 +97,30 @@ export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
     annotationTimerRef.current = setTimeout(() => setAnnotationsVisible(true), 300);
   }, []);
 
-  // Reset and show on open
+  // Mount/unmount with enter and exit animation
   useEffect(() => {
+    if (unmountTimerRef.current) clearTimeout(unmountTimerRef.current);
     if (open) {
+      setMounted(true);
       setIndex(0);
       setContentVisible(true);
       setAnnotationsVisible(false);
-      scheduleAnnotations();
-      // Lock body scroll
       document.body.style.overflow = 'hidden';
+      // Two rAFs so the initial opacity:0 state is painted before we flip to 1
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        setShow(true);
+        scheduleAnnotations();
+      }));
     } else {
-      document.body.style.overflow = '';
+      setShow(false);
+      unmountTimerRef.current = setTimeout(() => {
+        setMounted(false);
+        document.body.style.overflow = '';
+      }, TRANSITION_MS);
     }
     return () => {
       clearAnnotationTimer();
+      if (unmountTimerRef.current) clearTimeout(unmountTimerRef.current);
       document.body.style.overflow = '';
     };
   }, [open, scheduleAnnotations]);
@@ -141,20 +160,29 @@ export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
     delta > 0 ? goNext() : goPrev();
   };
 
-  if (!open) return null;
+  if (!mounted) return null;
 
   const slide = SLIDES[index];
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
       onClick={onClose}
+      style={{
+        backgroundColor: show ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0)',
+        transition: `background-color ${TRANSITION_MS}ms ease-out`,
+      }}
     >
       <div
-        className="relative mx-4 my-8 bg-[#0b1120] border border-cyan-500/25 rounded-2xl p-6 w-full max-w-sm"
+        className="relative mx-4 my-8 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 w-full max-w-sm"
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        style={{
+          opacity: show ? 1 : 0,
+          transform: show ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(12px)',
+          transition: `opacity ${TRANSITION_MS}ms ease-out, transform ${TRANSITION_MS}ms ease-out`,
+        }}
       >
         {/* Close button */}
         <button
@@ -192,10 +220,11 @@ export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
           {slide.annotations.map((ann, i) => (
             <div
               key={`${index}-${i}`}
-              className="absolute bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2 text-xs text-white max-w-[130px] shadow-lg pointer-events-none"
+              className={`absolute bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2 text-xs text-white shadow-lg pointer-events-none ${ann.wide ? 'max-w-[160px]' : 'max-w-[130px]'}`}
               style={{
                 top: ann.top,
-                left: ann.left,
+                ...(ann.left !== undefined ? { left: ann.left } : {}),
+                ...(ann.right !== undefined ? { right: ann.right } : {}),
                 opacity: annotationsVisible ? 1 : 0,
                 transform: annotationsVisible ? 'translateY(0)' : 'translateY(5px)',
                 transition: 'opacity 300ms, transform 300ms',
