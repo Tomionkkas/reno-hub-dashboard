@@ -27,7 +27,7 @@ const SCREENSHOTS: Record<AppKey, Screenshot[]> = {
 
 // ─── Device frames ────────────────────────────────────────────────────────────
 
-const PhoneFrame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+export const PhoneFrame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="relative mx-auto w-[260px] md:w-[360px]">
     <div className="bg-slate-800 rounded-[2.5rem] p-3 border-2 border-slate-600 shadow-2xl shadow-black/60">
       <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-slate-800 rounded-b-2xl z-10" />
