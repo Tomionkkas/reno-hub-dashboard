@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Bell, Zap, Shield, Lock, Calculator, ClipboardList, PackageCheck } from 'lucide-react';
+import { Bell, Zap, Shield, Lock, Calculator, ClipboardList, PackageCheck, Play } from 'lucide-react';
+import { DemoModal } from '@/components/ui/DemoModal';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/sections/Footer';
 import { SEOHead } from '@/components/ui/seo-head';
@@ -41,6 +42,7 @@ export default function WaitlistPage() {
   const [email, setEmail] = useState('');
   const [formState, setFormState] = useState<FormState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [showDemo, setShowDemo] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,6 +128,13 @@ export default function WaitlistPage() {
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-xs font-medium text-emerald-400">
                   <Shield className="w-3 h-3" /> Zero spamu
                 </span>
+                {/* Mobile-only demo trigger */}
+                <button
+                  onClick={() => setShowDemo(true)}
+                  className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-xs font-medium text-indigo-400 hover:bg-indigo-500/20 transition-colors"
+                >
+                  <Play className="w-3 h-3" /> Zobacz Demo
+                </button>
               </div>
 
               {/* Form card */}
@@ -289,6 +298,7 @@ export default function WaitlistPage() {
       </main>
 
       <Footer />
+      <DemoModal open={showDemo} onClose={() => setShowDemo(false)} />
     </GradientBackground>
   );
 }
