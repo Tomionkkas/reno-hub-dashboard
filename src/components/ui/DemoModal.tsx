@@ -144,17 +144,13 @@ export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
 
   const goTo = useCallback((nextIndex: number) => {
     clearAnnotationTimer();
-    // Fade annotations out immediately
     setAnnotationsVisible(false);
-    // Short pause, then swap screenshot
+    setContentVisible(false);
     setTimeout(() => {
-      setContentVisible(false);
-      setTimeout(() => {
-        setIndex(nextIndex);
-        setContentVisible(true);
-        scheduleAnnotations();
-      }, 150);
-    }, 80);
+      setIndex(nextIndex);
+      setContentVisible(true);
+      scheduleAnnotations();
+    }, 250);
   }, [scheduleAnnotations]);
 
   const goNext = useCallback(() => goTo((index + 1) % SLIDES.length), [index, goTo]);
@@ -210,21 +206,19 @@ export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
 
         {/* Phone frame + annotation overlays */}
         <div className="relative flex justify-center">
-          {/* Screenshot inside phone */}
-          <div
-            style={{
-              opacity: contentVisible ? 1 : 0,
-              transition: 'opacity 150ms',
-            }}
-          >
-            <PhoneFrame>
-              <img
-                src={slide.src}
-                alt="CalcReno screenshot"
-                className="w-full h-full object-cover object-top"
-              />
-            </PhoneFrame>
-          </div>
+          {/* Screenshot inside phone — only the image fades, frame stays visible */}
+          <PhoneFrame>
+            <img
+              src={slide.src}
+              alt="CalcReno screenshot"
+              className="w-full h-full object-cover object-top"
+              style={{
+                opacity: contentVisible ? 1 : 0,
+                transform: contentVisible ? 'scale(1)' : 'scale(0.97)',
+                transition: 'opacity 250ms ease-in-out, transform 250ms ease-in-out',
+              }}
+            />
+          </PhoneFrame>
 
           {/* Floating annotation boxes — absolutely over the phone frame */}
           {slide.annotations.map((ann, i) => (
