@@ -66,6 +66,9 @@ export default function WaitlistPage() {
           window.gtag('event', 'conversion', {
             send_to: 'AW-17946979757/yGBiCICctvwbEK3b5O1C',
           });
+          window.gtag('event', 'waitlist_signup', {
+            app: 'calcreno',
+          });
         }
       }
     } catch {
