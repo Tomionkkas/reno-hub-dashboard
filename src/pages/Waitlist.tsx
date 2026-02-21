@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bell, Zap, Shield, Lock, Calculator, ClipboardList, PackageCheck, Play } from 'lucide-react';
 import { DemoModal } from '@/components/ui/DemoModal';
 import Navigation from '@/components/Navigation';
@@ -37,12 +37,42 @@ const steps = [
   { number: '03', title: 'Uzyskaj wczesny dostęp', description: 'Jako pierwszy przetestujesz aplikację i wpłyniesz na jej rozwój.' },
 ];
 
+function formatSignupCount(n: number): string {
+  const last2 = n % 100;
+  const last1 = n % 10;
+  if (last2 >= 12 && last2 <= 14) return `${n} osób`;
+  if (last1 === 1) return `${n} osoba`;
+  if (last1 >= 2 && last1 <= 4) return `${n} osoby`;
+  return `${n} osób`;
+}
+
 export default function WaitlistPage() {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [formState, setFormState] = useState<FormState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [showDemo, setShowDemo] = useState(false);
+  const [displayCount, setDisplayCount] = useState(0);
+  const BASE_COUNT = 20;
+
+  useEffect(() => {
+    supabase.rpc('get_waitlist_count').then(({ data }) => {
+      const target = BASE_COUNT + (data ?? 0);
+      const steps = 40;
+      const increment = target / steps;
+      let current = 0;
+      const interval = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          setDisplayCount(target);
+          clearInterval(interval);
+        } else {
+          setDisplayCount(Math.floor(current));
+        }
+      }, 25);
+      return () => clearInterval(interval);
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +173,25 @@ export default function WaitlistPage() {
                   <Play className="w-3 h-3 fill-white" /> Zobacz Demo
                 </button>
               </div>
+
+              {/* Signup counter */}
+              {displayCount > 0 && (
+                <div className="flex justify-center lg:justify-start mb-6">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/10 rounded-full">
+                    <span className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <span
+                          key={i}
+                          className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-600 to-cyan-500 border-2 border-[#0b1120] -ml-1 first:ml-0"
+                        />
+                      ))}
+                    </span>
+                    <span className="text-sm text-gray-300">
+                      <span className="font-semibold text-white">{formatSignupCount(displayCount)}</span> już na liście
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Form card */}
               <div className="bg-[#0b1120] border border-cyan-500/25 rounded-2xl p-6 sm:p-8">
