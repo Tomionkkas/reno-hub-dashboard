@@ -120,8 +120,7 @@ export default function WaitlistPage() {
                   Bądź <span className="text-cyan-400">pierwszym!</span>
                 </h1>
                 <p className="text-gray-400 text-base md:text-lg leading-relaxed">
-                  CalcReno — mobilny kalkulator materiałów budowlanych — jest w przygotowaniu.
-                  Dołącz do listy i bądź pierwszym, który dowie się o starcie.
+                  CalcReno jest w drodze. Zapisz się i dostań dostęp, zanim aplikacja trafi do wszystkich.
                 </p>
               </div>
 
@@ -156,9 +155,9 @@ export default function WaitlistPage() {
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
-                    <p className="text-white font-bold text-xl mb-1.5">Dziękujemy, {firstName}!</p>
+                    <p className="text-white font-bold text-xl mb-1.5">Jesteś na liście, {firstName}.</p>
                     <p className="text-gray-400 text-sm leading-relaxed">
-                      Sprawdź swoją skrzynkę — wysłaliśmy Ci e-mail powitalny.
+                      Gdy CalcReno będzie gotowe — będziesz jednym z pierwszych, który to zobaczy.
                     </p>
                   </div>
                 )}
