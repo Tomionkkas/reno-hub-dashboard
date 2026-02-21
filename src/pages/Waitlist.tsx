@@ -191,18 +191,9 @@ export default function WaitlistPage() {
               {displayCount > 0 && (
                 <div className="flex justify-center lg:justify-start mb-6">
                   <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/10 rounded-full">
-                    <span className="flex">
-                      {(['from-cyan-500 to-cyan-600', 'from-purple-500 to-purple-600', 'from-emerald-500 to-emerald-600', 'from-blue-500 to-blue-600', 'from-pink-500 to-rose-500'] as const).map((gradient, i) => (
-                        <span
-                          key={i}
-                          className={`w-6 h-6 rounded-full bg-gradient-to-br ${gradient} border-2 border-[#0b1120] flex items-center justify-center ${i !== 0 ? '-ml-1.5' : ''}`}
-                        >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="white" opacity="0.9">
-                            <circle cx="12" cy="8" r="4" />
-                            <path d="M4 20c0-3.9 3.6-7 8-7s8 3.1 8 7" />
-                          </svg>
-                        </span>
-                      ))}
+                    <span className="relative flex items-center justify-center w-2.5 h-2.5">
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-60 animate-ping" />
+                      <span className="relative inline-flex w-2 h-2 rounded-full bg-cyan-400" />
                     </span>
                     <span className="text-sm text-gray-300">
                       <span className="font-semibold text-white">{formatSignupCount(displayCount)}</span> już na liście
