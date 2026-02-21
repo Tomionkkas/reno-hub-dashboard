@@ -192,11 +192,16 @@ export default function WaitlistPage() {
                 <div className="flex justify-center lg:justify-start mb-6">
                   <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/10 rounded-full">
                     <span className="flex">
-                      {[...Array(5)].map((_, i) => (
+                      {(['from-cyan-500 to-cyan-600', 'from-purple-500 to-purple-600', 'from-emerald-500 to-emerald-600', 'from-blue-500 to-blue-600', 'from-pink-500 to-rose-500'] as const).map((gradient, i) => (
                         <span
                           key={i}
-                          className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-600 to-cyan-500 border-2 border-[#0b1120] -ml-1 first:ml-0"
-                        />
+                          className={`w-6 h-6 rounded-full bg-gradient-to-br ${gradient} border-2 border-[#0b1120] flex items-center justify-center ${i !== 0 ? '-ml-1.5' : ''}`}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="white" opacity="0.9">
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M4 20c0-3.9 3.6-7 8-7s8 3.1 8 7" />
+                          </svg>
+                        </span>
                       ))}
                     </span>
                     <span className="text-sm text-gray-300">
