@@ -197,21 +197,21 @@ const EnhancedCTASection: React.FC<EnhancedCTASectionProps> = ({ className }) =>
           className="text-lg md:text-xl text-white/80 mb-8"
         >
           <GSAPTextReveal type="character" duration={0.6} stagger={0.03}>
-            Dołącz do tysięcy zadowolonych użytkowników
+            Zapisz się i dostań wczesny dostęp do CalcReno
           </GSAPTextReveal>
         </div>
         
         <div ref={buttonRef}>
-          <Link to="/register">
-            <GSAPButton 
-              size="xl" 
+          <Link to="/waitlist">
+            <GSAPButton
+              size="xl"
               variant="gradient"
               className="bg-gradient-to-r from-white to-gray-100 text-reno-purple hover:from-gray-100 hover:to-white font-bold text-lg shadow-2xl hover:shadow-white/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
               ripple={true}
               magnetic={true}
               hoverEffect="bounce"
             >
-              Zarejestruj się teraz
+              Dołącz do listy
             </GSAPButton>
           </Link>
         </div>
@@ -220,15 +220,15 @@ const EnhancedCTASection: React.FC<EnhancedCTASectionProps> = ({ className }) =>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <div className="flex items-center gap-2 text-white/70 text-sm">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span>Bezpłatne konto</span>
+            <span>Beta powiadomienie</span>
           </div>
           <div className="flex items-center gap-2 text-white/70 text-sm">
             <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-            <span>Natychmiastowy dostęp</span>
+            <span>Wczesny dostęp</span>
           </div>
           <div className="flex items-center gap-2 text-white/70 text-sm">
             <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-            <span>Bez zobowiązań</span>
+            <span>Zero spamu</span>
           </div>
         </div>
       </div>
