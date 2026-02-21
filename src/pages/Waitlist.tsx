@@ -37,6 +37,8 @@ const steps = [
   { number: '03', title: 'Uzyskaj wczesny dostęp', description: 'Jako pierwszy przetestujesz aplikację i wpłyniesz na jej rozwój.' },
 ];
 
+const BASE_COUNT = 20;
+
 function formatSignupCount(n: number): string {
   const last2 = n % 100;
   const last1 = n % 10;
@@ -53,25 +55,36 @@ export default function WaitlistPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [showDemo, setShowDemo] = useState(false);
   const [displayCount, setDisplayCount] = useState(0);
-  const BASE_COUNT = 20;
 
   useEffect(() => {
-    supabase.rpc('get_waitlist_count').then(({ data }) => {
-      const target = BASE_COUNT + (data ?? 0);
-      const steps = 40;
-      const increment = target / steps;
+    let interval: ReturnType<typeof setInterval> | null = null;
+    let cancelled = false;
+
+    supabase.rpc('get_waitlist_count').then(({ data, error }) => {
+      if (cancelled) return;
+      if (error) {
+        console.error('[waitlist-count]', error.message);
+        return;
+      }
+      const target = BASE_COUNT + (typeof data === 'number' ? data : 0);
+      const STEP_COUNT = 40;
+      const increment = target / STEP_COUNT;
       let current = 0;
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         current += increment;
         if (current >= target) {
           setDisplayCount(target);
-          clearInterval(interval);
+          clearInterval(interval!);
         } else {
           setDisplayCount(Math.floor(current));
         }
       }, 25);
-      return () => clearInterval(interval);
     });
+
+    return () => {
+      cancelled = true;
+      if (interval) clearInterval(interval);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
