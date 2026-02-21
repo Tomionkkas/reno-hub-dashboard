@@ -62,6 +62,11 @@ export default function WaitlistPage() {
         setFormState('duplicate');
       } else {
         setFormState('success');
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'conversion', {
+            send_to: 'AW-17946979757/yGBiCICctvwbEK3b5O1C',
+          });
+        }
       }
     } catch {
       setErrorMsg('Coś poszło nie tak. Spróbuj ponownie.');

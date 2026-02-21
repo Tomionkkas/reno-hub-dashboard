@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -30,17 +29,6 @@ export const GoogleAdsTracker = () => {
         window.gtag("config", "AW-17946979757", { page_path: pagePath });
         console.log("Analytics: Page View Triggered for", location.pathname);
 
-        // 2. Trigger Conversion Event ONLY on Home Page View ('/')
-        if (location.pathname === "/") {
-            setTimeout(() => {
-                console.log("Google Ads: Triggering Home Page Conversion Event");
-                window.gtag("event", "conversion", {
-                    send_to: "AW-17946979757/zTg-CI-C3vYbEK3b5O1C",
-                    value: 1.0,
-                    currency: "PLN",
-                });
-            }, 500);
-        }
     }, [location]);
 
     return null;
