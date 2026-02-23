@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bell, Zap, Shield, Lock, Calculator, ClipboardList, PackageCheck, Play } from 'lucide-react';
 import { DemoModal } from '@/components/ui/DemoModal';
 import Navigation from '@/components/Navigation';
@@ -56,6 +56,34 @@ export default function WaitlistPage() {
   const [showDemo, setShowDemo] = useState(false);
   const [displayCount, setDisplayCount] = useState(0);
 
+  const utmRef = useRef<{
+    utmSource: string | null;
+    utmMedium: string | null;
+    utmCampaign: string | null;
+    utmTerm: string | null;
+    utmContent: string | null;
+    referrer: string | null;
+  }>({
+    utmSource: null,
+    utmMedium: null,
+    utmCampaign: null,
+    utmTerm: null,
+    utmContent: null,
+    referrer: null,
+  });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    utmRef.current = {
+      utmSource:   params.get('utm_source'),
+      utmMedium:   params.get('utm_medium'),
+      utmCampaign: params.get('utm_campaign'),
+      utmTerm:     params.get('utm_term'),
+      utmContent:  params.get('utm_content'),
+      referrer:    document.referrer || null,
+    };
+  }, []);
+
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     let cancelled = false;
@@ -96,7 +124,11 @@ export default function WaitlistPage() {
 
     try {
       const { data, error } = await supabase.functions.invoke('newsletter-signup', {
-        body: { firstName: firstName.trim(), email: email.trim() },
+        body: {
+          firstName: firstName.trim(),
+          email: email.trim(),
+          ...utmRef.current,
+        },
       });
 
       if (error) throw new Error(error.message);

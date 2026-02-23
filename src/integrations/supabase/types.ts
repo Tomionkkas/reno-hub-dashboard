@@ -20,24 +20,42 @@ export type Database = {
           email: string
           first_name: string
           id: string
+          referrer: string | null
           source: string
           subscribed_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         Insert: {
           brevo_synced?: boolean
           email: string
           first_name: string
           id?: string
+          referrer?: string | null
           source?: string
           subscribed_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Update: {
           brevo_synced?: boolean
           email?: string
           first_name?: string
           id?: string
+          referrer?: string | null
           source?: string
           subscribed_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Relationships: []
       }
