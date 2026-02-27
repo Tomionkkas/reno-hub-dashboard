@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,9 @@ import {
 import { GradientBackground, ParticleSystem, FloatingOrbs } from '@/components/ui/visual-enhancements';
 import { RippleEffect } from '@/components/ui/micro-interactions';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 type PageState = 'loading' | 'form' | 'success' | 'error';
 
@@ -28,7 +31,8 @@ const ResetPassword = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const appParam = new URLSearchParams(window.location.search).get('app');
+  const [searchParams] = useSearchParams();
+  const appParam = searchParams.get('app');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -86,7 +90,14 @@ const ResetPassword = () => {
     setIsSubmitting(false);
 
     if (error) {
-      setErrorMessage(error.message);
+      console.error('[ResetPassword] updateUser error:', error);
+      if (error.message?.includes('different from the old password')) {
+        setErrorMessage('Nowe hasło musi być inne niż obecne.');
+      } else if (error.message?.includes('session')) {
+        setErrorMessage('Sesja wygasła. Poproś o nowy link resetowania hasła.');
+      } else {
+        setErrorMessage('Nie udało się zmienić hasła. Spróbuj ponownie.');
+      }
     } else if (appParam === 'renohub') {
       navigate('/dashboard');
     } else {
@@ -191,7 +202,19 @@ const ResetPassword = () => {
     );
   };
 
-  const cardTitle = pageState === 'success' ? 'Gotowe!' : 'Ustaw nowe hasło';
+  const backgroundEffects = useMemo(() => (
+    <>
+      <ParticleSystem count={30} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
+      <FloatingOrbs count={6} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
+    </>
+  ), []);
+
+  const cardTitle =
+    pageState === 'success'
+      ? 'Gotowe!'
+      : pageState === 'error'
+      ? 'Błąd'
+      : 'Ustaw nowe hasło';
   const cardDescription =
     pageState === 'loading'
       ? ''
@@ -209,12 +232,7 @@ const ResetPassword = () => {
       speed={30}
       className="min-h-screen relative"
     >
-      {useMemo(() => (
-        <>
-          <ParticleSystem count={30} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-          <FloatingOrbs count={6} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-        </>
-      ), [])}
+      {backgroundEffects}
 
       <section
         ref={sectionRef}
