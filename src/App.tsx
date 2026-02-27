@@ -32,6 +32,8 @@ const RenoScoutPage = React.lazy(() => import('./pages/RenoScout'));
 const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
 const WaitlistPage = React.lazy(() => import('./pages/Waitlist'));
 const AboutPage = React.lazy(() => import('./pages/About'));
+const ResetPassword = React.lazy(() => import('./pages/auth/ResetPassword'));
+const Confirm = React.lazy(() => import('./pages/auth/Confirm'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -76,6 +78,8 @@ const App = () => (
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/waitlist" element={<WaitlistPage />} />
                   <Route path="/o-nas" element={<AboutPage />} />
+                  <Route path="/auth/reset-password" element={<ResetPassword />} />
+                  <Route path="/auth/confirm" element={<Confirm />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
