@@ -59,11 +59,12 @@ const Login = () => {
     e.preventDefault();
     setIsForgotLoading(true);
     try {
-      await resetPassword(forgotEmail);
+      await resetPassword(forgotEmail.trim());
       toast.success('Link do resetowania hasła został wysłany!');
       setMode('login');
       setForgotEmail('');
     } catch (error: any) {
+      console.error('[Login] Forgot password error:', error);
       toast.error('Nie udało się wysłać linku. Sprawdź adres email.');
     } finally {
       setIsForgotLoading(false);
@@ -195,7 +196,7 @@ const Login = () => {
                       <div className="mt-4 text-center">
                         <button
                           type="button"
-                          onClick={() => setMode('login')}
+                          onClick={() => { setMode('login'); setForgotEmail(''); }}
                           className="text-gray-400 hover:text-white transition-colors text-sm"
                         >
                           ← Wróć do logowania
