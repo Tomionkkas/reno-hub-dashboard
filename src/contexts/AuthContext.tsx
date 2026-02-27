@@ -13,8 +13,9 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
+  register: (email: string, password: string, firstName: string, lastName: string) => Promise<{ confirmationPending: boolean }>;
   logout: () => void;
+  resetPassword: (email: string) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -197,14 +198,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const register = async (email: string, password: string, firstName: string, lastName: string) => {
+  const register = async (email: string, password: string, firstName: string, lastName: string): Promise<{ confirmationPending: boolean }> => {
     setIsLoading(true);
     try {
-      // Try Supabase auth first
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: 'https://renohub.org/auth/confirm?app=renohub',
           data: {
             first_name: firstName,
             last_name: lastName,
@@ -213,37 +214,52 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
 
       if (error) {
-        // If Supabase auth fails, fall back to mock auth for development
+        // Fallback to mock auth for development
         console.warn('Supabase registration failed, using mock auth:', error);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
         const userData: User = {
           id: Date.now().toString(),
           email,
           role: 'user',
           subscriptions: [],
-          tier: 'free'
+          tier: 'free',
         };
-        
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-      } else if (data.user) {
-        // Supabase registration successful
+        return { confirmationPending: false };
+      }
+
+      if (data.user) {
+        if (data.session === null) {
+          // Email confirmation required — user exists but is not yet active
+          return { confirmationPending: true };
+        }
+        // Immediate session (email confirmation disabled in Supabase)
         const userData: User = {
           id: data.user.id,
           email: data.user.email || email,
           role: 'user',
           subscriptions: [],
-          tier: 'free'
+          tier: 'free',
         };
         setUser(userData);
+        return { confirmationPending: false };
       }
+
+      return { confirmationPending: false };
     } catch (error) {
       console.error('Registration error:', error);
       throw error;
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetPassword = async (email: string): Promise<void> => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://renohub.org/auth/reset-password?app=renohub',
+    });
+    if (error) throw error;
   };
 
   const logout = async () => {
@@ -258,7 +274,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, resetPassword, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
