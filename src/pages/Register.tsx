@@ -19,6 +19,8 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showEffects, setShowEffects] = useState(false);
+  const [registrationPending, setRegistrationPending] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
 
@@ -32,9 +34,14 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      await registerUser(email, password, firstName, lastName);
-      toast.success('Konto zostało utworzone pomyślnie!');
-      navigate('/dashboard');
+      const result = await registerUser(email, password, firstName, lastName);
+      if (result.confirmationPending) {
+        setRegisteredEmail(email);
+        setRegistrationPending(true);
+      } else {
+        toast.success('Konto zostało utworzone pomyślnie!');
+        navigate('/dashboard');
+      }
     } catch (error) {
       toast.error('Błąd podczas rejestracji. Spróbuj ponownie.');
     } finally {
@@ -100,91 +107,115 @@ const Register = () => {
                 </GSAPCardHeader>
 
                 <GSAPCardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName" className="text-white font-medium">Imię</Label>
-                        <Input
-                          id="firstName"
-                          type="text"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          required
-                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                          placeholder="Jan"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName" className="text-white font-medium">Nazwisko</Label>
-                        <Input
-                          id="lastName"
-                          type="text"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                          required
-                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                          placeholder="Kowalski"
-                        />
+                  {registrationPending ? (
+                    <div className="text-center space-y-4 py-4">
+                      <div className="text-5xl mb-2">📬</div>
+                      <h3 className="text-white text-xl font-semibold">Sprawdź swoją skrzynkę</h3>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        Wysłaliśmy link aktywacyjny na adres{' '}
+                        <span className="text-reno-blue font-medium">{registeredEmail}</span>
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        Kliknij link w emailu, aby aktywować konto i zalogować się.
+                      </p>
+                      <div className="mt-6">
+                        <p className="text-gray-400 text-sm">
+                          Już masz konto?{' '}
+                          <Link to="/login" className="text-reno-blue hover:text-reno-purple transition-colors font-medium hover-lift">
+                            Zaloguj się
+                          </Link>
+                        </p>
                       </div>
                     </div>
+                  ) : (
+                    <>
+                      <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="firstName" className="text-white font-medium">Imię</Label>
+                            <Input
+                              id="firstName"
+                              type="text"
+                              value={firstName}
+                              onChange={(e) => setFirstName(e.target.value)}
+                              required
+                              className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                              placeholder="Jan"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="lastName" className="text-white font-medium">Nazwisko</Label>
+                            <Input
+                              id="lastName"
+                              type="text"
+                              value={lastName}
+                              onChange={(e) => setLastName(e.target.value)}
+                              required
+                              className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                              placeholder="Kowalski"
+                            />
+                          </div>
+                        </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-white font-medium">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                        placeholder="twoj@email.com"
-                      />
-                    </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email" className="text-white font-medium">Email</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                            placeholder="twoj@email.com"
+                          />
+                        </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="text-white font-medium">Hasło</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                        placeholder="Minimum 8 znaków"
-                      />
-                    </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="password" className="text-white font-medium">Hasło</Label>
+                          <Input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                            placeholder="Minimum 8 znaków"
+                          />
+                        </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-white font-medium">Potwierdź hasło</Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                        placeholder="Powtórz hasło"
-                      />
-                    </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="confirmPassword" className="text-white font-medium">Potwierdź hasło</Label>
+                          <Input
+                            id="confirmPassword"
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                            placeholder="Powtórz hasło"
+                          />
+                        </div>
 
-                    <LoadingButton
-                      type="submit"
-                      className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
-                      loading={isLoading}
-                      loadingText="Tworzę konto..."
-                    >
-                      Utwórz konto
-                    </LoadingButton>
-                  </form>
+                        <LoadingButton
+                          type="submit"
+                          className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
+                          loading={isLoading}
+                          loadingText="Tworzę konto..."
+                        >
+                          Utwórz konto
+                        </LoadingButton>
+                      </form>
 
-                  <div className="mt-8 text-center space-y-3">
-                    <p className="text-gray-400">
-                      Masz już konto?{' '}
-                      <Link to="/login" className="text-reno-blue hover:text-reno-purple transition-colors font-medium hover-lift">
-                        Zaloguj się
-                      </Link>
-                    </p>
-                  </div>
+                      <div className="mt-8 text-center space-y-3">
+                        <p className="text-gray-400">
+                          Masz już konto?{' '}
+                          <Link to="/login" className="text-reno-blue hover:text-reno-purple transition-colors font-medium hover-lift">
+                            Zaloguj się
+                          </Link>
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </GSAPCardContent>
               </GSAPCard>
             </RippleEffect>
