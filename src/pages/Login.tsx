@@ -20,7 +20,10 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [mode, setMode] = useState<'login' | 'forgot'>('login');
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [isForgotLoading, setIsForgotLoading] = useState(false);
+  const { login, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -49,6 +52,21 @@ const Login = () => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsForgotLoading(true);
+    try {
+      await resetPassword(forgotEmail);
+      toast.success('Link do resetowania hasła został wysłany!');
+      setMode('login');
+      setForgotEmail('');
+    } catch (error: any) {
+      toast.error('Nie udało się wysłać linku. Sprawdź adres email.');
+    } finally {
+      setIsForgotLoading(false);
     }
   };
 
@@ -140,59 +158,104 @@ const Login = () => {
               >
                 <GSAPCardHeader className="text-center">
                   <GSAPCardTitle id="login-form-title" className="text-white text-2xl md:text-3xl mb-2">
-                    Zaloguj się
+                    {mode === 'forgot' ? 'Resetuj hasło' : 'Zaloguj się'}
                   </GSAPCardTitle>
                   <GSAPCardDescription className="text-gray-300 text-base">
-                    Wprowadź swoje dane aby uzyskać dostęp do konta
+                    {mode === 'forgot'
+                      ? 'Podaj swój email, a wyślemy Ci link do resetowania hasła'
+                      : 'Wprowadź swoje dane aby uzyskać dostęp do konta'}
                   </GSAPCardDescription>
                 </GSAPCardHeader>
 
                 <GSAPCardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-white font-medium">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                        placeholder="twoj@email.com"
-                      />
-                    </div>
+                  {mode === 'forgot' ? (
+                    <form onSubmit={handleForgotPassword} className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="forgot-email" className="text-white font-medium">Email</Label>
+                        <Input
+                          id="forgot-email"
+                          type="email"
+                          value={forgotEmail}
+                          onChange={(e) => setForgotEmail(e.target.value)}
+                          required
+                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                          placeholder="twoj@email.com"
+                        />
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="text-white font-medium">Hasło</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                        placeholder="Wprowadź hasło"
-                      />
-                    </div>
+                      <LoadingButton
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
+                        loading={isForgotLoading}
+                        loadingText="Wysyłanie..."
+                      >
+                        Wyślij link
+                      </LoadingButton>
 
-                    <LoadingButton
-                      type="submit"
-                      className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
-                      loading={isLoading}
-                      loadingText="Logowanie..."
-                    >
-                      Zaloguj się
-                    </LoadingButton>
-                  </form>
+                      <div className="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setMode('login')}
+                          className="text-gray-400 hover:text-white transition-colors text-sm"
+                        >
+                          ← Wróć do logowania
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-white font-medium">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                          placeholder="twoj@email.com"
+                        />
+                      </div>
 
-                  <div className="mt-8 text-center space-y-3">
-                    <p className="text-gray-400">
-                      Nie masz konta?{' '}
-                      <Link to="/register" className="text-reno-blue hover:text-reno-purple transition-colors font-medium hover-lift">
-                        Zarejestruj się
-                      </Link>
-                    </p>
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="password" className="text-white font-medium">Hasło</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
+                          placeholder="Wprowadź hasło"
+                        />
+                      </div>
+
+                      <LoadingButton
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
+                        loading={isLoading}
+                        loadingText="Logowanie..."
+                      >
+                        Zaloguj się
+                      </LoadingButton>
+
+                      <div className="mt-8 text-center space-y-3">
+                        <button
+                          type="button"
+                          onClick={() => setMode('forgot')}
+                          className="text-gray-400 hover:text-reno-blue transition-colors text-sm"
+                        >
+                          Zapomniałem hasła
+                        </button>
+                        <p className="text-gray-400">
+                          Nie masz konta?{' '}
+                          <Link to="/register" className="text-reno-blue hover:text-reno-purple transition-colors font-medium hover-lift">
+                            Zarejestruj się
+                          </Link>
+                        </p>
+                      </div>
+                    </form>
+                  )}
                 </GSAPCardContent>
               </GSAPCard>
             </RippleEffect>
