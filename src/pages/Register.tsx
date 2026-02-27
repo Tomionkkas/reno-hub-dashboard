@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoadingButton } from '@/components/ui/loading-button';
@@ -99,18 +99,19 @@ const Register = () => {
               >
                 <GSAPCardHeader className="text-center">
                   <GSAPCardTitle id="register-form-title" className="text-white text-2xl md:text-3xl mb-2">
-                    Utwórz konto
+                    {registrationPending ? 'Sprawdź swoją skrzynkę' : 'Utwórz konto'}
                   </GSAPCardTitle>
-                  <GSAPCardDescription className="text-gray-300 text-base">
-                    Zarejestruj się aby uzyskać dostęp do aplikacji
-                  </GSAPCardDescription>
+                  {!registrationPending && (
+                    <GSAPCardDescription className="text-gray-300 text-base">
+                      Zarejestruj się aby uzyskać dostęp do aplikacji
+                    </GSAPCardDescription>
+                  )}
                 </GSAPCardHeader>
 
                 <GSAPCardContent>
                   {registrationPending ? (
                     <div className="text-center space-y-4 py-4">
                       <div className="text-5xl mb-2">📬</div>
-                      <h3 className="text-white text-xl font-semibold">Sprawdź swoją skrzynkę</h3>
                       <p className="text-gray-300 text-sm leading-relaxed">
                         Wysłaliśmy link aktywacyjny na adres{' '}
                         <span className="text-reno-blue font-medium">{registeredEmail}</span>
