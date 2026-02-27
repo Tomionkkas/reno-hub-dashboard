@@ -46,29 +46,17 @@ const ResetPassword = () => {
   }, []);
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
-    const type = params.get('type');
-
-    if (!accessToken || type !== 'recovery') {
-      setErrorMessage('Link resetowania hasła jest nieprawidłowy lub wygasł.');
-      setPageState('error');
-      return;
-    }
-
-    supabase.auth
-      .setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
-      .then(({ error }) => {
-        if (error) {
-          setErrorMessage('Link resetowania hasła wygasł. Poproś o nowy.');
-          setPageState('error');
-        } else {
-          setPageState('form');
-        }
-      });
-  }, [navigate, appParam]);
+    // Supabase's detectSessionInUrl processes the URL hash during client initialization
+    // and stores the session before this component mounts. Use getSession() to read it.
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error || !session) {
+        setErrorMessage('Link resetowania hasła jest nieprawidłowy lub wygasł.');
+        setPageState('error');
+      } else {
+        setPageState('form');
+      }
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
