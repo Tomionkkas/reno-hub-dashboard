@@ -61,6 +61,7 @@ const Confirm = () => {
       .setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
       .then(({ error }) => {
         if (error) {
+          console.error('[Confirm] setSession error:', error);
           if (error.message.toLowerCase().includes('already')) {
             setPageState('already_confirmed');
           } else {
@@ -75,7 +76,7 @@ const Confirm = () => {
           }
         }
       });
-  }, []);
+  }, [navigate, appParam]);
 
   const backgroundEffects = useMemo(() => (
     <>
@@ -101,6 +102,12 @@ const Confirm = () => {
           <p className="text-gray-400 text-sm">
             Spróbuj zarejestrować się ponownie lub skontaktuj się z pomocą techniczną.
           </p>
+          <button
+            onClick={() => navigate('/login')}
+            className="text-reno-blue hover:text-reno-purple transition-colors text-sm"
+          >
+            Wróć do logowania
+          </button>
         </div>
       );
     }
@@ -164,6 +171,8 @@ const Confirm = () => {
       ? 'Błąd weryfikacji'
       : pageState === 'already_confirmed'
       ? 'Już potwierdzono'
+      : appParam === 'calcreno'
+      ? 'Email potwierdzony!'
       : 'Witaj w RenoHub!';
 
   const cardDescription =
@@ -171,6 +180,8 @@ const Confirm = () => {
       ? 'Trwa weryfikacja Twojego adresu email...'
       : pageState === 'error'
       ? 'Wystąpił problem z linkiem potwierdzającym'
+      : pageState === 'already_confirmed'
+      ? 'Twoje konto jest już aktywne.'
       : '';
 
   return (

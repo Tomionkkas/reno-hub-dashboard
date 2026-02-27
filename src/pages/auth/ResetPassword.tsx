@@ -68,7 +68,7 @@ const ResetPassword = () => {
           setPageState('form');
         }
       });
-  }, []);
+  }, [navigate, appParam]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
