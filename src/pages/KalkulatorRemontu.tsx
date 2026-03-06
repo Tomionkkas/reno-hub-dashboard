@@ -607,16 +607,17 @@ function BottomSheet({
           {emailSubmitted ? (
             <DetailedBreakdown result={result} />
           ) : (
-            <EmailGate onSubmit={onEmailSubmit} />
+            <>
+              <EmailGate onSubmit={onEmailSubmit} />
+              {/* App teaser CTA — only shown before email submission; after, DetailedBreakdown has its own */}
+              <div className="bg-teal-900/20 border border-teal-700/30 rounded-xl p-4 text-center">
+                <p className="text-sm text-gray-300">Chcesz wyliczyć całe mieszkanie?</p>
+                <p className="text-xs text-teal-400 font-medium mt-0.5">
+                  CalcReno — aplikacja mobilna — już wkrótce
+                </p>
+              </div>
+            </>
           )}
-
-          {/* App teaser CTA */}
-          <div className="bg-teal-900/20 border border-teal-700/30 rounded-xl p-4 text-center">
-            <p className="text-sm text-gray-300">Chcesz wyliczyć całe mieszkanie?</p>
-            <p className="text-xs text-teal-400 font-medium mt-0.5">
-              CalcReno — aplikacja mobilna — już wkrótce
-            </p>
-          </div>
         </div>
       </div>
     </>
@@ -626,17 +627,23 @@ function BottomSheet({
 // ── Trust Section ─────────────────────────────────────────────────────────────
 
 function TrustSection() {
+  const [ref, inView] = useInView();
   const items = [
     { icon: CheckIcon, text: 'Obliczenia zgodne z cenami rynkowymi 2025' },
     { icon: LockIcon, text: 'Bez rejestracji — wyniki od razu' },
     { icon: BuildingIcon, text: 'Używany przez wykonawców i inwestorów w Polsce' },
   ];
   return (
-    <section className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-6">
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className={`max-w-4xl mx-auto px-4 py-10 transition-all duration-500 ease-out ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+    >
+      <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-8">
         {items.map(({ icon: Icon, text }) => (
-          <div key={text} className="flex items-center gap-2 text-sm text-gray-500">
-            <Icon className="w-4 h-4 text-gray-600 flex-shrink-0" />
+          <div key={text} className="flex items-center gap-2.5 text-sm text-gray-600">
+            <Icon className="w-4 h-4 text-gray-700 flex-shrink-0" />
             {text}
           </div>
         ))}
@@ -672,14 +679,20 @@ function BuildingIcon({ className }: { className?: string }) {
 // ── App Teaser ────────────────────────────────────────────────────────────────
 
 function AppTeaserSection() {
+  const [ref, inView] = useInView();
   return (
-    <section className="max-w-4xl mx-auto px-4 pb-16">
-      <div className="bg-gray-900 rounded-2xl p-6 md:p-10">
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className={`max-w-4xl mx-auto px-4 pb-16 transition-all duration-500 ease-out delay-100 ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+    >
+      <div className="bg-gray-900 border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] rounded-2xl p-6 md:p-10">
         <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight">
             Chcesz wyliczyć całe mieszkanie?
           </h2>
-          <p className="text-gray-400 max-w-md mx-auto text-sm md:text-base">
+          <p className="text-gray-500 max-w-md mx-auto text-sm md:text-base leading-relaxed">
             CalcReno pozwala dodać wiele pomieszczeń, narysować plan 2D i eksportować
             kosztorys do PDF. Już wkrótce na iOS i Android.
           </p>
@@ -689,24 +702,24 @@ function AppTeaserSection() {
           <img
             src="/calcreno/screenshots/Cost summary.PNG"
             alt="CalcReno - podsumowanie kosztów remontu"
-            className="w-36 md:w-44 rounded-2xl shadow-2xl border border-gray-800"
+            className="w-36 md:w-44 rounded-2xl shadow-2xl border border-gray-800 md:rotate-1 transition-transform duration-300 hover:rotate-0"
           />
           <img
             src="/calcreno/screenshots/Material calculator.PNG"
             alt="CalcReno - kalkulator materiałów"
-            className="w-36 md:w-44 rounded-2xl shadow-2xl border border-gray-800"
+            className="w-36 md:w-44 rounded-2xl shadow-2xl border border-gray-800 md:-rotate-1 transition-transform duration-300 hover:rotate-0"
           />
         </div>
 
         <div className="flex flex-wrap justify-center gap-3 items-center">
-          <span className="text-gray-500 text-sm w-full text-center sm:w-auto">
+          <span className="text-gray-600 text-sm w-full text-center sm:w-auto">
             Dostępne wkrótce na:
           </span>
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-gray-300">
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-800 border border-white/5 rounded-xl text-sm text-gray-400">
             <AppleIcon className="w-4 h-4" />
             App Store
           </div>
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-gray-300">
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-800 border border-white/5 rounded-xl text-sm text-gray-400">
             <PlayIcon className="w-4 h-4" />
             Google Play
           </div>
