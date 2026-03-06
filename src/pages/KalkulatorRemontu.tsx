@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useInView } from '../hooks/useInView';
+import { useAnimatedNumber } from '../hooks/useAnimatedNumber';
 import { Helmet } from 'react-helmet-async';
 import {
   calculateRenovation,
@@ -339,28 +340,54 @@ function ResultsPanel({
   emailSubmitted: boolean;
   onEmailSubmit: () => void;
 }) {
+  const [ref, inView] = useInView(0.05);
+  const [glowBurst, setGlowBurst] = useState(false);
+
+  const animatedTotal = useAnimatedNumber(result.totalCost);
+  const animatedPerSqm = useAnimatedNumber(result.costPerSqm);
+  const animatedArea = useAnimatedNumber(result.floorArea);
+
+  const prevTotal = useRef(result.totalCost);
+  useEffect(() => {
+    if (prevTotal.current !== result.totalCost) {
+      prevTotal.current = result.totalCost;
+      setGlowBurst(true);
+      const t = setTimeout(() => setGlowBurst(false), 450);
+      return () => clearTimeout(t);
+    }
+  }, [result.totalCost]);
+
   const fmt = (n: number) => new Intl.NumberFormat('pl-PL').format(Math.round(n));
 
   const categories = [
-    { key: 'floor', label: 'Podłoga', color: 'bg-teal-500' },
-    { key: 'walls', label: 'Ściany', color: 'bg-blue-500' },
-    { key: 'ceiling', label: 'Sufit', color: 'bg-purple-500' },
-    { key: 'electrical', label: 'Elektryka', color: 'bg-amber-500' },
+    { key: 'floor', label: 'Podłoga', color: 'bg-teal-500/80' },
+    { key: 'walls', label: 'Ściany', color: 'bg-blue-500/80' },
+    { key: 'ceiling', label: 'Sufit', color: 'bg-purple-500/80' },
+    { key: 'electrical', label: 'Elektryka', color: 'bg-amber-500/80' },
   ] as const;
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-5 md:p-6 space-y-5">
-      {/* Total */}
-      <div className="text-center bg-gray-800 rounded-xl px-6 py-5">
-        <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">
+    <div
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className={`hidden lg:flex flex-col bg-gray-900 border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] rounded-2xl p-5 md:p-6 space-y-5 transition-all duration-500 ease-out delay-75 ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+    >
+      {/* Total cost card */}
+      <div
+        className={`text-center rounded-xl px-6 py-6 bg-gray-800/60 ${
+          glowBurst ? 'animate-glow-burst' : 'animate-glow-pulse'
+        }`}
+      >
+        <p className="text-[11px] uppercase tracking-widest text-gray-500 mb-2">
           Szacowany koszt materiałów
         </p>
-        <p className="text-4xl md:text-5xl font-bold text-teal-400 tracking-tight">
-          {fmt(result.totalCost)} zł
+        <p className="text-5xl md:text-6xl font-bold text-teal-400 tracking-tight tabular-nums">
+          {fmt(animatedTotal)} zł
         </p>
-        <p className="text-gray-500 text-sm mt-1.5">
-          {fmt(result.costPerSqm)} zł/m²&nbsp;&nbsp;·&nbsp;&nbsp;
-          {result.floorArea.toFixed(2)} m²
+        <p className="text-gray-600 text-sm mt-2 tabular-nums">
+          {fmt(animatedPerSqm)} zł/m²&nbsp;&nbsp;·&nbsp;&nbsp;
+          {animatedArea.toFixed(2)} m²
         </p>
       </div>
 
@@ -372,12 +399,12 @@ function ResultsPanel({
           return (
             <div key={key}>
               <div className="flex justify-between text-sm mb-1.5">
-                <span className="text-gray-400">{label}</span>
-                <span className="text-white font-medium">{fmt(value)} zł</span>
+                <span className="text-gray-500 text-[13px]">{label}</span>
+                <span className="text-gray-300 font-medium tabular-nums">{fmt(value)} zł</span>
               </div>
-              <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
                 <div
-                  className={`h-1.5 ${color} rounded-full transition-all duration-300`}
+                  className={`h-1.5 ${color} rounded-full transition-[width] duration-[400ms] ease-out`}
                   style={{ width: `${pct}%` }}
                 />
               </div>
@@ -386,7 +413,6 @@ function ResultsPanel({
         })}
       </div>
 
-      {/* Email gate or breakdown */}
       {emailSubmitted ? (
         <DetailedBreakdown result={result} />
       ) : (
