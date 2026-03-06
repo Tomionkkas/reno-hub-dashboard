@@ -465,9 +465,9 @@ function EmailGate({ onSubmit }: { onSubmit: () => void }) {
   return (
     <div className="border border-gray-700 rounded-xl p-4 space-y-3">
       <div>
-        <p className="text-sm font-semibold text-white">Pobierz pełny kosztorys</p>
+        <p className="text-sm font-semibold text-white">Odblokuj pełne zestawienie materiałów</p>
         <p className="text-xs text-gray-400 mt-0.5">
-          Wpisz email — wyślemy Ci szczegółowe zestawienie materiałów
+          Wpisz email — pokażemy Ci szczegółową listę materiałów z ilościami
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-2">
@@ -486,7 +486,7 @@ function EmailGate({ onSubmit }: { onSubmit: () => void }) {
           disabled={loading}
           className="w-full bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-white font-semibold py-3.5 rounded-xl text-sm transition-colors disabled:opacity-50"
         >
-          {loading ? 'Wysyłanie...' : 'Wyślij mi kosztorys →'}
+          {loading ? 'Ładowanie...' : 'Pokaż pełne zestawienie →'}
         </button>
       </form>
       <p className="text-xs text-gray-500">Bez spamu. Tylko raz, tylko to co zamówiłeś.</p>
@@ -631,7 +631,7 @@ function TrustSection() {
   const items = [
     { icon: CheckIcon, text: 'Obliczenia zgodne z cenami rynkowymi 2026' },
     { icon: LockIcon, text: 'Bez rejestracji — wyniki od razu' },
-    { icon: BuildingIcon, text: 'Używany przez wykonawców i inwestorów w Polsce' },
+    { icon: BuildingIcon, text: 'Stworzone w Polsce dla polskiego rynku budowlanego' },
   ];
   return (
     <section
