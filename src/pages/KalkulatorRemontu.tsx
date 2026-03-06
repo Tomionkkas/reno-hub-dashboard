@@ -26,6 +26,7 @@ const DEFAULT_INPUTS: RoomInputs = {
 export default function KalkulatorRemontu() {
   const [inputs, setInputs] = useState<RoomInputs>(DEFAULT_INPUTS);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const { prices, loading: pricesLoading } = useRenovationPrices(inputs.pricingTier);
 
   const result = calculateRenovation(inputs, pricesLoading ? DEFAULT_PRICES : prices);
@@ -45,7 +46,7 @@ export default function KalkulatorRemontu() {
         />
       </Helmet>
 
-      <main className="min-h-screen bg-gray-950 text-white">
+      <main className="min-h-screen bg-gray-950 text-white pb-24 lg:pb-0">
         <HeroSection />
 
         <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -59,6 +60,9 @@ export default function KalkulatorRemontu() {
 
         <TrustSection />
         <AppTeaserSection />
+
+        {/* Mobile only — BottomSheet placeholder added in Task 7 */}
+        <StickyMobileBar result={result} onOpen={() => setSheetOpen(true)} />
       </main>
     </>
   );
@@ -616,5 +620,43 @@ function PlayIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M3 20.5v-17c0-.83.94-1.3 1.6-.8l14 8.5c.6.36.6 1.24 0 1.6l-14 8.5c-.66.5-1.6.03-1.6-.8z" />
     </svg>
+  );
+}
+
+// ── Sticky Mobile Bar ─────────────────────────────────────────────────────────
+
+function StickyMobileBar({
+  result,
+  onOpen,
+}: {
+  result: Result;
+  onOpen: () => void;
+}) {
+  const animatedTotal = useAnimatedNumber(result.totalCost);
+  const fmt = (n: number) => new Intl.NumberFormat('pl-PL').format(Math.round(n));
+
+  return (
+    <div
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 pb-safe"
+      style={{ boxShadow: '0 -8px 32px rgba(20,184,166,0.12)' }}
+    >
+      <button
+        type="button"
+        onClick={onOpen}
+        className="w-full flex items-center justify-between px-5 py-4 backdrop-blur-xl bg-gray-900/85 border-t border-white/5"
+      >
+        <div className="text-left">
+          <p className="text-teal-400 text-2xl font-bold tracking-tight tabular-nums leading-none">
+            {fmt(animatedTotal)} zł
+          </p>
+          <p className="text-gray-500 text-xs mt-0.5 tabular-nums">
+            {fmt(result.costPerSqm)} zł/m²&nbsp;·&nbsp;{result.floorArea.toFixed(2)} m²
+          </p>
+        </div>
+        <div className="bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors flex-shrink-0">
+          Wyślij kosztorys →
+        </div>
+      </button>
+    </div>
   );
 }
