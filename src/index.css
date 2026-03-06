@@ -562,3 +562,8 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* iPhone home indicator safe area for sticky bottom bar */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

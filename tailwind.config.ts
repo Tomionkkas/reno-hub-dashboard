@@ -204,11 +204,15 @@ export default {
 				},
 				'glow-pulse': {
 					'0%, 100%': {
-						boxShadow: '0 0 5px rgba(90, 75, 255, 0.5)'
+						boxShadow: '0 0 12px 2px rgba(20,184,166,0.10), inset 0 1px 0 rgba(255,255,255,0.05)',
 					},
 					'50%': {
-						boxShadow: '0 0 30px rgba(90, 75, 255, 0.8), 0 0 50px rgba(127, 103, 255, 0.6)'
-					}
+						boxShadow: '0 0 28px 6px rgba(20,184,166,0.18), inset 0 1px 0 rgba(255,255,255,0.05)',
+					},
+				},
+				'glow-burst': {
+					'0%': { boxShadow: '0 0 28px 8px rgba(20,184,166,0.30), inset 0 1px 0 rgba(255,255,255,0.05)' },
+					'100%': { boxShadow: '0 0 12px 2px rgba(20,184,166,0.10), inset 0 1px 0 rgba(255,255,255,0.05)' },
 				},
 				'pulse-glow': {
 					'0%, 100%': {
@@ -277,6 +281,7 @@ export default {
 				float: 'float 3s ease-in-out infinite',
 				'float-random': 'float-random 20s linear infinite',
 				'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+				'glow-burst': 'glow-burst 400ms ease-out forwards',
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				ripple: 'ripple 0.6s linear',
 				'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
