@@ -61,8 +61,14 @@ export default function KalkulatorRemontu() {
         <TrustSection />
         <AppTeaserSection />
 
-        {/* Mobile only — BottomSheet placeholder added in Task 7 */}
         <StickyMobileBar result={result} onOpen={() => setSheetOpen(true)} />
+        <BottomSheet
+          open={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          result={result}
+          emailSubmitted={emailSubmitted}
+          onEmailSubmit={() => setEmailSubmitted(true)}
+        />
       </main>
     </>
   );
@@ -511,6 +517,109 @@ function DetailedBreakdown({ result }: { result: Result }) {
         </p>
       </div>
     </div>
+  );
+}
+
+// ── Bottom Sheet (mobile) ─────────────────────────────────────────────────────
+
+function BottomSheet({
+  open,
+  onClose,
+  result,
+  emailSubmitted,
+  onEmailSubmit,
+}: {
+  open: boolean;
+  onClose: () => void;
+  result: Result;
+  emailSubmitted: boolean;
+  onEmailSubmit: () => void;
+}) {
+  const fmt = (n: number) => new Intl.NumberFormat('pl-PL').format(Math.round(n));
+
+  const categories = [
+    { key: 'floor', label: 'Podłoga', color: 'bg-teal-500/80' },
+    { key: 'walls', label: 'Ściany', color: 'bg-blue-500/80' },
+    { key: 'ceiling', label: 'Sufit', color: 'bg-purple-500/80' },
+    { key: 'electrical', label: 'Elektryka', color: 'bg-amber-500/80' },
+  ] as const;
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        className={`lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={onClose}
+      />
+
+      {/* Sheet */}
+      <div
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-white/5 rounded-t-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-transform duration-300 ease-out ${
+          open ? 'translate-y-0' : 'translate-y-full'
+        }`}
+        style={{ maxHeight: '85vh' }}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 bg-gray-700 rounded-full" />
+        </div>
+
+        {/* Scrollable content */}
+        <div className="overflow-y-auto px-5 pb-8 space-y-5" style={{ maxHeight: 'calc(85vh - 24px)' }}>
+          {/* Total */}
+          <div className="text-center pt-2 pb-4 border-b border-white/5">
+            <p className="text-[11px] uppercase tracking-widest text-gray-500 mb-1.5">
+              Szacowany koszt materiałów
+            </p>
+            <p className="text-4xl font-bold text-teal-400 tracking-tight tabular-nums">
+              {fmt(result.totalCost)} zł
+            </p>
+            <p className="text-gray-600 text-sm mt-1 tabular-nums">
+              {fmt(result.costPerSqm)} zł/m²&nbsp;·&nbsp;{result.floorArea.toFixed(2)} m²
+            </p>
+          </div>
+
+          {/* Category bars */}
+          <div className="space-y-3.5">
+            {categories.map(({ key, label, color }) => {
+              const value = result.categories[key];
+              const pct = result.totalCost > 0 ? (value / result.totalCost) * 100 : 0;
+              return (
+                <div key={key}>
+                  <div className="flex justify-between text-sm mb-1.5">
+                    <span className="text-gray-500 text-[13px]">{label}</span>
+                    <span className="text-gray-300 font-medium tabular-nums">{fmt(value)} zł</span>
+                  </div>
+                  <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                    <div
+                      className={`h-1.5 ${color} rounded-full transition-[width] duration-[400ms] ease-out`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Email gate or breakdown */}
+          {emailSubmitted ? (
+            <DetailedBreakdown result={result} />
+          ) : (
+            <EmailGate onSubmit={onEmailSubmit} />
+          )}
+
+          {/* App teaser CTA */}
+          <div className="bg-teal-900/20 border border-teal-700/30 rounded-xl p-4 text-center">
+            <p className="text-sm text-gray-300">Chcesz wyliczyć całe mieszkanie?</p>
+            <p className="text-xs text-teal-400 font-medium mt-0.5">
+              CalcReno — aplikacja mobilna — już wkrótce
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
