@@ -90,7 +90,7 @@ function HeroSection() {
         <img
           src="/calcreno-logo-full-transparent.webp"
           alt="CalcReno"
-          className="h-10 object-contain opacity-90"
+          className="h-16 md:h-20 object-contain opacity-90"
         />
       </div>
       <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight tracking-tight">
@@ -328,7 +328,7 @@ function InputPanel({
       {/* Electrical */}
       <div className="space-y-4">
         <p className="text-[11px] uppercase tracking-widest text-gray-500">Instalacja elektryczna</p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <CounterInput label="Gniazdka" value={inputs.socketsCount} onChange={v => set('socketsCount', v)} />
           <CounterInput label="Włączniki" value={inputs.switchesCount} onChange={v => set('switchesCount', v)} />
         </div>
@@ -629,7 +629,7 @@ function BottomSheet({
 function TrustSection() {
   const [ref, inView] = useInView();
   const items = [
-    { icon: CheckIcon, text: 'Obliczenia zgodne z cenami rynkowymi 2025' },
+    { icon: CheckIcon, text: 'Obliczenia zgodne z cenami rynkowymi 2026' },
     { icon: LockIcon, text: 'Bez rejestracji — wyniki od razu' },
     { icon: BuildingIcon, text: 'Używany przez wykonawców i inwestorów w Polsce' },
   ];
