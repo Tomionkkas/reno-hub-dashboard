@@ -37,6 +37,7 @@ export function useAnimatedNumber(target: number, duration = 350): number {
       const current = from + (to - from) * eased;
 
       setDisplay(current);
+      startRef.current = current;  // keep from in sync with display
 
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
