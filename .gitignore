@@ -70,3 +70,6 @@ supabase/.temp/
 __pycache__/
 *.pyc
 *.pyo
+
+# Local scripts (outreach tools, one-off utilities)
+scripts/

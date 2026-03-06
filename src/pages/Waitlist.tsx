@@ -32,29 +32,16 @@ const features = [
 ];
 
 const steps = [
-  { number: '01', title: 'Zapisz się', description: 'Podaj imię i e-mail poniżej. Zajmuje to 30 sekund.' },
+  { number: '01', title: 'Zapisz się', description: 'Podaj e-mail poniżej. Zajmuje to 10 sekund.' },
   { number: '02', title: 'Dostań powiadomienie', description: 'Poinformujemy Cię e-mailem, gdy beta będzie gotowa.' },
   { number: '03', title: 'Uzyskaj wczesny dostęp', description: 'Jako pierwszy przetestujesz aplikację i wpłyniesz na jej rozwój.' },
 ];
 
-const BASE_COUNT = 20;
-
-function formatSignupCount(n: number): string {
-  const last2 = n % 100;
-  const last1 = n % 10;
-  if (last2 >= 12 && last2 <= 14) return `${n} osób`;
-  if (last1 === 1) return `${n} osoba`;
-  if (last1 >= 2 && last1 <= 4) return `${n} osoby`;
-  return `${n} osób`;
-}
-
 export default function WaitlistPage() {
-  const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [formState, setFormState] = useState<FormState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [showDemo, setShowDemo] = useState(false);
-  const [displayCount, setDisplayCount] = useState(0);
 
   const utmRef = useRef<{
     utmSource: string | null;
@@ -84,40 +71,9 @@ export default function WaitlistPage() {
     };
   }, []);
 
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    let cancelled = false;
-
-    supabase.rpc('get_waitlist_count').then(({ data, error }) => {
-      if (cancelled) return;
-      if (error) {
-        console.error('[waitlist-count]', error.message);
-        return;
-      }
-      const target = BASE_COUNT + (typeof data === 'number' ? data : 0);
-      const STEP_COUNT = 40;
-      const increment = target / STEP_COUNT;
-      let current = 0;
-      interval = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-          setDisplayCount(target);
-          clearInterval(interval!);
-        } else {
-          setDisplayCount(Math.floor(current));
-        }
-      }, 25);
-    });
-
-    return () => {
-      cancelled = true;
-      if (interval) clearInterval(interval);
-    };
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName.trim() || !email.trim()) return;
+    if (!email.trim()) return;
 
     setFormState('loading');
     setErrorMsg('');
@@ -125,7 +81,7 @@ export default function WaitlistPage() {
     try {
       const { data, error } = await supabase.functions.invoke('newsletter-signup', {
         body: {
-          firstName: firstName.trim(),
+          firstName: '',
           email: email.trim(),
           ...utmRef.current,
         },
@@ -141,9 +97,7 @@ export default function WaitlistPage() {
           window.gtag('event', 'conversion', {
             send_to: 'AW-17946979757/yGBiCICctvwbEK3b5O1C',
           });
-          window.gtag('event', 'waitlist_signup', {
-            app: 'calcreno',
-          });
+          window.gtag('event', 'waitlist_signup', { app: 'calcreno' });
         }
       }
     } catch {
@@ -192,7 +146,8 @@ export default function WaitlistPage() {
               {/* Headline */}
               <div className="text-center lg:text-left mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                  Bądź <span className="text-cyan-400">pierwszym!</span>
+                  Oblicz koszt remontu.{' '}
+                  <span className="text-cyan-400">Zaplanuj z wyprzedzeniem.</span>
                 </h1>
                 <p className="text-gray-400 text-base md:text-lg leading-relaxed">
                   CalcReno jest w drodze. Zapisz się i dostań dostęp, zanim aplikacja trafi do wszystkich.
@@ -219,20 +174,14 @@ export default function WaitlistPage() {
                 </button>
               </div>
 
-              {/* Signup counter */}
-              {displayCount > 0 && (
-                <div className="flex justify-center lg:justify-start mb-6">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/10 rounded-full">
-                    <span className="relative flex items-center justify-center w-2.5 h-2.5">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-60 animate-ping" />
-                      <span className="relative inline-flex w-2 h-2 rounded-full bg-cyan-400" />
-                    </span>
-                    <span className="text-sm text-gray-300">
-                      <span className="font-semibold text-white">{formatSignupCount(displayCount)}</span> już na liście
-                    </span>
-                  </div>
+              {/* Benefit statement */}
+              <div className="flex justify-center lg:justify-start mb-6">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/10 rounded-full">
+                  <span className="text-sm text-gray-300">
+                    Beta powiadomienia · Wczesny dostęp · Zero spamu
+                  </span>
                 </div>
-              )}
+              </div>
 
               {/* Form card */}
               <div className="bg-[#0b1120] border border-cyan-500/25 rounded-2xl p-6 sm:p-8">
@@ -245,7 +194,7 @@ export default function WaitlistPage() {
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
-                    <p className="text-white font-bold text-xl mb-1.5">Jesteś na liście, {firstName}.</p>
+                    <p className="text-white font-bold text-xl mb-1.5">Jesteś na liście!</p>
                     <p className="text-gray-400 text-sm leading-relaxed">
                       Gdy CalcReno będzie gotowe — będziesz jednym z pierwszych, który to zobaczy.
                     </p>
@@ -272,21 +221,6 @@ export default function WaitlistPage() {
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                       <label className="block text-[11px] font-semibold tracking-widest text-gray-500 uppercase mb-2">
-                        Imię
-                      </label>
-                      <input
-                        type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="np. Marcin"
-                        required
-                        disabled={formState === 'loading'}
-                        className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/25 transition-all duration-200 disabled:opacity-50 text-base"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-semibold tracking-widest text-gray-500 uppercase mb-2">
                         Adres e-mail
                       </label>
                       <input
@@ -306,7 +240,7 @@ export default function WaitlistPage() {
 
                     <button
                       type="submit"
-                      disabled={formState === 'loading' || !firstName.trim() || !email.trim()}
+                      disabled={formState === 'loading' || !email.trim()}
                       className="w-full bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 group disabled:opacity-40 transition-all duration-200 shadow-lg shadow-cyan-900/40"
                     >
                       {formState === 'loading' ? (

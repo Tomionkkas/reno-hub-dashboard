@@ -34,6 +34,7 @@ const WaitlistPage = React.lazy(() => import('./pages/Waitlist'));
 const AboutPage = React.lazy(() => import('./pages/About'));
 const ResetPassword = React.lazy(() => import('./pages/auth/ResetPassword'));
 const Confirm = React.lazy(() => import('./pages/auth/Confirm'));
+const KalkulatorRemontu = React.lazy(() => import('./pages/KalkulatorRemontu'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -80,6 +81,7 @@ const App = () => (
                   <Route path="/o-nas" element={<AboutPage />} />
                   <Route path="/auth/reset-password" element={<ResetPassword />} />
                   <Route path="/auth/confirm" element={<Confirm />} />
+                  <Route path="/kalkulator-remontu" element={<KalkulatorRemontu />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
