@@ -174,14 +174,6 @@ export default function WaitlistPage() {
                 </button>
               </div>
 
-              {/* Benefit statement */}
-              <div className="flex justify-center lg:justify-start mb-6">
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/10 rounded-full">
-                  <span className="text-sm text-gray-300">
-                    Beta powiadomienia · Wczesny dostęp · Zero spamu
-                  </span>
-                </div>
-              </div>
 
               {/* Form card */}
               <div className="bg-[#0b1120] border border-cyan-500/25 rounded-2xl p-6 sm:p-8">
