@@ -35,6 +35,7 @@ const AboutPage = React.lazy(() => import('./pages/About'));
 const ResetPassword = React.lazy(() => import('./pages/auth/ResetPassword'));
 const Confirm = React.lazy(() => import('./pages/auth/Confirm'));
 const KalkulatorRemontu = React.lazy(() => import('./pages/KalkulatorRemontu'));
+const CalcRenoDeleteAccount = React.lazy(() => import('./pages/CalcRenoDeleteAccount'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -82,6 +83,7 @@ const App = () => (
                   <Route path="/auth/reset-password" element={<ResetPassword />} />
                   <Route path="/auth/confirm" element={<Confirm />} />
                   <Route path="/kalkulator-remontu" element={<KalkulatorRemontu />} />
+                  <Route path="/calcreno/delete-account" element={<CalcRenoDeleteAccount />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
