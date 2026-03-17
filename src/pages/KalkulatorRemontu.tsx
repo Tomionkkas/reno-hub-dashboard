@@ -100,7 +100,7 @@ function HeroSection() {
         </span>
       </h1>
       <p className="text-gray-500 text-base md:text-lg max-w-lg mx-auto leading-relaxed">
-        Darmowy kalkulator materiałów budowlanych — bez rejestracji, bez spamu.
+        Darmowy kalkulator materiałów budowlanych — bez konta, bez spamu.
       </p>
     </section>
   );
@@ -465,9 +465,9 @@ function EmailGate({ onSubmit }: { onSubmit: () => void }) {
   return (
     <div className="border border-gray-700 rounded-xl p-4 space-y-3">
       <div>
-        <p className="text-sm font-semibold text-white">Odblokuj pełne zestawienie materiałów</p>
+        <p className="text-sm font-semibold text-white">Wyślij ten kosztorys na swój email</p>
         <p className="text-xs text-gray-400 mt-0.5">
-          Wpisz email — pokażemy Ci szczegółową listę materiałów z ilościami
+          Dostaniesz gotowy kosztorys z listą materiałów i ilościami — zapisz go przed wyjściem.
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-2">
@@ -486,7 +486,7 @@ function EmailGate({ onSubmit }: { onSubmit: () => void }) {
           disabled={loading}
           className="w-full bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-white font-semibold py-3.5 rounded-xl text-sm transition-colors disabled:opacity-50"
         >
-          {loading ? 'Ładowanie...' : 'Pokaż pełne zestawienie →'}
+          {loading ? 'Ładowanie...' : 'Wyślij kosztorys na email →'}
         </button>
       </form>
       <p className="text-xs text-gray-500">Bez spamu. Tylko raz, tylko to co zamówiłeś.</p>
@@ -509,12 +509,6 @@ function DetailedBreakdown({ result }: { result: Result }) {
             </span>
           </div>
         ))}
-      </div>
-      <div className="bg-teal-900/20 border border-teal-700/40 rounded-xl p-4 text-center">
-        <p className="text-sm text-gray-300">Chcesz wyliczyć całe mieszkanie?</p>
-        <p className="text-xs text-teal-400 font-medium mt-0.5">
-          CalcReno — aplikacja mobilna — już wkrótce
-        </p>
       </div>
     </div>
   );
@@ -609,13 +603,6 @@ function BottomSheet({
           ) : (
             <>
               <EmailGate onSubmit={onEmailSubmit} />
-              {/* App teaser CTA — only shown before email submission; after, DetailedBreakdown has its own */}
-              <div className="bg-teal-900/20 border border-teal-700/30 rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-300">Chcesz wyliczyć całe mieszkanie?</p>
-                <p className="text-xs text-teal-400 font-medium mt-0.5">
-                  CalcReno — aplikacja mobilna — już wkrótce
-                </p>
-              </div>
             </>
           )}
         </div>
@@ -776,7 +763,7 @@ function StickyMobileBar({
           </p>
         </div>
         <div className="bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors flex-shrink-0">
-          Wyślij kosztorys →
+          Zobacz swój kosztorys →
         </div>
       </button>
     </div>
