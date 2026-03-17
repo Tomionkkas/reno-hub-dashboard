@@ -55,6 +55,7 @@ export default function KalkulatorRemontu() {
             result={result}
             emailSubmitted={emailSubmitted}
             onEmailSubmit={() => setEmailSubmitted(true)}
+            inputs={inputs}
           />
         </div>
 
@@ -68,6 +69,7 @@ export default function KalkulatorRemontu() {
           result={result}
           emailSubmitted={emailSubmitted}
           onEmailSubmit={() => setEmailSubmitted(true)}
+          inputs={inputs}
         />
       </main>
     </>
@@ -345,10 +347,12 @@ function ResultsPanel({
   result,
   emailSubmitted,
   onEmailSubmit,
+  inputs,
 }: {
   result: Result;
   emailSubmitted: boolean;
   onEmailSubmit: () => void;
+  inputs: RoomInputs;
 }) {
   const [ref, inView] = useInView(0.05);
   const [glowBurst, setGlowBurst] = useState(false);
@@ -426,7 +430,7 @@ function ResultsPanel({
       {emailSubmitted ? (
         <DetailedBreakdown result={result} />
       ) : (
-        <EmailGate onSubmit={onEmailSubmit} />
+        <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
       )}
     </div>
   );
@@ -434,7 +438,15 @@ function ResultsPanel({
 
 // ── Email Gate ────────────────────────────────────────────────────────────────
 
-function EmailGate({ onSubmit }: { onSubmit: () => void }) {
+function EmailGate({
+  onSubmit,
+  result,
+  inputs,
+}: {
+  onSubmit: () => void;
+  result: Result;
+  inputs: RoomInputs;
+}) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -447,7 +459,7 @@ function EmailGate({ onSubmit }: { onSubmit: () => void }) {
     }
     setLoading(true);
     setError('');
-    const res = await addToCalculatorWaitlist(email);
+    const res = await addToCalculatorWaitlist(email, result, inputs);
     setLoading(false);
     if (res.success) {
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
@@ -522,12 +534,14 @@ function BottomSheet({
   result,
   emailSubmitted,
   onEmailSubmit,
+  inputs,
 }: {
   open: boolean;
   onClose: () => void;
   result: Result;
   emailSubmitted: boolean;
   onEmailSubmit: () => void;
+  inputs: RoomInputs;
 }) {
   const fmt = (n: number) => new Intl.NumberFormat('pl-PL').format(Math.round(n));
 
@@ -602,7 +616,7 @@ function BottomSheet({
             <DetailedBreakdown result={result} />
           ) : (
             <>
-              <EmailGate onSubmit={onEmailSubmit} />
+              <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
             </>
           )}
         </div>
