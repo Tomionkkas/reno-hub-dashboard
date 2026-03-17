@@ -19,7 +19,8 @@ export async function addToCalculatorWaitlist(
     if (data?.success) return { success: true };
 
     return { success: false, error: data?.error ?? 'Unknown error' };
-  } catch {
+  } catch (err) {
+    console.error('[calculatorSignup] error:', err);
     return { success: false, error: 'Network error' };
   }
 }

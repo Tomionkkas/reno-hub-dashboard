@@ -448,30 +448,31 @@ function EmailGate({
   inputs: RoomInputs;
 }) {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes('@')) {
       setError('Podaj poprawny adres email');
       return;
     }
-    setLoading(true);
     setError('');
-    const res = await addToCalculatorWaitlist(email, result, inputs);
-    setLoading(false);
-    if (res.success) {
-      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-        window.gtag('event', 'conversion', {
-          send_to: 'AW-17946979757/yGBiCICctvwbEK3b5O1C',
-        });
-        window.gtag('event', 'calculator_signup', { app: 'calcreno' });
-      }
-      onSubmit();
-    } else {
-      setError('Coś poszło nie tak. Spróbuj ponownie.');
+
+    // Fire GA events immediately
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-17946979757/yGBiCICctvwbEK3b5O1C',
+      });
+      window.gtag('event', 'calculator_signup', { app: 'calcreno' });
     }
+
+    // Show success immediately — don't wait for the network round-trip
+    onSubmit();
+
+    // Send in background; if it fails we just log it
+    addToCalculatorWaitlist(email, result, inputs).catch(err => {
+      console.error('[EmailGate] background send failed:', err);
+    });
   };
 
   return (
@@ -495,10 +496,9 @@ function EmailGate({
         {error && <p className="text-red-400 text-xs">{error}</p>}
         <button
           type="submit"
-          disabled={loading}
-          className="w-full bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-white font-semibold py-3.5 rounded-xl text-sm transition-colors disabled:opacity-50"
+          className="w-full bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-white font-semibold py-3.5 rounded-xl text-sm transition-colors"
         >
-          {loading ? 'Ładowanie...' : 'Wyślij kosztorys na email →'}
+          Wyślij kosztorys na email →
         </button>
       </form>
       <p className="text-xs text-gray-500">Bez spamu. Tylko raz, tylko to co zamówiłeś.</p>

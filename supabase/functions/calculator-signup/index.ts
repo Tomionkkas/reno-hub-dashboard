@@ -1,7 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { PDFDocument, rgb, StandardFonts } from "npm:pdf-lib@1.17.1";
-import { encodeBase64 } from "jsr:@std/encoding/base64";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,45 +8,44 @@ const corsHeaders = {
 
 const BREVO_LIST_ID = 3;
 
-// Mirror of client-side MATERIAL_NAMES — keep in sync with renovationCalculator.ts
 const MATERIAL_NAMES: Record<string, string> = {
-  floorPanels: "Panele podłogowe",
-  underlayment: "Podkład pod panele",
+  floorPanels: "Panele pod\u0142ogowe",
+  underlayment: "Podk\u0142ad pod panele",
   paint: "Farba",
-  drywall: "Płyty GK ścienne",
+  drywall: "P\u0142yty GK \u015bcienne",
   cwProfiles: "Profile CW",
   uwProfiles: "Profile UW",
-  mineralWool: "Wełna mineralna",
-  tnScrews: "Wkręty TN do GK",
-  wallPlaster: "Gips szpachlowy ścienny",
-  finishingPlaster: "Gładź szpachlowa",
-  osb: "Płyta OSB",
-  osbScrews: "Wkręty OSB",
-  baseboards: "Listwy przypodłogowe",
-  baseboardEnds: "Narożniki/zakończenia listew",
+  mineralWool: "We\u0142na mineralna",
+  tnScrews: "Wkr\u0119ty TN do GK",
+  wallPlaster: "Gips szpachlowy \u015bcienny",
+  finishingPlaster: "G\u0142ad\u017a szpachlowa",
+  osb: "P\u0142yta OSB",
+  osbScrews: "Wkr\u0119ty OSB",
+  baseboards: "Listwy przypod\u0142ogowe",
+  baseboardEnds: "Naro\u017cniki/zako\u0144czenia listew",
   cdProfiles: "Profile CD 60",
   udProfiles: "Profile UD 27",
   hangers: "Wieszaki ES",
-  gypsum: "Płyty GK sufitowe",
+  gypsum: "P\u0142yty GK sufitowe",
   plaster: "Gips szpachlowy sufitowy",
   sockets: "Gniazdka",
-  switches: "Włączniki",
-  cable15: "Przewód YDY 3x1.5",
-  cable25: "Przewód YDY 3x2.5",
+  switches: "W\u0142\u0105czniki",
+  cable15: "Przew\u00f3d YDY 3x1.5",
+  cable25: "Przew\u00f3d YDY 3x2.5",
   junctionBox: "Puszki podtynkowe",
 };
 
 const MATERIAL_UNITS: Record<string, string> = {
-  floorPanels: "m²",
-  underlayment: "m²",
+  floorPanels: "m\u00b2",
+  underlayment: "m\u00b2",
   paint: "l",
   drywall: "szt",
   cwProfiles: "szt",
   uwProfiles: "szt",
   mineralWool: "paczek",
   tnScrews: "opak",
-  wallPlaster: "worków",
-  finishingPlaster: "worków",
+  wallPlaster: "work\u00f3w",
+  finishingPlaster: "work\u00f3w",
   osb: "szt",
   osbScrews: "opak",
   baseboards: "szt",
@@ -57,7 +54,7 @@ const MATERIAL_UNITS: Record<string, string> = {
   udProfiles: "szt",
   hangers: "szt",
   gypsum: "szt",
-  plaster: "worków",
+  plaster: "work\u00f3w",
   sockets: "szt",
   switches: "szt",
   cable15: "m",
@@ -86,264 +83,188 @@ interface CalculationResult {
 }
 
 function fmt(n: number): string {
-  return Math.round(n).toLocaleString("pl-PL");
+  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
 }
 
-// Mutable state object used throughout generatePdf to avoid closure reassignment issues
-interface PdfState {
-  page: ReturnType<PDFDocument["addPage"]>;
-  y: number;
-}
-
-async function generatePdf(inputs: RoomInputs, result: CalculationResult): Promise<Uint8Array> {
-  const pdfDoc = await PDFDocument.create();
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-  const teal = rgb(0.078, 0.722, 0.651);
-  const dark = rgb(0.08, 0.08, 0.08);
-  const mid = rgb(0.35, 0.35, 0.35);
-  const lightBg = rgb(0.95, 0.98, 0.97);
-  const divider = rgb(0.88, 0.88, 0.88);
-
-  const PAGE_W = 595;
-  const PAGE_H = 842;
-  const MARGIN = 50;
-  const COL_W = PAGE_W - MARGIN * 2;
-
-  // Use a mutable state object so nested helpers can both read and update page/y
-  const state: PdfState = {
-    page: pdfDoc.addPage([PAGE_W, PAGE_H]),
-    y: PAGE_H - MARGIN,
-  };
-
-  function newPageIfNeeded(needed = 30) {
-    if (state.y < MARGIN + needed) {
-      state.page = pdfDoc.addPage([PAGE_W, PAGE_H]);
-      state.y = PAGE_H - MARGIN;
-    }
-  }
-
-  function drawDivider() {
-    state.page.drawLine({
-      start: { x: MARGIN, y: state.y },
-      end: { x: PAGE_W - MARGIN, y: state.y },
-      thickness: 0.5,
-      color: divider,
-    });
-    state.y -= 12;
-  }
-
-  // ── Header ──
-  state.page.drawText("CalcReno", { x: MARGIN, y: state.y, font: boldFont, size: 22, color: teal });
-  state.page.drawText("Kosztorys Remontu", {
-    x: MARGIN + 120,
-    y: state.y,
-    font: boldFont,
-    size: 16,
-    color: dark,
-  });
-  state.y -= 18;
-  const dateStr = new Date().toLocaleDateString("pl-PL", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-  state.page.drawText(`Wygenerowano: ${dateStr}`, { x: MARGIN, y: state.y, font, size: 9, color: mid });
-  state.y -= 20;
-  drawDivider();
-
-  // ── Room summary ──
-  state.page.drawText("Parametry pomieszczenia", { x: MARGIN, y: state.y, font: boldFont, size: 12, color: dark });
-  state.y -= 18;
-
+function buildEmailHtml(result: CalculationResult, inputs: RoomInputs): string {
   const tierLabel =
     inputs.pricingTier === "budget"
-      ? "Budżetowy"
+      ? "Bud\u017cetowy"
       : inputs.pricingTier === "mid_range"
-      ? "Średni"
+      ? "\u015aredni"
       : "Premium";
 
-  const summaryRows: [string, string][] = [
-    ["Wymiary (szer. × dł. × wys.)", `${inputs.width} m × ${inputs.length} m × ${inputs.height} m`],
-    ["Powierzchnia podłogi", `${result.floorArea.toFixed(2)} m²`],
-    ["Powierzchnia ścian netto", `${result.netWallArea.toFixed(2)} m²`],
-    ["Poziom cenowy", tierLabel],
-    ["Podłoga OSB", inputs.useOsbFloor ? "Tak" : "Nie"],
-    ["Sufit podwieszany", inputs.useSuspendedCeiling ? "Tak" : "Nie"],
-    ["Gniazdka / Włączniki", `${inputs.socketsCount} / ${inputs.switchesCount}`],
+  const catConfig: Array<{ label: string; cost: number; color: string }> = [
+    { label: "Pod\u0142oga", cost: result.categories.floor, color: "#0D9488" },
+    { label: "\u015aciany", cost: result.categories.walls, color: "#2563EB" },
+    { label: "Sufit", cost: result.categories.ceiling, color: "#7C3AED" },
+    { label: "Elektryka", cost: result.categories.electrical, color: "#D97706" },
   ];
 
-  for (const [label, value] of summaryRows) {
-    newPageIfNeeded(18);
-    state.page.drawText(label + ":", { x: MARGIN, y: state.y, font, size: 10, color: mid });
-    state.page.drawText(value, { x: MARGIN + 200, y: state.y, font: boldFont, size: 10, color: dark });
-    state.y -= 16;
-  }
+  const catRowsHtml = catConfig
+    .map(({ label, cost, color }) => {
+      const pct = result.totalCost > 0 ? Math.round((cost / result.totalCost) * 100) : 0;
+      return `<tr>
+        <td style="padding:12px 0;border-bottom:1px solid #F1F5F9;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="width:80px;font-size:13px;font-weight:600;color:#374151;white-space:nowrap;">${label}</td>
+              <td style="padding:0 10px;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background:#F1F5F9;border-radius:6px;overflow:hidden;">
+                  <tr>
+                    ${pct > 0 ? `<td width="${pct}%" style="background:${color};height:8px;border-radius:6px;font-size:1px;line-height:1;">&nbsp;</td>` : ''}
+                    <td width="${100 - pct}%" style="font-size:1px;line-height:1;">&nbsp;</td>
+                  </tr>
+                </table>
+              </td>
+              <td style="white-space:nowrap;text-align:right;font-size:13px;font-weight:700;color:#111827;">${fmt(cost)}&nbsp;z\u0142</td>
+              <td style="width:34px;text-align:right;font-size:12px;color:#9CA3AF;padding-left:6px;">${pct}%</td>
+            </tr>
+          </table>
+        </td>
+      </tr>`;
+    })
+    .join("");
 
-  state.y -= 10;
-  drawDivider();
+  const materialRowsHtml = Object.entries(result.materials)
+    .map(([key, qty], i) => {
+      const name = MATERIAL_NAMES[key] ?? key;
+      const unit = MATERIAL_UNITS[key] ?? "szt";
+      const bg = i % 2 === 0 ? "#FFFFFF" : "#F8FAFC";
+      return `<tr style="background:${bg};">
+        <td style="padding:9px 12px;font-size:12px;color:#374151;border-bottom:1px solid #F1F5F9;">${name}</td>
+        <td style="padding:9px 12px;font-size:12px;font-weight:700;color:#111827;text-align:right;border-bottom:1px solid #F1F5F9;">${qty}</td>
+        <td style="padding:9px 12px;font-size:12px;color:#6B7280;text-align:right;border-bottom:1px solid #F1F5F9;">${unit}</td>
+      </tr>`;
+    })
+    .join("");
 
-  // ── Total cost box ──
-  const BOX_H = 52;
-  state.page.drawRectangle({ x: MARGIN, y: state.y - BOX_H, width: COL_W, height: BOX_H, color: lightBg });
-  state.page.drawText("Szacowany koszt materiałów", {
-    x: MARGIN + 12,
-    y: state.y - 16,
-    font,
-    size: 10,
-    color: mid,
-  });
-  state.page.drawText(`${fmt(result.totalCost)} zł`, {
-    x: MARGIN + 12,
-    y: state.y - 38,
-    font: boldFont,
-    size: 22,
-    color: teal,
-  });
-  state.page.drawText(`${fmt(result.costPerSqm)} zł/m²`, {
-    x: MARGIN + 220,
-    y: state.y - 38,
-    font,
-    size: 13,
-    color: mid,
-  });
-  state.y -= BOX_H + 16;
-  drawDivider();
-
-  // ── Category breakdown ──
-  state.page.drawText("Zestawienie kosztów według kategorii", {
-    x: MARGIN,
-    y: state.y,
-    font: boldFont,
-    size: 12,
-    color: dark,
-  });
-  state.y -= 18;
-
-  // Table header row
-  state.page.drawRectangle({ x: MARGIN, y: state.y - 4, width: COL_W, height: 18, color: rgb(0.93, 0.93, 0.93) });
-  state.page.drawText("Kategoria", { x: MARGIN + 8, y: state.y, font: boldFont, size: 9, color: mid });
-  state.page.drawText("Koszt (zł)", { x: MARGIN + 300, y: state.y, font: boldFont, size: 9, color: mid });
-  state.page.drawText("Udział (%)", { x: MARGIN + 420, y: state.y, font: boldFont, size: 9, color: mid });
-  state.y -= 20;
-
-  const catRows: [string, number][] = [
-    ["Podłoga", result.categories.floor],
-    ["Ściany", result.categories.walls],
-    ["Sufit", result.categories.ceiling],
-    ["Elektryka", result.categories.electrical],
-  ];
-
-  for (const [label, cost] of catRows) {
-    newPageIfNeeded(18);
-    const pct =
-      result.totalCost > 0 ? ((cost / result.totalCost) * 100).toFixed(1) : "0.0";
-    state.page.drawText(label, { x: MARGIN + 8, y: state.y, font, size: 10, color: dark });
-    state.page.drawText(fmt(cost), { x: MARGIN + 300, y: state.y, font, size: 10, color: dark });
-    state.page.drawText(`${pct}%`, { x: MARGIN + 420, y: state.y, font, size: 10, color: mid });
-    state.y -= 3;
-    state.page.drawLine({
-      start: { x: MARGIN, y: state.y },
-      end: { x: PAGE_W - MARGIN, y: state.y },
-      thickness: 0.3,
-      color: divider,
-    });
-    state.y -= 15;
-  }
-
-  state.y -= 8;
-  drawDivider();
-
-  // ── Materials list ──
-  state.page.drawText("Lista materiałów", { x: MARGIN, y: state.y, font: boldFont, size: 12, color: dark });
-  state.y -= 18;
-
-  // Table header
-  state.page.drawRectangle({ x: MARGIN, y: state.y - 4, width: COL_W, height: 18, color: rgb(0.93, 0.93, 0.93) });
-  state.page.drawText("Materiał", { x: MARGIN + 8, y: state.y, font: boldFont, size: 9, color: mid });
-  state.page.drawText("Ilość", { x: MARGIN + 360, y: state.y, font: boldFont, size: 9, color: mid });
-  state.page.drawText("Jednostka", { x: MARGIN + 430, y: state.y, font: boldFont, size: 9, color: mid });
-  state.y -= 20;
-
-  for (const [key, qty] of Object.entries(result.materials)) {
-    newPageIfNeeded(18);
-    const name = MATERIAL_NAMES[key] ?? key;
-    const unit = MATERIAL_UNITS[key] ?? "szt";
-    state.page.drawText(name, { x: MARGIN + 8, y: state.y, font, size: 10, color: dark });
-    state.page.drawText(String(qty), { x: MARGIN + 360, y: state.y, font, size: 10, color: dark });
-    state.page.drawText(unit, { x: MARGIN + 430, y: state.y, font, size: 10, color: mid });
-    state.y -= 3;
-    state.page.drawLine({
-      start: { x: MARGIN, y: state.y },
-      end: { x: PAGE_W - MARGIN, y: state.y },
-      thickness: 0.3,
-      color: divider,
-    });
-    state.y -= 15;
-  }
-
-  // ── Footer on last page ──
-  state.y -= 20;
-  state.page.drawLine({
-    start: { x: MARGIN, y: state.y },
-    end: { x: PAGE_W - MARGIN, y: state.y },
-    thickness: 0.5,
-    color: divider,
-  });
-  state.y -= 14;
-  state.page.drawText("CalcReno · renohub.org · Obliczenia oparte na cenach rynkowych 2026", {
-    x: MARGIN,
-    y: state.y,
-    font,
-    size: 8,
-    color: mid,
-  });
-
-  const bytes = await pdfDoc.save();
-  return bytes;
-}
-
-function buildEmailHtml(result: CalculationResult): string {
   return `<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#0f172a;font-family:sans-serif;color:#e2e8f0;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+</head>
+<body style="margin:0;padding:0;background:#F1F5F9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1E293B;-webkit-text-size-adjust:100%;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F1F5F9;padding:32px 16px;" role="presentation">
     <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:16px;overflow:hidden;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;background:#FFFFFF;border-radius:16px;overflow:hidden;" role="presentation">
+
+        <!-- Header -->
         <tr>
-          <td style="background:#134e4a;padding:28px 36px;">
-            <p style="margin:0;font-size:22px;font-weight:700;color:#2dd4bf;letter-spacing:-0.5px;">CalcReno</p>
-            <p style="margin:6px 0 0;font-size:14px;color:#94a3b8;">Twój kosztorys remontu jest gotowy</p>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:32px 36px;">
-            <p style="margin:0 0 16px;font-size:15px;color:#cbd5e1;line-height:1.6;">
-              W załączniku znajdziesz gotowy kosztorys materiałów budowlanych. Możesz go zapisać, wydrukować lub przesłać wykonawcy.
-            </p>
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;border-radius:12px;padding:20px;margin-bottom:24px;">
+          <td style="background:#0F766E;padding:28px 32px;">
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
               <tr>
                 <td>
-                  <p style="margin:0 0 4px;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Szacowany koszt materiałów</p>
-                  <p style="margin:0;font-size:32px;font-weight:700;color:#2dd4bf;">${fmt(result.totalCost)} zł</p>
-                  <p style="margin:4px 0 0;font-size:13px;color:#64748b;">${fmt(result.costPerSqm)} zł/m² · ${result.floorArea.toFixed(2)} m²</p>
+                  <p style="margin:0;font-size:24px;font-weight:800;color:#FFFFFF;letter-spacing:-0.5px;">RenoHub</p>
+                  <p style="margin:5px 0 0;font-size:13px;color:rgba(255,255,255,0.72);">Tw\u00f3j kosztorys remontu jest gotowy</p>
+                </td>
+                <td align="right" style="vertical-align:middle;">
+                  <span style="display:inline-block;background:rgba(255,255,255,0.18);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:#FFFFFF;">${tierLabel}</span>
                 </td>
               </tr>
             </table>
-            <p style="margin:0;font-size:13px;color:#64748b;line-height:1.5;">
-              Obliczenia oparte na cenach rynkowych 2026. Kosztorys obejmuje wyłącznie materiały — robocizna nie jest uwzględniona.
+          </td>
+        </tr>
+
+        <!-- Room info strip -->
+        <tr>
+          <td style="background:#F0FDFA;padding:12px 32px;border-bottom:1px solid #CCFBF1;">
+            <p style="margin:0;font-size:13px;color:#0F766E;">
+              <strong>${inputs.width}&nbsp;m \u00d7 ${inputs.length}&nbsp;m \u00d7 ${inputs.height}&nbsp;m</strong>
+              &nbsp;\u00b7&nbsp; pod\u0142oga: ${result.floorArea.toFixed(2)}&nbsp;m\u00b2
+              &nbsp;\u00b7&nbsp; \u015bciany: ${result.netWallArea.toFixed(2)}&nbsp;m\u00b2
             </p>
+          </td>
+        </tr>
+
+        <!-- Total cost hero -->
+        <tr>
+          <td style="padding:28px 32px 20px;">
+            <p style="margin:0 0 6px;font-size:11px;color:#6B7280;text-transform:uppercase;letter-spacing:1.2px;font-weight:600;">Szacowany koszt materia\u0142\u00f3w</p>
+            <table cellpadding="0" cellspacing="0" role="presentation">
+              <tr>
+                <td style="vertical-align:baseline;">
+                  <p style="margin:0;font-size:46px;font-weight:800;color:#0D9488;letter-spacing:-2px;line-height:1;">${fmt(result.totalCost)}&nbsp;z\u0142</p>
+                </td>
+                <td style="vertical-align:middle;padding-left:14px;">
+                  <p style="margin:0;font-size:15px;color:#6B7280;font-weight:500;">${fmt(result.costPerSqm)}&nbsp;z\u0142/m\u00b2</p>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:8px 0 0;font-size:12px;color:#9CA3AF;">Ceny materia\u0142\u00f3w wg stawek rynkowych 2026 &nbsp;\u00b7&nbsp; bez robocizny</p>
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr><td style="padding:0 32px;"><table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:1px;background:#F1F5F9;font-size:1px;">&nbsp;</td></tr></table></td></tr>
+
+        <!-- Category breakdown with progress bars -->
+        <tr>
+          <td style="padding:20px 32px 4px;">
+            <p style="margin:0 0 14px;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:1px;">Zestawienie wed\u0142ug kategorii</p>
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+              ${catRowsHtml}
+            </table>
+          </td>
+        </tr>
+
+        <!-- Totals row -->
+        <tr>
+          <td style="padding:8px 32px 24px;">
+            <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+              <tr>
+                <td style="width:80px;font-size:13px;font-weight:700;color:#111827;white-space:nowrap;">Razem</td>
+                <td style="padding:0 10px;"></td>
+                <td style="white-space:nowrap;text-align:right;font-size:14px;font-weight:800;color:#0D9488;">${fmt(result.totalCost)}&nbsp;z\u0142</td>
+                <td style="width:34px;text-align:right;font-size:12px;color:#9CA3AF;padding-left:6px;">100%</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr><td style="padding:0 32px;"><table width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:1px;background:#F1F5F9;font-size:1px;">&nbsp;</td></tr></table></td></tr>
+
+        <!-- Materials list -->
+        <tr>
+          <td style="padding:20px 32px 12px;">
+            <p style="margin:0;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:1px;">Lista materia\u0142\u00f3w</p>
           </td>
         </tr>
         <tr>
-          <td style="padding:0 36px 28px;border-top:1px solid #1e293b;">
-            <p style="margin:20px 0 0;font-size:11px;color:#334155;">
-              CalcReno · <a href="https://renohub.org" style="color:#2dd4bf;text-decoration:none;">renohub.org</a>
+          <td style="padding:0 32px 28px;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:8px;overflow:hidden;border:1px solid #E2E8F0;" role="presentation">
+              <tr style="background:#F8FAFC;">
+                <th style="padding:9px 12px;font-size:11px;font-weight:700;color:#6B7280;text-align:left;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #E2E8F0;">Materia\u0142</th>
+                <th style="padding:9px 12px;font-size:11px;font-weight:700;color:#6B7280;text-align:right;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #E2E8F0;">Ilo\u015b\u0107</th>
+                <th style="padding:9px 12px;font-size:11px;font-weight:700;color:#6B7280;text-align:right;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #E2E8F0;">Jed.</th>
+              </tr>
+              ${materialRowsHtml}
+            </table>
+          </td>
+        </tr>
+
+        <!-- CTA button -->
+        <tr>
+          <td style="padding:0 32px 32px;text-align:center;">
+            <a href="https://renohub.org/kalkulator-remontu" style="display:inline-block;background:#0D9488;color:#FFFFFF;font-size:14px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:8px;letter-spacing:0.2px;">Oblicz nowy kosztorys \u2192</a>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#F8FAFC;padding:16px 32px;border-top:1px solid #F1F5F9;">
+            <p style="margin:0;font-size:11px;color:#9CA3AF;text-align:center;">
+              <strong style="color:#6B7280;">RenoHub</strong> &nbsp;\u00b7&nbsp;
+              <a href="https://renohub.org" style="color:#0D9488;text-decoration:none;">renohub.org</a>
+              &nbsp;\u00b7&nbsp; Obliczenia oparte na cenach rynkowych 2026
             </p>
           </td>
         </tr>
+
       </table>
     </td></tr>
   </table>
@@ -386,80 +307,74 @@ Deno.serve(async (req: Request) => {
 
     const cleanEmail = email.trim().toLowerCase();
 
-    // Generate PDF
-    const pdfBytes = await generatePdf(inputs, result);
+    // Return immediately — do all side-effects in the background
+    const bgWork = async () => {
+      try {
+        const supabase = createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+          { auth: { persistSession: false } }
+        );
 
-    // Save to Supabase
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      { auth: { persistSession: false } }
-    );
+        const { error: dbError } = await supabase
+          .from("newsletter_subscribers")
+          .insert({ email: cleanEmail, first_name: "", source: "calcreno_calculator" });
 
-    const { error: dbError } = await supabase
-      .from("newsletter_subscribers")
-      .insert({ email: cleanEmail, first_name: "", source: "calcreno_calculator" });
+        if (dbError && !dbError.message.includes("duplicate key")) {
+          console.error("DB error:", dbError.message);
+        }
 
-    if (dbError && !dbError.message.includes("duplicate key")) {
-      throw new Error(`DB error: ${dbError.message}`);
-    }
+        const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY")!;
+        const htmlContent = buildEmailHtml(result, inputs);
 
-    const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY")!;
+        // Fire contact sync and email send in parallel
+        const [contactRes, emailRes] = await Promise.all([
+          fetch("https://api.brevo.com/v3/contacts", {
+            method: "POST",
+            headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: cleanEmail,
+              listIds: [BREVO_LIST_ID],
+              attributes: { SOURCE: "calculator" },
+              updateEnabled: true,
+            }),
+          }),
+          fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              to: [{ email: cleanEmail }],
+              sender: { name: "RenoHub", email: "noreply@renohub.org" },
+              subject: "Tw\u00f3j kosztorys remontu \u2014 RenoHub",
+              htmlContent,
+            }),
+          }),
+        ]);
 
-    // Sync contact with Brevo list (upsert — always safe)
-    const contactRes = await fetch("https://api.brevo.com/v3/contacts", {
-      method: "POST",
-      headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: cleanEmail,
-        listIds: [BREVO_LIST_ID],
-        attributes: { SOURCE: "calculator" },
-        updateEnabled: true,
-      }),
-    });
+        if (!contactRes.ok && contactRes.status !== 204) {
+          const body = await contactRes.json();
+          const isAlreadyInList =
+            body?.code === "invalid_parameter" && body?.message?.includes("already");
+          if (!isAlreadyInList) {
+            console.error("Brevo contact error:", JSON.stringify(body));
+          }
+        }
 
-    if (!contactRes.ok && contactRes.status !== 204) {
-      const body = await contactRes.json();
-      const isAlreadyInList =
-        body?.code === "invalid_parameter" && body?.message?.includes("already");
-      if (!isAlreadyInList) {
-        console.error("Brevo contact error:", JSON.stringify(body));
-        // Non-fatal — still send the email
+        if (!emailRes.ok) {
+          console.error("Brevo email error:", await emailRes.text());
+        } else {
+          await supabase
+            .from("newsletter_subscribers")
+            .update({ brevo_synced: true })
+            .eq("email", cleanEmail);
+        }
+      } catch (bgErr) {
+        console.error("background work error:", bgErr instanceof Error ? bgErr.message : bgErr);
       }
-    }
-
-    // Send kosztorys email with PDF attachment — always, regardless of new/existing
-    const pdfBase64 = encodeBase64(pdfBytes);
-
-    const emailPayload = {
-      to: [{ email: cleanEmail }],
-      sender: { name: "CalcReno", email: "noreply@renohub.org" },
-      subject: "Twój kosztorys remontu — CalcReno",
-      htmlContent: buildEmailHtml(result),
-      attachment: [
-        {
-          content: pdfBase64,
-          name: "kosztorys-remontu-calcreno.pdf",
-        },
-      ],
     };
 
-    const emailRes = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify(emailPayload),
-    });
-
-    if (!emailRes.ok) {
-      const err = await emailRes.text();
-      console.error("Brevo email error:", err);
-      // Return success anyway — DB/contact sync worked; email failure shouldn't block UI
-    } else {
-      await supabase
-        .from("newsletter_subscribers")
-        .update({ brevo_synced: true })
-        .eq("email", cleanEmail);
-    }
+    // deno-lint-ignore no-explicit-any
+    (EdgeRuntime as any).waitUntil(bgWork());
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
