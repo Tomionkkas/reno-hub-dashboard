@@ -406,25 +406,35 @@ function ResultsPanel({
       </div>
 
       {/* Category bars */}
-      <div className="space-y-3.5">
-        {categories.map(({ key, label, color }) => {
-          const value = result.categories[key];
-          const pct = result.totalCost > 0 ? (value / result.totalCost) * 100 : 0;
-          return (
-            <div key={key}>
-              <div className="flex justify-between text-sm mb-1.5">
-                <span className="text-gray-500 text-[13px]">{label}</span>
-                <span className="text-gray-300 font-medium tabular-nums">{fmt(value)} zł</span>
+      <div className="relative">
+        <div className={`space-y-3.5 transition-all duration-500 ${!emailSubmitted ? 'blur-sm select-none pointer-events-none' : ''}`}>
+          {categories.map(({ key, label, color }) => {
+            const value = result.categories[key];
+            const pct = result.totalCost > 0 ? (value / result.totalCost) * 100 : 0;
+            return (
+              <div key={key}>
+                <div className="flex justify-between text-sm mb-1.5">
+                  <span className="text-gray-500 text-[13px]">{label}</span>
+                  <span className="text-gray-300 font-medium tabular-nums">{fmt(value)} zł</span>
+                </div>
+                <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                  <div
+                    className={`h-1.5 ${color} rounded-full transition-[width] duration-[400ms] ease-out`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
               </div>
-              <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                <div
-                  className={`h-1.5 ${color} rounded-full transition-[width] duration-[400ms] ease-out`}
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
+            );
+          })}
+        </div>
+        {!emailSubmitted && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex items-center gap-1.5 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-gray-300">
+              <LockIcon className="w-3.5 h-3.5 text-teal-400" />
+              <span>Odblokuj po wpisaniu emaila</span>
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
 
       {emailSubmitted ? (
@@ -478,9 +488,9 @@ function EmailGate({
   return (
     <div className="border border-gray-700 rounded-xl p-4 space-y-3">
       <div>
-        <p className="text-sm font-semibold text-white">Wyślij ten kosztorys na swój email</p>
+        <p className="text-sm font-semibold text-white">Odblokuj szczegółowy podział kosztów</p>
         <p className="text-xs text-gray-400 mt-0.5">
-          Dostaniesz gotowy kosztorys z listą materiałów i ilościami — zapisz go przed wyjściem.
+          Wpisz email — zobaczysz gdzie idą Twoje pieniądze i dostaniesz listę materiałów.
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-2">
@@ -498,7 +508,7 @@ function EmailGate({
           type="submit"
           className="w-full bg-teal-500 hover:bg-teal-400 active:bg-teal-600 text-white font-semibold py-3.5 rounded-xl text-sm transition-colors"
         >
-          Wyślij kosztorys na email →
+          Odblokuj kosztorys →
         </button>
       </form>
       <p className="text-xs text-gray-500">Bez spamu. Tylko raz, tylko to co zamówiłeś.</p>
@@ -543,6 +553,17 @@ function BottomSheet({
   onEmailSubmit: () => void;
   inputs: RoomInputs;
 }) {
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   const fmt = (n: number) => new Intl.NumberFormat('pl-PL').format(Math.round(n));
 
   const categories = [
@@ -590,34 +611,42 @@ function BottomSheet({
           </div>
 
           {/* Category bars */}
-          <div className="space-y-3.5">
-            {categories.map(({ key, label, color }) => {
-              const value = result.categories[key];
-              const pct = result.totalCost > 0 ? (value / result.totalCost) * 100 : 0;
-              return (
-                <div key={key}>
-                  <div className="flex justify-between text-sm mb-1.5">
-                    <span className="text-gray-500 text-[13px]">{label}</span>
-                    <span className="text-gray-300 font-medium tabular-nums">{fmt(value)} zł</span>
+          <div className="relative">
+            <div className={`space-y-3.5 transition-all duration-500 ${!emailSubmitted ? 'blur-sm select-none pointer-events-none' : ''}`}>
+              {categories.map(({ key, label, color }) => {
+                const value = result.categories[key];
+                const pct = result.totalCost > 0 ? (value / result.totalCost) * 100 : 0;
+                return (
+                  <div key={key}>
+                    <div className="flex justify-between text-sm mb-1.5">
+                      <span className="text-gray-500 text-[13px]">{label}</span>
+                      <span className="text-gray-300 font-medium tabular-nums">{fmt(value)} zł</span>
+                    </div>
+                    <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className={`h-1.5 ${color} rounded-full transition-[width] duration-[400ms] ease-out`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                    <div
-                      className={`h-1.5 ${color} rounded-full transition-[width] duration-[400ms] ease-out`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
+                );
+              })}
+            </div>
+            {!emailSubmitted && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex items-center gap-1.5 bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 text-xs text-gray-300">
+                  <LockIcon className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Odblokuj po wpisaniu emaila</span>
                 </div>
-              );
-            })}
+              </div>
+            )}
           </div>
 
           {/* Email gate or breakdown */}
           {emailSubmitted ? (
             <DetailedBreakdown result={result} />
           ) : (
-            <>
-              <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
-            </>
+            <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
           )}
         </div>
       </div>
