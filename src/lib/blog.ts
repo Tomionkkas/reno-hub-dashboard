@@ -23,9 +23,11 @@ function parsePost(path: string, raw: string): BlogPost {
   return {
     slug,
     title: data.title || '',
-    date: data.date || '',
+    date: data.date instanceof Date
+      ? data.date.toISOString().slice(0, 10)
+      : String(data.date || ''),
     description: data.description || '',
-    tags: Array.isArray(data.keywords) ? data.keywords : [],
+    tags: Array.isArray(data.keywords) ? data.keywords : [],  // frontmatter key is 'keywords'
     content,
   };
 }
