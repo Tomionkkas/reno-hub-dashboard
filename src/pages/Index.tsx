@@ -6,6 +6,7 @@ import { SEOHead } from '@/components/ui/seo-head';
 import { usePerformanceMonitor } from '@/hooks/use-performance';
 import GSAPHero from '@/components/animations/GSAPHero';
 import EnhancedAppsSection from '@/components/sections/EnhancedAppsSection';
+import LatestPostsStrip from '@/components/sections/LatestPostsStrip';
 import EnhancedFeaturesSection from '@/components/sections/EnhancedFeaturesSection';
 import EnhancedPricingSection from '@/components/sections/EnhancedPricingSection';
 import EnhancedCTASection from '@/components/sections/EnhancedCTASection';
@@ -75,6 +76,7 @@ const Index = () => {
           {/* Main Content with Enhanced Sections */}
           <main id="main-content">
             <EnhancedAppsSection />
+            <LatestPostsStrip />
             <EnhancedFeaturesSection />
             <EnhancedPricingSection />
             <EnhancedCTASection />
