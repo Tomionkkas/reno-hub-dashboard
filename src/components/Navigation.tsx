@@ -20,13 +20,12 @@ const Navigation = () => {
           RenoHub
         </Link>
 
-        <Link to="/blog">
-          <EnhancedButton variant="ghost" size="sm" className="text-white hover:bg-white/10 nav-link">
-            Blog
-          </EnhancedButton>
-        </Link>
-
         <div className="flex items-center gap-4">
+          <Link to="/blog">
+            <EnhancedButton variant="ghost" size="sm" className="text-white hover:bg-white/10 nav-link">
+              Blog
+            </EnhancedButton>
+          </Link>
           {user ? (
             <>
               <Link to="/dashboard">

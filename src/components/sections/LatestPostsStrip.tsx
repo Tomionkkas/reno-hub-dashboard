@@ -61,7 +61,7 @@ export default function LatestPostsStrip() {
                   />
                   <span
                     className={[
-                      'text-sm font-medium truncate group-hover:text-[#f0f0f2] transition-colors duration-150',
+                      'text-sm truncate group-hover:text-[#f0f0f2] transition-colors duration-150',
                       isFirst ? 'text-[#f0f0f2] font-semibold' : 'text-[#8a8a95]',
                     ].join(' ')}
                   >
