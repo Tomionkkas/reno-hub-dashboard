@@ -48,7 +48,7 @@ export default function BlogMobileSheet({
         className={[
           'fixed bottom-0 left-0 right-0 z-50 lg:hidden',
           'bg-[rgba(12,12,18,0.98)] border-t border-[rgba(127,103,255,0.25)]',
-          'rounded-t-2xl max-h-[70vh] overflow-hidden',
+          'rounded-t-2xl max-h-[70vh] flex flex-col',
           'transition-transform duration-300 ease-out',
           open ? 'translate-y-0' : 'translate-y-full',
         ].join(' ')}
@@ -61,7 +61,7 @@ export default function BlogMobileSheet({
           <div className="w-10 h-1 rounded-full bg-[rgba(255,255,255,0.2)]" />
         </div>
 
-        <div className="overflow-y-auto max-h-[calc(70vh-2rem)]">
+        <div className="overflow-y-auto flex-1 min-h-0">
           <BlogSidebar posts={posts} currentSlug={currentSlug} />
         </div>
       </div>
