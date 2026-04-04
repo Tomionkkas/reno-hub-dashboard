@@ -1,43 +1,44 @@
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { type Components } from 'react-markdown';
+import type { ReactNode } from 'react';
 import type { BlogPost } from '@/lib/blog';
 
 interface BlogArticleProps {
   post: BlogPost;
 }
 
-const components = {
-  h1: ({ children }: { children?: React.ReactNode }) => (
+const components: Components = {
+  h1: ({ children }: { children?: ReactNode }) => (
     <h1 className="text-3xl font-extrabold text-[#f5f5f7] mb-3 leading-tight mt-0">
       {children}
     </h1>
   ),
-  h2: ({ children }: { children?: React.ReactNode }) => (
+  h2: ({ children }: { children?: ReactNode }) => (
     <h2 className="text-xl font-bold text-[#f5f5f7] mt-10 mb-3">
       {children}
     </h2>
   ),
-  h3: ({ children }: { children?: React.ReactNode }) => (
+  h3: ({ children }: { children?: ReactNode }) => (
     <h3 className="text-lg font-semibold text-[#e0e0e8] mt-7 mb-2">
       {children}
     </h3>
   ),
-  p: ({ children }: { children?: React.ReactNode }) => (
+  p: ({ children }: { children?: ReactNode }) => (
     <p className="text-[#a0a0a8] leading-[1.75] mb-5 text-[0.97rem]">
       {children}
     </p>
   ),
-  blockquote: ({ children }: { children?: React.ReactNode }) => (
+  blockquote: ({ children }: { children?: ReactNode }) => (
     <blockquote className="border-l-[3px] border-[#7F67FF] bg-[rgba(127,103,255,0.06)] pl-5 pr-4 py-3 rounded-r-lg my-6 italic text-[#c0b8ff] text-[0.93rem] leading-relaxed">
       {children}
     </blockquote>
   ),
-  pre: ({ children }: { children?: React.ReactNode }) => (
+  pre: ({ children }: { children?: ReactNode }) => (
     <pre className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] rounded-lg p-4 overflow-x-auto my-5">
       {children}
     </pre>
   ),
-  code: ({ children, className }: { children?: React.ReactNode; className?: string }) => {
-    const isBlock = !!className;
+  code: ({ children, className }: { children?: ReactNode; className?: string }) => {
+    const isBlock = className?.startsWith('language-');
     if (isBlock) {
       return (
         <code className="text-[#00D4FF] font-mono text-sm">
@@ -51,7 +52,7 @@ const components = {
       </code>
     );
   },
-  a: ({ children, href }: { children?: React.ReactNode; href?: string }) => (
+  a: ({ children, href }: { children?: ReactNode; href?: string }) => (
     <a
       href={href}
       className="text-[#7F67FF] hover:underline"
@@ -61,21 +62,21 @@ const components = {
       {children}
     </a>
   ),
-  ul: ({ children }: { children?: React.ReactNode }) => (
-    <ul className="text-[#a0a0a8] list-disc list-inside mb-5 space-y-1.5">
+  ul: ({ children }: { children?: ReactNode }) => (
+    <ul className="text-[#a0a0a8] list-disc list-outside pl-5 mb-5 space-y-1.5">
       {children}
     </ul>
   ),
-  ol: ({ children }: { children?: React.ReactNode }) => (
-    <ol className="text-[#a0a0a8] list-decimal list-inside mb-5 space-y-1.5">
+  ol: ({ children }: { children?: ReactNode }) => (
+    <ol className="text-[#a0a0a8] list-decimal list-outside pl-5 mb-5 space-y-1.5">
       {children}
     </ol>
   ),
-  li: ({ children }: { children?: React.ReactNode }) => (
+  li: ({ children }: { children?: ReactNode }) => (
     <li className="leading-relaxed">{children}</li>
   ),
   hr: () => <hr className="border-[rgba(255,255,255,0.08)] my-10" />,
-  strong: ({ children }: { children?: React.ReactNode }) => (
+  strong: ({ children }: { children?: ReactNode }) => (
     <strong className="text-[#e0e0e8] font-semibold">{children}</strong>
   ),
 };
@@ -109,7 +110,7 @@ export default function BlogArticle({ post }: BlogArticleProps) {
       </div>
 
       {/* Article body */}
-      <ReactMarkdown components={components as any}>
+      <ReactMarkdown components={components}>
         {post.content}
       </ReactMarkdown>
     </article>
