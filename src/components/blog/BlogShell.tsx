@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/sections/Footer';
 import BlogArticle from './BlogArticle';
@@ -31,6 +31,10 @@ export default function BlogShell({ post, allPosts }: BlogShellProps) {
   };
 
   const handleMobileClose = useCallback(() => setMobileSheetOpen(false), []);
+
+  useEffect(() => {
+    return () => clearTimeout(hideTimeoutRef.current);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
