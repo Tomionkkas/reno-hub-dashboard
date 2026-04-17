@@ -60,6 +60,7 @@ export default function KalkulatorRemontu() {
         </div>
 
         <TrustSection />
+        <MoreToolsSection />
         <AppTeaserSection />
 
         <StickyMobileBar result={result} onOpen={() => setSheetOpen(true)} />
@@ -438,7 +439,10 @@ function ResultsPanel({
       </div>
 
       {emailSubmitted ? (
-        <DetailedBreakdown result={result} />
+        <>
+          <DetailedBreakdown result={result} />
+          <CrossPromoCards />
+        </>
       ) : (
         <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
       )}
@@ -647,7 +651,10 @@ function BottomSheet({
 
           {/* Email gate or breakdown */}
           {emailSubmitted ? (
-            <DetailedBreakdown result={result} />
+            <>
+              <DetailedBreakdown result={result} />
+              <CrossPromoCards />
+            </>
           ) : (
             <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
           )}
@@ -813,5 +820,92 @@ function StickyMobileBar({
         </div>
       </button>
     </div>
+  );
+}
+
+// ── Cross-promo cards (post-conversion) ──────────────────────────────────────
+
+function CrossPromoCards() {
+  return (
+    <div className="space-y-3 pt-2">
+      <a
+        href="/szablon-budzetu-remontu"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-start justify-between gap-3 rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-3.5 hover:border-gray-600 transition-colors group"
+      >
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold text-white group-hover:text-teal-300 transition-colors">
+            Planujesz remont całego mieszkania?
+          </p>
+          <p className="text-xs text-gray-400">
+            Pobierz darmowy szablon budżetu — arkusz Excel z rozpiską na każde pomieszczenie.
+          </p>
+        </div>
+        <span className="shrink-0 text-xs font-semibold text-teal-400 whitespace-nowrap mt-0.5">
+          Pobierz →
+        </span>
+      </a>
+
+      <a
+        href="/quiz-remontowy"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-start justify-between gap-3 rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-3.5 hover:border-gray-600 transition-colors group"
+      >
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold text-white group-hover:text-teal-300 transition-colors">
+            Sprawdź koszt całego remontu
+          </p>
+          <p className="text-xs text-gray-400">
+            5 pytań, spersonalizowany wynik w 2 minuty.
+          </p>
+        </div>
+        <span className="shrink-0 text-xs font-semibold text-teal-400 whitespace-nowrap mt-0.5">
+          Zrób quiz →
+        </span>
+      </a>
+    </div>
+  );
+}
+
+// ── More tools section (below calculator, all visitors) ──────────────────────
+
+function MoreToolsSection() {
+  return (
+    <section className="max-w-6xl mx-auto px-4 py-10">
+      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+        Więcej narzędzi do planowania remontu
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a
+          href="/szablon-budzetu-remontu"
+          className="flex flex-col gap-2 rounded-2xl border border-gray-800 bg-gray-900 p-5 hover:border-gray-700 transition-colors group"
+        >
+          <span className="text-2xl">📋</span>
+          <p className="font-semibold text-white group-hover:text-teal-300 transition-colors">
+            Szablon budżetu remontu
+          </p>
+          <p className="text-sm text-gray-400">
+            Darmowy arkusz Excel dla całego mieszkania — każde pomieszczenie osobno.
+          </p>
+          <span className="text-sm font-semibold text-teal-400">Pobierz za darmo →</span>
+        </a>
+
+        <a
+          href="/quiz-remontowy"
+          className="flex flex-col gap-2 rounded-2xl border border-gray-800 bg-gray-900 p-5 hover:border-gray-700 transition-colors group"
+        >
+          <span className="text-2xl">🎯</span>
+          <p className="font-semibold text-white group-hover:text-teal-300 transition-colors">
+            Quiz remontowy
+          </p>
+          <p className="text-sm text-gray-400">
+            Ile kosztuje cały Twój remont? 5 pytań, spersonalizowany wynik.
+          </p>
+          <span className="text-sm font-semibold text-teal-400">Sprawdź w 2 min →</span>
+        </a>
+      </div>
+    </section>
   );
 }
