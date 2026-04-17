@@ -26,13 +26,13 @@ export default function SzablonBudzetuRemontu() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes('@')) { setError('Podaj poprawny adres email'); return; }
     if (selectedRooms.length === 0) { setError('Wybierz co najmniej jedno pomieszczenie'); return; }
     setError('');
-    generateBudgetTemplate(selectedRooms);
     setSubmitted(true);
+    generateBudgetTemplate(selectedRooms).catch(console.error);
     templateSignup(email, selectedRooms).catch(console.error);
   };
 
