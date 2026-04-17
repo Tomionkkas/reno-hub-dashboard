@@ -1,5 +1,3 @@
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { ROOM_NAMES, type RoomKey } from './templateGenerator';
 
 interface Material { name: string; unit: string; price: number; }
@@ -64,241 +62,227 @@ const ROOM_MATERIALS: Record<RoomKey, Material[]> = {
   ],
 };
 
-// RGB color palette
-const C = {
-  teal:       [15, 118, 110] as [number, number, number],
-  tealLight:  [204, 251, 241] as [number, number, number],
-  darkHeader: [31, 41, 55] as [number, number, number],
-  rowAlt:     [249, 250, 251] as [number, number, number],
-  white:      [255, 255, 255] as [number, number, number],
-  bodyText:   [17, 24, 39] as [number, number, number],
-  mutedText:  [107, 114, 128] as [number, number, number],
-  border:     [226, 232, 240] as [number, number, number],
-};
-
-const PAGE_W = 210;
-const PAGE_H = 297;
-const MARGIN = 14;
-const CONTENT_W = PAGE_W - MARGIN * 2;
-const HEADER_H = 14;
-const FOOTER_H = 10;
-
-function drawPageHeader(doc: jsPDF, title: string) {
-  doc.setFillColor(...C.teal);
-  doc.rect(0, 0, PAGE_W, HEADER_H, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.setTextColor(...C.white);
-  doc.text('RenoHub', MARGIN, 9.5);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.text(title, PAGE_W - MARGIN, 9.5, { align: 'right' });
-}
-
-function drawPageFooter(doc: jsPDF, pageNum: number, totalPages: number) {
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...C.mutedText);
-  doc.text(`Strona ${pageNum} / ${totalPages}`, MARGIN, PAGE_H - 5);
-  doc.text('renohub.org', PAGE_W - MARGIN, PAGE_H - 5, { align: 'right' });
-}
-
-function fmtPrice(n: number) {
+function fmtPrice(n: number): string {
   return n.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' zł';
 }
 
-export function generateBudgetPdf(selectedRooms: RoomKey[]): void {
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const TITLE = 'Szablon budżetu remontu 2026';
+function cell(
+  text: string,
+  opts: {
+    bold?: boolean;
+    italics?: boolean;
+    color?: string;
+    fillColor?: string;
+    fontSize?: number;
+    alignment?: 'left' | 'center' | 'right';
+    colSpan?: number;
+    margin?: [number, number, number, number];
+    border?: [boolean, boolean, boolean, boolean];
+  } = {}
+) {
+  return {
+    text,
+    bold: opts.bold ?? false,
+    italics: opts.italics ?? false,
+    color: opts.color ?? '#111827',
+    fillColor: opts.fillColor,
+    fontSize: opts.fontSize ?? 8.5,
+    alignment: opts.alignment ?? 'left',
+    ...(opts.colSpan ? { colSpan: opts.colSpan } : {}),
+    margin: opts.margin ?? [5, 3, 5, 3],
+    border: opts.border ?? [false, false, false, false],
+  };
+}
 
-  // ── Cover / title block ────────────────────────────────────────────────────
-  drawPageHeader(doc, TITLE);
+function sectionHeader(title: string) {
+  return {
+    margin: [0, 12, 0, 0] as [number, number, number, number],
+    table: {
+      widths: ['*'],
+      body: [[
+        cell(title, {
+          bold: true, fontSize: 9.5,
+          color: 'white', fillColor: '#1F2937',
+          margin: [8, 6, 8, 6],
+        }),
+      ]],
+    },
+    layout: 'noBorders',
+  };
+}
 
-  let y = HEADER_H + 10;
+function tableLayout() {
+  return {
+    hLineWidth: (i: number, node: { table: { body: unknown[] } }) => {
+      if (i === 0 || i === 1 || i === node.table.body.length) return 0;
+      return 0.4;
+    },
+    vLineWidth: () => 0,
+    hLineColor: () => '#E2E8F0',
+    paddingTop: () => 0,
+    paddingBottom: () => 0,
+    paddingLeft: () => 0,
+    paddingRight: () => 0,
+  };
+}
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.setTextColor(...C.darkHeader);
-  doc.text(TITLE, MARGIN, y);
-  y += 7;
+function headerRow(cols: string[], widths: unknown[]): unknown[] {
+  return cols.map((text, i) => cell(text, {
+    bold: true, color: 'white', fillColor: '#374151',
+    fontSize: 8.5, margin: [5, 5, 5, 5],
+    alignment: i === 0 ? 'left' : (i === cols.length - 1 || i === cols.length - 2) ? 'right' : 'center',
+  }));
+}
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(...C.mutedText);
-  const dateStr = new Date().toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  doc.text(`Wygenerowano: ${dateStr}  ·  renohub.org`, MARGIN, y);
-  y += 5;
+export async function generateBudgetPdf(selectedRooms: RoomKey[]): Promise<void> {
+  // Dynamic import keeps vfs_fonts (~700KB) out of the main bundle
+  const [{ default: pdfMake }, pdfFontsModule] = await Promise.all([
+    import('pdfmake/build/pdfmake'),
+    import('pdfmake/build/vfs_fonts'),
+  ]);
 
-  // Rooms pill list
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8.5);
-  doc.setTextColor(...C.mutedText);
-  doc.text('Wybrane pomieszczenia:', MARGIN, y + 4);
-  y += 4;
+  // Handle both CommonJS and ESM default export shapes
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fonts = (pdfFontsModule as any).default?.pdfMake?.vfs ?? (pdfFontsModule as any).pdfMake?.vfs;
+  pdfMake.vfs = fonts;
 
-  const pillX = MARGIN + 42;
-  const pillNames = selectedRooms.map(r => ROOM_NAMES[r]).join('   ·   ');
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...C.bodyText);
-  doc.text(pillNames, pillX, y);
-  y += 8;
+  const dateStr = new Date().toLocaleDateString('pl-PL', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+  });
 
-  // Instruction box
-  doc.setFillColor(...C.tealLight);
-  doc.roundedRect(MARGIN, y, CONTENT_W, 12, 2, 2, 'F');
-  doc.setFont('helvetica', 'italic');
-  doc.setFontSize(8.5);
-  doc.setTextColor(...C.teal);
-  doc.text(
-    'Uzupełnij kolumny "Ilość" dla każdego materiału — ceny jednostkowe są już wpisane. Razem obliczy się automatycznie w wersji Excel.',
-    MARGIN + 4, y + 4.5,
-    { maxWidth: CONTENT_W - 8 }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const content: any[] = [];
+
+  // ── Title block ────────────────────────────────────────────────────────────
+  content.push(
+    { text: 'Szablon budżetu remontu 2026', fontSize: 20, bold: true, color: '#1F2937', margin: [0, 0, 0, 4] },
+    { text: `Wygenerowano: ${dateStr}  ·  renohub.org`, fontSize: 8.5, color: '#9CA3AF', margin: [0, 0, 0, 4] },
+    {
+      columns: [
+        { text: 'Wybrane pomieszczenia:', fontSize: 8.5, bold: true, color: '#6B7280', width: 'auto' },
+        { text: selectedRooms.map(r => ROOM_NAMES[r]).join('   ·   '), fontSize: 8.5, color: '#374151', margin: [6, 0, 0, 0] },
+      ],
+      margin: [0, 0, 0, 10],
+    },
+    {
+      table: { widths: ['*'], body: [[
+        { text: 'Uzupełnij kolumny "Ilość" dla każdego materiału — ceny jednostkowe są już wpisane.', fontSize: 8.5, italics: true, color: '#0F766E', fillColor: '#CCFBF1', border: [false, false, false, false], margin: [10, 6, 10, 6] },
+      ]]},
+      layout: 'noBorders',
+      margin: [0, 0, 0, 4],
+    },
   );
-  y += 16;
 
   // ── Room sections ──────────────────────────────────────────────────────────
-  selectedRooms.forEach((room, roomIdx) => {
+  for (const room of selectedRooms) {
     const materials = ROOM_MATERIALS[room];
+    const COL_WIDTHS = ['*', 28, 38, 52, 50];
 
-    // Section header
-    if (y > PAGE_H - FOOTER_H - 40) {
-      doc.addPage();
-      drawPageHeader(doc, TITLE);
-      y = HEADER_H + 8;
-    }
+    content.push(sectionHeader(ROOM_NAMES[room]));
 
-    doc.setFillColor(...C.darkHeader);
-    doc.rect(MARGIN, y, CONTENT_W, 8, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(...C.white);
-    doc.text(ROOM_NAMES[room].toUpperCase(), MARGIN + 4, y + 5.5);
-    y += 8;
+    content.push({
+      margin: [0, 0, 0, 4] as [number, number, number, number],
+      table: {
+        headerRows: 1,
+        widths: COL_WIDTHS,
+        body: [
+          headerRow(['Materiał', 'Ilość', 'Jednostka', 'Cena jedn.', 'Razem (zł)'], COL_WIDTHS),
+          ...materials.map((m, i) => {
+            const bg = i % 2 === 0 ? 'white' : '#F9FAFB';
+            return [
+              cell(m.name,           { fillColor: bg }),
+              cell('',               { fillColor: bg, alignment: 'center' }),
+              cell(m.unit,           { fillColor: bg, alignment: 'center', color: '#9CA3AF' }),
+              cell(fmtPrice(m.price),{ fillColor: bg, alignment: 'right' }),
+              cell('',               { fillColor: bg, alignment: 'right' }),
+            ];
+          }),
+          [
+            cell('Suma materiałów', { bold: true, color: '#0F766E', fillColor: '#CCFBF1', fontSize: 9, colSpan: 4, margin: [5, 5, 5, 5] }),
+            {}, {}, {},
+            cell('', { fillColor: '#CCFBF1', margin: [5, 5, 5, 5] }),
+          ],
+        ],
+      },
+      layout: tableLayout(),
+    });
+  }
 
-    autoTable(doc, {
-      startY: y,
-      margin: { left: MARGIN, right: MARGIN },
-      head: [[
-        { content: 'Materiał', styles: { halign: 'left' } },
-        { content: 'Ilość', styles: { halign: 'center' } },
-        { content: 'Jednostka', styles: { halign: 'center' } },
-        { content: 'Cena jedn.', styles: { halign: 'right' } },
-        { content: 'Razem (zł)', styles: { halign: 'right' } },
-      ]],
+  // ── Summary ────────────────────────────────────────────────────────────────
+  content.push(sectionHeader('Podsumowanie budżetu'));
+
+  content.push({
+    margin: [0, 0, 0, 0] as [number, number, number, number],
+    table: {
+      headerRows: 1,
+      widths: ['*', 100],
       body: [
-        ...materials.map(m => [
-          m.name,
-          { content: '', styles: { halign: 'center' as const } },
-          { content: m.unit, styles: { halign: 'center' as const, textColor: C.mutedText } },
-          { content: fmtPrice(m.price), styles: { halign: 'right' as const } },
-          { content: '', styles: { halign: 'right' as const } },
-        ]),
         [
-          { content: 'Suma materiałów', colSpan: 4, styles: { fontStyle: 'bold' as const, textColor: C.teal, fillColor: C.tealLight } },
-          { content: '', styles: { fillColor: C.tealLight } },
+          cell('Pomieszczenie',       { bold: true, color: 'white', fillColor: '#374151', margin: [5, 5, 5, 5] }),
+          cell('Koszt materiałów (zł)', { bold: true, color: 'white', fillColor: '#374151', alignment: 'right', margin: [5, 5, 5, 5] }),
+        ],
+        ...selectedRooms.map((r, i) => {
+          const bg = i % 2 === 0 ? 'white' : '#F9FAFB';
+          return [
+            cell(ROOM_NAMES[r], { fillColor: bg }),
+            cell('',            { fillColor: bg, alignment: 'right' }),
+          ];
+        }),
+        [
+          cell('Koszt materiałów razem', { bold: true, fillColor: 'white', border: [false, true, false, true] }),
+          cell('',                       { fillColor: 'white', alignment: 'right', border: [false, true, false, true] }),
+        ],
+        [
+          cell('Robocizna  (~20% od materiałów)', { italics: true, color: '#6B7280', fillColor: '#F9FAFB' }),
+          cell('', { fillColor: '#F9FAFB', alignment: 'right' }),
+        ],
+        [
+          cell('Rezerwa budżetowa  (~10%)', { italics: true, color: '#6B7280', fillColor: 'white' }),
+          cell('', { fillColor: 'white', alignment: 'right' }),
+        ],
+        [
+          cell('CAŁKOWITY BUDŻET', { bold: true, fontSize: 10, color: 'white', fillColor: '#0F766E', margin: [8, 7, 8, 7] }),
+          cell('',                 { fillColor: '#0F766E', margin: [8, 7, 8, 7] }),
         ],
       ],
-      headStyles: {
-        fillColor: C.darkHeader,
-        textColor: C.white,
-        fontStyle: 'bold',
-        fontSize: 8.5,
-        cellPadding: { top: 3, bottom: 3, left: 3, right: 3 },
-      },
-      bodyStyles: {
-        fontSize: 8.5,
-        textColor: C.bodyText,
-        cellPadding: { top: 2.5, bottom: 2.5, left: 3, right: 3 },
-        lineColor: C.border,
-        lineWidth: 0.2,
-      },
-      alternateRowStyles: { fillColor: C.rowAlt },
-      columnStyles: {
-        0: { cellWidth: 72 },
-        1: { cellWidth: 18 },
-        2: { cellWidth: 22 },
-        3: { cellWidth: 28 },
-        4: { cellWidth: 28 },
-      },
-      didDrawPage: (data) => {
-        drawPageHeader(doc, TITLE);
-        if (roomIdx > 0 || data.pageNumber > 1) {
-          y = HEADER_H + 8;
-        }
-      },
-    });
-
-    y = (doc as any).lastAutoTable.finalY + 8;
+    },
+    layout: tableLayout(),
   });
 
-  // ── Summary section ────────────────────────────────────────────────────────
-  if (y > PAGE_H - FOOTER_H - 60) {
-    doc.addPage();
-    drawPageHeader(doc, TITLE);
-    y = HEADER_H + 8;
-  }
+  // ── Document definition ───────────────────────────────────────────────────
+  const docDefinition = {
+    pageSize: 'A4',
+    pageMargins: [40, 50, 40, 32],
 
-  doc.setFillColor(...C.darkHeader);
-  doc.rect(MARGIN, y, CONTENT_W, 8, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9.5);
-  doc.setTextColor(...C.white);
-  doc.text('PODSUMOWANIE BUDŻETU', MARGIN + 4, y + 5.5);
-  y += 8;
+    // Teal bar drawn behind header on every page
+    background: (_page: number, pageSize: { width: number }) => ({
+      canvas: [{ type: 'rect', x: 0, y: 0, w: pageSize.width, h: 32, color: '#0F766E' }],
+    }),
 
-  autoTable(doc, {
-    startY: y,
-    margin: { left: MARGIN, right: MARGIN },
-    head: [['Pomieszczenie', { content: 'Koszt materiałów (zł)', styles: { halign: 'right' } }]],
-    body: [
-      ...selectedRooms.map(r => [
-        ROOM_NAMES[r],
-        { content: '', styles: { halign: 'right' as const } },
-      ]),
-      [
-        { content: 'Koszt materiałów razem', styles: { fontStyle: 'bold' as const } },
-        { content: '', styles: { halign: 'right' as const, fontStyle: 'bold' as const } },
+    header: () => ({
+      margin: [40, 11, 40, 0],
+      columns: [
+        { text: 'RenoHub', fontSize: 11, bold: true, color: 'white' },
+        { text: 'Szablon budżetu remontu 2026', fontSize: 8.5, color: 'rgba(255,255,255,0.8)', alignment: 'right' },
       ],
-      [
-        { content: 'Robocizna  (~20% od materiałów)', styles: { textColor: C.mutedText } },
-        { content: '', styles: { halign: 'right' as const } },
+    }),
+
+    footer: (currentPage: number, pageCount: number) => ({
+      margin: [40, 6, 40, 0],
+      columns: [
+        { text: `Strona ${currentPage} / ${pageCount}`, fontSize: 8, color: '#9CA3AF' },
+        { text: 'renohub.org', fontSize: 8, color: '#9CA3AF', alignment: 'right' },
       ],
-      [
-        { content: 'Rezerwa budżetowa  (~10%)', styles: { textColor: C.mutedText } },
-        { content: '', styles: { halign: 'right' as const } },
-      ],
-      [
-        { content: 'CAŁKOWITY BUDŻET', styles: { fontStyle: 'bold' as const, textColor: C.white, fillColor: C.teal, fontSize: 10 } },
-        { content: '', styles: { halign: 'right' as const, fillColor: C.teal } },
-      ],
-    ],
-    headStyles: {
-      fillColor: C.darkHeader,
-      textColor: C.white,
-      fontStyle: 'bold',
+    }),
+
+    content,
+
+    defaultStyle: {
+      font: 'Roboto',
       fontSize: 8.5,
-      cellPadding: { top: 3, bottom: 3, left: 3, right: 3 },
+      color: '#111827',
     },
-    bodyStyles: {
-      fontSize: 8.5,
-      textColor: C.bodyText,
-      cellPadding: { top: 3, bottom: 3, left: 3, right: 3 },
-      lineColor: C.border,
-      lineWidth: 0.2,
-    },
-    alternateRowStyles: { fillColor: C.rowAlt },
-    columnStyles: {
-      0: { cellWidth: 120 },
-      1: { cellWidth: 48 },
-    },
-  });
+  };
 
-  // ── Page footers ───────────────────────────────────────────────────────────
-  const totalPages = doc.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    drawPageFooter(doc, i, totalPages);
-  }
-
-  doc.save('szablon-budzetu-remontu-2026.pdf');
+  pdfMake.createPdf(docDefinition as Parameters<typeof pdfMake.createPdf>[0]).download('szablon-budzetu-remontu-2026.pdf');
 }
