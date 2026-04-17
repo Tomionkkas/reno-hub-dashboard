@@ -3,7 +3,7 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/sections/Footer';
 import { SEOHead } from '@/components/ui/seo-head';
 import { GradientBackground } from '@/components/ui/visual-enhancements';
-import { Shield, AlertTriangle, Eye, Lock, UserCheck, FileText, Mail } from 'lucide-react';
+import { Shield, AlertTriangle, Eye, Lock, UserCheck, FileText, Mail, Clock } from 'lucide-react';
 
 const PrivacyPolicy = () => {
   return (
@@ -110,6 +110,7 @@ const PrivacyPolicy = () => {
                   <li>Poprawa jakości usług i rozwój nowych funkcjonalności</li>
                   <li>Zapewnienie bezpieczeństwa platformy</li>
                   <li>Wypełnienie obowiązków prawnych</li>
+                  <li>Wysyłanie informacji marketingowych o produktach RenoHub i CalcReno (na podstawie zgody użytkownika)</li>
                 </ul>
               </div>
             </section>
@@ -191,10 +192,28 @@ const PrivacyPolicy = () => {
               </div>
             </section>
 
+            {/* Data Retention */}
+            <section className="glass-card p-6 rounded-xl border border-white/10">
+              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                <Clock className="w-5 h-5 text-reno-purple" />
+                7. Okres przechowywania danych
+              </h2>
+              <div className="text-gray-300 space-y-3 text-sm leading-relaxed">
+                <p>
+                  Adresy e-mail zebrane poprzez formularz kalkulatora przechowujemy przez okres 2 lat
+                  od daty rejestracji lub do momentu cofnięcia zgody przez użytkownika.
+                </p>
+                <p>
+                  Dane kont zarejestrowanych użytkowników przechowujemy przez okres aktywności konta
+                  oraz przez czas wymagany przepisami prawa po jego usunięciu.
+                </p>
+              </div>
+            </section>
+
             {/* Cookies */}
             <section className="glass-card p-6 rounded-xl border border-white/10">
               <h2 className="text-xl font-semibold text-white mb-4">
-                7. Pliki cookies
+                8. Pliki cookies
               </h2>
               <div className="text-gray-300 space-y-3 text-sm leading-relaxed">
                 <p>
@@ -213,7 +232,7 @@ const PrivacyPolicy = () => {
             <section className="glass-card p-6 rounded-xl border border-white/10">
               <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
                 <Mail className="w-5 h-5 text-reno-purple" />
-                8. Kontakt
+                9. Kontakt
               </h2>
               <div className="text-gray-300 space-y-3 text-sm leading-relaxed">
                 <p>W przypadku pytań dotyczących polityki prywatności lub przetwarzania danych, skontaktuj się z nami:</p>
@@ -228,7 +247,7 @@ const PrivacyPolicy = () => {
             {/* Changes to Policy */}
             <section className="glass-card p-6 rounded-xl border border-white/10">
               <h2 className="text-xl font-semibold text-white mb-4">
-                9. Zmiany w polityce prywatności
+                10. Zmiany w polityce prywatności
               </h2>
               <div className="text-gray-300 space-y-3 text-sm leading-relaxed">
                 <p>

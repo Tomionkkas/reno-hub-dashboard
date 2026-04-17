@@ -511,7 +511,10 @@ function EmailGate({
           Odblokuj kosztorys →
         </button>
       </form>
-      <p className="text-xs text-gray-500">Bez spamu. Tylko raz, tylko to co zamówiłeś.</p>
+      <p className="text-xs text-gray-500">
+        Wysyłając, zgadzasz się na otrzymywanie informacji o CalcReno.{' '}
+        <a href="/privacy-policy" className="underline hover:text-gray-300">Polityka prywatności</a>
+      </p>
     </div>
   );
 }
