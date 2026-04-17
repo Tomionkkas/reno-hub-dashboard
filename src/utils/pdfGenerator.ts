@@ -1,4 +1,11 @@
+import pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFontsNS from 'pdfmake/build/vfs_fonts';
 import { ROOM_NAMES, type RoomKey } from './templateGenerator';
+
+// Wire up the embedded Roboto font VFS — handle both CJS wrapper shapes
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const vfsData = (pdfFontsNS as any).pdfMake?.vfs ?? (pdfFontsNS as any).default?.pdfMake?.vfs;
+pdfMake.vfs = vfsData;
 
 interface Material { name: string; unit: string; price: number; }
 
@@ -135,17 +142,6 @@ function headerRow(cols: string[], widths: unknown[]): unknown[] {
 }
 
 export async function generateBudgetPdf(selectedRooms: RoomKey[]): Promise<void> {
-  // Dynamic import keeps vfs_fonts (~700KB) out of the main bundle
-  const [{ default: pdfMake }, pdfFontsModule] = await Promise.all([
-    import('pdfmake/build/pdfmake'),
-    import('pdfmake/build/vfs_fonts'),
-  ]);
-
-  // Handle both CommonJS and ESM default export shapes
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fonts = (pdfFontsModule as any).default?.pdfMake?.vfs ?? (pdfFontsModule as any).pdfMake?.vfs;
-  pdfMake.vfs = fonts;
-
   const dateStr = new Date().toLocaleDateString('pl-PL', {
     day: '2-digit', month: '2-digit', year: 'numeric',
   });
