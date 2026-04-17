@@ -38,6 +38,8 @@ const KalkulatorRemontu = React.lazy(() => import('./pages/KalkulatorRemontu'));
 const CalcRenoDeleteAccount = React.lazy(() => import('./pages/CalcRenoDeleteAccount'));
 const Blog = React.lazy(() => import('./pages/Blog'));
 const BlogPost = React.lazy(() => import('./pages/BlogPost'));
+const SzablonBudzetuRemontu = React.lazy(() => import('./pages/SzablonBudzetuRemontu'));
+const QuizRemontowy = React.lazy(() => import('./pages/QuizRemontowy'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -88,6 +90,8 @@ const App = () => (
                   <Route path="/calcreno/delete-account" element={<CalcRenoDeleteAccount />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogPost />} />
+                  <Route path="/szablon-budzetu-remontu" element={<SzablonBudzetuRemontu />} />
+                  <Route path="/quiz-remontowy" element={<QuizRemontowy />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
