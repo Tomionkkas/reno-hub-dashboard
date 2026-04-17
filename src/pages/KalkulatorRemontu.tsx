@@ -882,7 +882,6 @@ function MoreToolsSection() {
           href="/szablon-budzetu-remontu"
           className="flex flex-col gap-2 rounded-2xl border border-gray-800 bg-gray-900 p-5 hover:border-gray-700 transition-colors group"
         >
-          <span className="text-2xl">📋</span>
           <p className="font-semibold text-white group-hover:text-teal-300 transition-colors">
             Szablon budżetu remontu
           </p>
@@ -896,7 +895,6 @@ function MoreToolsSection() {
           href="/quiz-remontowy"
           className="flex flex-col gap-2 rounded-2xl border border-gray-800 bg-gray-900 p-5 hover:border-gray-700 transition-colors group"
         >
-          <span className="text-2xl">🎯</span>
           <p className="font-semibold text-white group-hover:text-teal-300 transition-colors">
             Quiz remontowy
           </p>

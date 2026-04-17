@@ -3,13 +3,13 @@ import { Helmet } from 'react-helmet-async';
 import { generateBudgetTemplate, ROOM_NAMES, type RoomKey } from '../utils/templateGenerator';
 import { templateSignup } from '../utils/templateSignup';
 
-const ALL_ROOMS: { key: RoomKey; emoji: string }[] = [
-  { key: 'lazienka',   emoji: '🚿' },
-  { key: 'kuchnia',    emoji: '🍳' },
-  { key: 'salon',      emoji: '🛋️' },
-  { key: 'sypialnia',  emoji: '🛏️' },
-  { key: 'korytarz',   emoji: '🚪' },
-  { key: 'instalacje', emoji: '⚡' },
+const ALL_ROOMS: { key: RoomKey }[] = [
+  { key: 'lazienka' },
+  { key: 'kuchnia' },
+  { key: 'salon' },
+  { key: 'sypialnia' },
+  { key: 'korytarz' },
+  { key: 'instalacje' },
 ];
 
 export default function SzablonBudzetuRemontu() {
@@ -73,19 +73,18 @@ export default function SzablonBudzetuRemontu() {
                     Które pomieszczenia remontujesz?
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {ALL_ROOMS.map(({ key, emoji }) => (
+                    {ALL_ROOMS.map(({ key }) => (
                       <button
                         key={key}
                         type="button"
                         onClick={() => toggleRoom(key)}
-                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
+                        className={`px-3 py-2.5 rounded-xl border text-sm font-medium transition-colors text-left ${
                           selectedRooms.includes(key)
                             ? 'border-teal-500 bg-teal-500/10 text-teal-300'
                             : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
                         }`}
                       >
-                        <span>{emoji}</span>
-                        <span>{ROOM_NAMES[key]}</span>
+                        {ROOM_NAMES[key]}
                       </button>
                     ))}
                   </div>
