@@ -72,8 +72,70 @@ export default function KalkulatorRemontu() {
           onEmailSubmit={() => setEmailSubmitted(true)}
           inputs={inputs}
         />
+        <PromoToast />
       </main>
     </>
+  );
+}
+
+// ── Promo Toast ───────────────────────────────────────────────────────────────
+
+const PROMOS = {
+  template: {
+    headline: 'Planujesz remont całego mieszkania?',
+    sub: 'Darmowy szablon budżetu Excel — każde pomieszczenie osobno.',
+    cta: 'Pobierz szablon →',
+    href: '/szablon-budzetu-remontu',
+  },
+  quiz: {
+    headline: 'Ile kosztuje cały Twój remont?',
+    sub: '5 pytań, spersonalizowany wynik w 2 minuty.',
+    cta: 'Zrób quiz →',
+    href: '/quiz-remontowy',
+  },
+} as const;
+
+function PromoToast() {
+  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const [promo] = useState<'template' | 'quiz'>(() =>
+    Math.random() > 0.5 ? 'template' : 'quiz'
+  );
+
+  useEffect(() => {
+    if (sessionStorage.getItem('promo-toast-shown')) return;
+    const timer = setTimeout(() => {
+      setVisible(true);
+      sessionStorage.setItem('promo-toast-shown', '1');
+    }, 15000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!visible || dismissed) return null;
+
+  const config = PROMOS[promo];
+
+  return (
+    <div className="fixed top-6 right-6 z-50 max-w-xs w-full animate-in slide-in-from-top-4 duration-300">
+      <div className="bg-white/5 backdrop-blur-md border border-white/15 rounded-2xl p-4 shadow-2xl relative">
+        <button
+          onClick={() => setDismissed(true)}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-300 text-xl leading-none"
+          aria-label="Zamknij"
+        >
+          ×
+        </button>
+        <p className="text-sm font-semibold text-white pr-6">{config.headline}</p>
+        <p className="text-xs text-gray-400 mt-1">{config.sub}</p>
+        <a
+          href={config.href}
+          onClick={() => setDismissed(true)}
+          className="inline-block mt-3 text-xs font-semibold text-teal-400 hover:text-teal-300"
+        >
+          {config.cta}
+        </a>
+      </div>
+    </div>
   );
 }
 
