@@ -102,6 +102,9 @@ export default function QuizRemontowy() {
     if (!email.includes('@')) { setEmailError('Podaj poprawny adres email'); return; }
     setEmailError('');
     setPhase('done');
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', { send_to: 'AW-17946979757/yGBiCICctvwbEK3b5O1C' });
+    }
     if (costRange) {
       quizSignup(email, answers as QuizAnswers, costRange).catch(console.error);
     }
