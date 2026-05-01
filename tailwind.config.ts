@@ -72,6 +72,10 @@ export default {
 				'reno-purple': '#5A4BFF',
 				'reno-blue': '#7F67FF',
 				'reno-mint': '#00D4AA',
+				'reno-navy': '#0A0B1E',
+				'reno-pink': '#FF0080',
+				'reno-teal': '#00D4AA',
+				'reno-cyan': '#00D4FF',
 				chart: {
 					'1': 'hsl(var(--chart-1))',
 					'2': 'hsl(var(--chart-2))',
@@ -79,6 +83,9 @@ export default {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
 				}
+			},
+			backgroundImage: {
+				'reno-gradient': 'linear-gradient(135deg, #00D4FF 0%, #7F67FF 50%, #FF0080 100%)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

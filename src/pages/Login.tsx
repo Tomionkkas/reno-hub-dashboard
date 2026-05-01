@@ -1,34 +1,23 @@
-
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { GSAPCard, GSAPCardContent, GSAPCardDescription, GSAPCardHeader, GSAPCardTitle } from '@/components/animations/GSAPCard';
-import { RippleEffect, MagneticEffect } from '@/components/ui/micro-interactions';
-import { GradientBackground, ParticleSystem, FloatingOrbs, GlowEffect } from '@/components/ui/visual-enhancements';
-import { FloatingElements } from '@/components/ui/professional-polish';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Checkbox } from '@/components/ui/checkbox';
+import AuthLayout from '@/components/layout/AuthLayout';
 import { toast } from 'sonner';
 
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
+const INPUT_CLS = 'bg-white/[0.04] border-white/10 text-white placeholder-white/30 focus:border-[#7F67FF]/50 rounded-xl h-12';
+const LABEL_CLS = 'text-[11px] font-medium text-white/50 tracking-[0.14em] uppercase block mb-2';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState<'login' | 'forgot'>('login');
-  const [forgotEmail, setForgotEmail] = useState('');
-  const [isForgotLoading, setIsForgotLoading] = useState(false);
-  const { login, resetPassword } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
-
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,15 +27,10 @@ const Login = () => {
       toast.success('Zalogowano pomyślnie!');
       navigate('/dashboard');
     } catch (error: any) {
-      console.error('[Login] Login error:', error);
-
-      // Show more specific error messages
-      if (error?.message?.includes('Nie można połączyć się z serwerem')) {
-        toast.error('Błąd połączenia z serwerem. Sprawdź połączenie internetowe.');
-      } else if (error?.message?.includes('Invalid login credentials')) {
+      if (error?.message?.includes('Invalid login credentials')) {
         toast.error('Nieprawidłowy email lub hasło.');
-      } else if (error?.message) {
-        toast.error(`Błąd: ${error.message}`);
+      } else if (error?.message?.includes('Nie można połączyć się z serwerem')) {
+        toast.error('Błąd połączenia z serwerem.');
       } else {
         toast.error('Błąd logowania. Sprawdź dane i spróbuj ponownie.');
       }
@@ -55,215 +39,100 @@ const Login = () => {
     }
   };
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsForgotLoading(true);
-    try {
-      await resetPassword(forgotEmail.trim());
-      toast.success('Link do resetowania hasła został wysłany!');
-      setMode('login');
-      setForgotEmail('');
-    } catch (error: any) {
-      console.error('[Login] Forgot password error:', error);
-      toast.error('Nie udało się wysłać linku. Sprawdź adres email.');
-    } finally {
-      setIsForgotLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Animate section title
-      gsap.fromTo(
-        titleRef.current,
-        {
-          y: 50,
-          opacity: 0,
-          scale: 0.9
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          ease: "power3.out"
-        }
-      );
-
-      // Animate login card
-      gsap.fromTo(
-        cardRef.current,
-        {
-          y: 100,
-          opacity: 0,
-          scale: 0.8,
-          rotationY: 20
-        },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          rotationY: 0,
-          duration: 0.8,
-          ease: "back.out(1.7)",
-          delay: 0.3
-        }
-      );
-
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <GradientBackground
-      colors={['from-black', 'via-slate-900', 'to-black']}
-      direction="to-br"
-      animated={true}
-      speed={30}
-      className="min-h-screen relative"
-    >
-      {/* Enhanced Background Effects - Memoized to prevent re-renders */}
-      {useMemo(() => (
-        <>
-          <ParticleSystem count={50} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-          <FloatingOrbs count={12} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-          <FloatingElements count={20} elements={['star', 'circle', 'triangle']}>
-            <div />
-          </FloatingElements>
-        </>
-      ), [])}
-
-      <section
-        ref={sectionRef}
-        className="min-h-screen flex items-center justify-center px-4 relative"
-        aria-labelledby="login-heading"
+    <AuthLayout>
+      {/* Section label */}
+      <p className="eyebrow mb-4" style={{ fontFamily: 'ui-monospace, monospace' }}>
+        § Logowanie
+      </p>
+      <h1
+        className="text-white font-bold mb-2"
+        style={{ fontSize: 44, letterSpacing: '-0.03em', lineHeight: 1.05 }}
       >
-        <div className="container mx-auto text-center relative z-10">
-          <h1
-            ref={titleRef}
-            id="login-heading"
-            className="text-4xl md:text-6xl font-bold mb-8"
-          >
-            <span className="gradient-text">RenoHub</span>
-          </h1>
+        Zaloguj się
+      </h1>
+      <p className="text-[#B8BCC8] mb-9" style={{ fontSize: 15, lineHeight: 1.55 }}>
+        Wprowadź swoje dane, aby uzyskać dostęp do konta.
+      </p>
 
-          <div ref={cardRef} className="max-w-md mx-auto">
-            <RippleEffect>
-              <GSAPCard
-                className="glass-card border-white/10 hover:border-reno-purple/30 hover:shadow-2xl hover:shadow-reno-purple/30 transition-all duration-300"
-                hover="glow"
-                trigger="scroll"
-                role="article"
-                aria-labelledby="login-form-title"
-              >
-                <GSAPCardHeader className="text-center">
-                  <GSAPCardTitle id="login-form-title" className="text-white text-2xl md:text-3xl mb-2">
-                    {mode === 'forgot' ? 'Resetuj hasło' : 'Zaloguj się'}
-                  </GSAPCardTitle>
-                  <GSAPCardDescription className="text-gray-300 text-base">
-                    {mode === 'forgot'
-                      ? 'Podaj swój email, a wyślemy Ci link do resetowania hasła'
-                      : 'Wprowadź swoje dane aby uzyskać dostęp do konta'}
-                  </GSAPCardDescription>
-                </GSAPCardHeader>
-
-                <GSAPCardContent>
-                  {mode === 'forgot' ? (
-                    <form onSubmit={handleForgotPassword} className="space-y-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="forgot-email" className="text-white font-medium">Email</Label>
-                        <Input
-                          id="forgot-email"
-                          type="email"
-                          value={forgotEmail}
-                          onChange={(e) => setForgotEmail(e.target.value)}
-                          required
-                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                          placeholder="twoj@email.com"
-                        />
-                      </div>
-
-                      <LoadingButton
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
-                        loading={isForgotLoading}
-                        loadingText="Wysyłanie..."
-                      >
-                        Wyślij link
-                      </LoadingButton>
-
-                      <div className="mt-4 text-center">
-                        <button
-                          type="button"
-                          onClick={() => { setMode('login'); setForgotEmail(''); }}
-                          className="text-gray-400 hover:text-white transition-colors text-sm"
-                        >
-                          ← Wróć do logowania
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-white font-medium">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          required
-                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                          placeholder="twoj@email.com"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="password" className="text-white font-medium">Hasło</Label>
-                        <Input
-                          id="password"
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                          className="bg-white/5 border-white/10 text-white placeholder-gray-400 hover:border-white/20 focus:border-reno-purple/50 focus:ring-reno-purple/20 transition-all duration-300"
-                          placeholder="Wprowadź hasło"
-                        />
-                      </div>
-
-                      <LoadingButton
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-reno-purple to-reno-blue hover:from-reno-blue hover:to-reno-purple text-white font-bold text-lg shadow-2xl hover:shadow-reno-purple/20 border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300"
-                        loading={isLoading}
-                        loadingText="Logowanie..."
-                      >
-                        Zaloguj się
-                      </LoadingButton>
-
-                      <div className="mt-8 text-center space-y-3">
-                        <button
-                          type="button"
-                          onClick={() => setMode('forgot')}
-                          className="text-gray-400 hover:text-reno-blue transition-colors text-sm"
-                        >
-                          Zapomniałem hasła
-                        </button>
-                        <p className="text-gray-400">
-                          Nie masz konta?{' '}
-                          <Link to="/register" className="text-reno-blue hover:text-reno-purple transition-colors font-medium hover-lift">
-                            Zarejestruj się
-                          </Link>
-                        </p>
-                      </div>
-                    </form>
-                  )}
-                </GSAPCardContent>
-              </GSAPCard>
-            </RippleEffect>
-          </div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {/* Email */}
+        <div>
+          <label htmlFor="email" className={LABEL_CLS}>Email</label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            placeholder="twój@email.pl"
+            className={INPUT_CLS}
+          />
         </div>
-      </section>
-    </GradientBackground>
+
+        {/* Password */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="password" className={LABEL_CLS + ' mb-0'}>Hasło</label>
+            <Link
+              to="/forgot-password"
+              className="text-[12px] text-[#7F67FF] hover:text-[#00D4FF] transition-colors no-underline"
+              style={{ fontFamily: 'ui-monospace, monospace', letterSpacing: '0.04em' }}
+            >
+              Zapomniałem hasła →
+            </Link>
+          </div>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            placeholder="••••••••••"
+            className={INPUT_CLS}
+          />
+        </div>
+
+        {/* Remember me */}
+        <div className="flex items-center gap-3">
+          <Checkbox
+            id="remember"
+            checked={remember}
+            onCheckedChange={v => setRemember(!!v)}
+            className="border-white/20 data-[state=checked]:bg-[#7F67FF] data-[state=checked]:border-[#7F67FF]"
+          />
+          <Label htmlFor="remember" className="text-[13px] text-[#B8BCC8] cursor-pointer font-normal">
+            Zapamiętaj mnie na tym urządzeniu
+          </Label>
+        </div>
+
+        <LoadingButton
+          type="submit"
+          loading={isLoading}
+          loadingText="Logowanie…"
+          className="w-full bg-white text-[#0A0B1E] font-semibold rounded-xl h-12 text-[15px] border-0 hover:bg-white/90 transition-colors mt-3"
+        >
+          Zaloguj się →
+        </LoadingButton>
+      </form>
+
+      {/* Divider */}
+      <div className="flex items-center gap-4 my-8">
+        <div className="flex-1 h-px bg-white/[0.08]" />
+        <span className="text-white/30 text-[11px]" style={{ fontFamily: 'ui-monospace, monospace', letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+          lub
+        </span>
+        <div className="flex-1 h-px bg-white/[0.08]" />
+      </div>
+
+      <p className="text-center text-[14px] text-[#B8BCC8]">
+        Nie masz konta?{' '}
+        <Link to="/register" className="text-white font-medium no-underline"
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.3)', paddingBottom: 1 }}>
+          Zarejestruj się
+        </Link>
+      </p>
+    </AuthLayout>
   );
 };
 

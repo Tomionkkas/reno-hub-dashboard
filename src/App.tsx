@@ -40,6 +40,8 @@ const Blog = React.lazy(() => import('./pages/Blog'));
 const BlogPost = React.lazy(() => import('./pages/BlogPost'));
 const SzablonBudzetuRemontu = React.lazy(() => import('./pages/SzablonBudzetuRemontu'));
 const QuizRemontowy = React.lazy(() => import('./pages/QuizRemontowy'));
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
+const Pomoc = React.lazy(() => import('./pages/Pomoc'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -78,6 +80,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/admin" element={<AdminPanel />} />
                   <Route path="/renoscout" element={<RenoScoutPage />} />
@@ -92,6 +95,7 @@ const App = () => (
                   <Route path="/blog/:slug" element={<BlogPost />} />
                   <Route path="/szablon-budzetu-remontu" element={<SzablonBudzetuRemontu />} />
                   <Route path="/quiz-remontowy" element={<QuizRemontowy />} />
+                  <Route path="/pomoc" element={<Pomoc />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

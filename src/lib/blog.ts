@@ -4,6 +4,7 @@ export interface BlogPost {
   date: string;
   description: string;
   tags: string[];
+  category: string;
   content: string;
 }
 
@@ -18,8 +19,9 @@ const rawFiles = import.meta.glob<string>('../content/blog/*.mdx', {
 // Browser-safe frontmatter parser — replaces gray-matter which requires Node.js Buffer.
 // Handles string fields and YAML list fields (keywords: \n  - item).
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-  if (!match) return { data: {}, content: raw };
+  const stripped = raw.replace(/^﻿/, '');
+  const match = stripped.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+  if (!match) return { data: {}, content: stripped };
 
   const [, frontmatter, body] = match;
   const data: Record<string, unknown> = {};
@@ -68,6 +70,7 @@ function parsePost(path: string, raw: string): BlogPost {
     date: (data.date as string) || '',
     description: (data.description as string) || '',
     tags: Array.isArray(data.keywords) ? (data.keywords as string[]) : [],
+    category: (data.category as string) || '',
     content,
   };
 }
@@ -89,3 +92,10 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
 export function getLatestPost(): BlogPost | undefined {
   return getAllPosts()[0];
 }
+
+export const CATEGORY_IMAGE: Record<string, string> = {
+  'Budżet':      '/blog/categories/budzet.png',
+  'Ekipa':       '/blog/categories/ekipa.png',
+  'Materiały':   '/blog/categories/materialy.png',
+  'Harmonogram': '/blog/categories/harmonogram.png',
+};

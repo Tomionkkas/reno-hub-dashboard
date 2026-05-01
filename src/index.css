@@ -73,6 +73,10 @@
     @apply border-border;
   }
 
+  html, body {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: "Inter", sans-serif;
@@ -80,6 +84,36 @@
 }
 
 /* Utility Classes */
+
+/* Editorial eyebrow label — used in new D-direction sections */
+.eyebrow {
+  font-family: ui-monospace, 'Courier New', Courier, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #4a4a6a;
+}
+
+/* Gradient-border card — CTA section */
+.gradient-border-card {
+  position: relative;
+  border-radius: 1.5rem;
+  background: #0A0B1E;
+}
+.gradient-border-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #00D4FF 0%, #7F67FF 50%, #FF0080 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
 .gradient-text {
   background: linear-gradient(135deg, #00D4FF, #7F67FF, #FF0080);
   -webkit-background-clip: text;

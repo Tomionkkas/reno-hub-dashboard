@@ -4,112 +4,154 @@ import type { BlogPost } from '@/lib/blog';
 
 interface BlogArticleProps {
   post: BlogPost;
+  headingSlugs?: string[];
 }
 
-const components: Components = {
-  h1: ({ children }: { children?: ReactNode }) => (
-    <h1 className="text-3xl font-extrabold text-[#f5f5f7] mb-3 leading-tight mt-0">
-      {children}
-    </h1>
-  ),
-  h2: ({ children }: { children?: ReactNode }) => (
-    <h2 className="text-xl font-bold text-[#f5f5f7] mt-10 mb-3">
-      {children}
-    </h2>
-  ),
-  h3: ({ children }: { children?: ReactNode }) => (
-    <h3 className="text-lg font-semibold text-[#e0e0e8] mt-7 mb-2">
-      {children}
-    </h3>
-  ),
-  p: ({ children }: { children?: ReactNode }) => (
-    <p className="text-[#a0a0a8] leading-[1.75] mb-5 text-[0.97rem]">
-      {children}
-    </p>
-  ),
-  blockquote: ({ children }: { children?: ReactNode }) => (
-    <blockquote className="border-l-[3px] border-[#7F67FF] bg-[rgba(127,103,255,0.06)] pl-5 pr-4 py-3 rounded-r-lg my-6 italic text-[#c0b8ff] text-[0.93rem] leading-relaxed">
-      {children}
-    </blockquote>
-  ),
-  pre: ({ children }: { children?: ReactNode }) => (
-    <pre className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] rounded-lg p-4 overflow-x-auto my-5">
-      {children}
-    </pre>
-  ),
-  code: ({ children, className }: { children?: ReactNode; className?: string }) => {
-    const isBlock = className?.startsWith('language-');
-    if (isBlock) {
+let headingIndex = 0;
+
+function makeComponents(headingSlugs: string[]): Components {
+  headingIndex = 0;
+  return {
+    h2: ({ children }: { children?: ReactNode }) => {
+      const id = headingSlugs[headingIndex++] ?? undefined;
       return (
-        <code className="text-[#00D4FF] font-mono text-sm">
+        <h2
+          id={id}
+          className="text-white font-bold mb-4 leading-tight scroll-mt-24"
+          style={{ fontSize: 28, letterSpacing: '-0.02em', marginTop: 48 }}
+        >
+          {children}
+        </h2>
+      );
+    },
+    h3: ({ children }: { children?: ReactNode }) => (
+      <h3
+        className="text-white font-semibold mb-3 leading-snug scroll-mt-24"
+        style={{ fontSize: 20, letterSpacing: '-0.01em', marginTop: 32 }}
+      >
+        {children}
+      </h3>
+    ),
+    p: ({ children }: { children?: ReactNode }) => (
+      <p className="mb-5 leading-[1.7]" style={{ fontSize: 17, color: '#D8DBE2' }}>
+        {children}
+      </p>
+    ),
+    blockquote: ({ children }: { children?: ReactNode }) => (
+      <blockquote
+        className="my-12 italic"
+        style={{
+          fontSize: 24, lineHeight: 1.4, fontWeight: 400, color: '#fff',
+          letterSpacing: '-0.01em',
+          borderLeft: '2px solid #00D4FF',
+          paddingLeft: 40, paddingTop: 8, paddingBottom: 8,
+          margin: '48px 0',
+        }}
+      >
+        {children}
+      </blockquote>
+    ),
+    pre: ({ children }: { children?: ReactNode }) => (
+      <pre
+        className="rounded-xl p-5 overflow-x-auto my-6"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+      >
+        {children}
+      </pre>
+    ),
+    code: ({ children, className }: { children?: ReactNode; className?: string }) => {
+      const isBlock = className?.startsWith('language-');
+      if (isBlock) {
+        return <code className="text-[#00D4FF] font-mono text-sm">{children}</code>;
+      }
+      return (
+        <code
+          className="font-mono text-sm px-1.5 py-0.5 rounded"
+          style={{ background: 'rgba(255,255,255,0.06)', color: '#00D4FF' }}
+        >
           {children}
         </code>
       );
-    }
-    return (
-      <code className="bg-[rgba(255,255,255,0.06)] text-[#00D4FF] font-mono text-sm px-1.5 py-0.5 rounded">
+    },
+    a: ({ children, href }: { children?: ReactNode; href?: string }) => (
+      <a
+        href={href}
+        className="hover:underline transition-colors"
+        style={{ color: '#00D4FF' }}
+        target={href?.startsWith('http') ? '_blank' : undefined}
+        rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
         {children}
-      </code>
-    );
-  },
-  a: ({ children, href }: { children?: ReactNode; href?: string }) => (
-    <a
-      href={href}
-      className="text-[#7F67FF] hover:underline"
-      target={href?.startsWith('http') ? '_blank' : undefined}
-      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-    >
-      {children}
-    </a>
-  ),
-  ul: ({ children }: { children?: ReactNode }) => (
-    <ul className="text-[#a0a0a8] list-disc list-outside pl-5 mb-5 space-y-1.5">
-      {children}
-    </ul>
-  ),
-  ol: ({ children }: { children?: ReactNode }) => (
-    <ol className="text-[#a0a0a8] list-decimal list-outside pl-5 mb-5 space-y-1.5">
-      {children}
-    </ol>
-  ),
-  li: ({ children }: { children?: ReactNode }) => (
-    <li className="leading-relaxed">{children}</li>
-  ),
-  hr: () => <hr className="border-[rgba(255,255,255,0.08)] my-10" />,
-  strong: ({ children }: { children?: ReactNode }) => (
-    <strong className="text-[#e0e0e8] font-semibold">{children}</strong>
-  ),
-};
+      </a>
+    ),
+    ul: ({ children }: { children?: ReactNode }) => (
+      <ul className="list-none pl-0 mb-5 space-y-2.5" style={{ color: '#D8DBE2' }}>
+        {children}
+      </ul>
+    ),
+    ol: ({ children }: { children?: ReactNode }) => (
+      <ol className="list-decimal list-outside pl-5 mb-5 space-y-2.5" style={{ color: '#D8DBE2' }}>
+        {children}
+      </ol>
+    ),
+    li: ({ children }: { children?: ReactNode }) => (
+      <li className="flex items-start gap-3 leading-relaxed" style={{ fontSize: 16 }}>
+        <span
+          className="mt-[0.45em] w-1 h-1 rounded-full flex-shrink-0"
+          style={{ background: '#00D4FF' }}
+        />
+        <span>{children}</span>
+      </li>
+    ),
+    hr: () => <hr className="my-10 border-0 border-t border-white/[0.08]" />,
+    strong: ({ children }: { children?: ReactNode }) => (
+      <strong className="font-semibold" style={{ color: '#fff' }}>{children}</strong>
+    ),
+    em: ({ children }: { children?: ReactNode }) => (
+      <em className="italic" style={{ color: '#E5E7EB' }}>{children}</em>
+    ),
+    table: ({ children }: { children?: ReactNode }) => (
+      <div className="overflow-x-auto my-6">
+        <table
+          className="w-full text-[14px]"
+          style={{ borderCollapse: 'collapse', fontFamily: 'ui-monospace, monospace' }}
+        >
+          {children}
+        </table>
+      </div>
+    ),
+    th: ({ children }: { children?: ReactNode }) => (
+      <th
+        className="text-left py-2 px-4 text-[#6B7280] font-medium"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.10)', fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase' }}
+      >
+        {children}
+      </th>
+    ),
+    td: ({ children }: { children?: ReactNode }) => (
+      <td
+        className="py-3 px-4"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: '#D8DBE2' }}
+      >
+        {children}
+      </td>
+    ),
+  };
+}
 
-export default function BlogArticle({ post }: BlogArticleProps) {
-  const formattedDate = new Date(post.date).toLocaleDateString('pl-PL', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+export default function BlogArticle({ post, headingSlugs = [] }: BlogArticleProps) {
+  const components = makeComponents(headingSlugs);
 
   return (
-    <article className="w-full">
-      {/* Post header */}
-      <div className="mb-8">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-3 py-1 rounded-full bg-[rgba(127,103,255,0.15)] text-[#7F67FF]"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-        <h1 className="text-3xl font-extrabold text-[#f5f5f7] leading-tight mb-3">
-          {post.title}
-        </h1>
-        <p className="text-sm text-[#636366]">{formattedDate}</p>
-        <div className="mt-5 h-px bg-[rgba(255,255,255,0.08)]" />
-      </div>
-
-      {/* Article body */}
+    <article style={{ fontSize: 17, lineHeight: 1.7, color: '#D8DBE2' }}>
+      {post.description && (
+        <p
+          className="mb-8 leading-[1.55]"
+          style={{ fontSize: 20, color: '#E5E7EB' }}
+        >
+          {post.description}
+        </p>
+      )}
       <ReactMarkdown components={components}>
         {post.content}
       </ReactMarkdown>

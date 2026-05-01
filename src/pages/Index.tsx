@@ -1,108 +1,39 @@
-import React from 'react';
-import Navigation from '@/components/Navigation';
-import { ScrollToTop } from '@/components/ui/scroll-to-top';
-import { SkipLink } from '@/components/ui/accessibility-skip-link';
-import { SEOHead } from '@/components/ui/seo-head';
 import { usePerformanceMonitor } from '@/hooks/use-performance';
-import GSAPHero from '@/components/animations/GSAPHero';
-import EnhancedAppsSection from '@/components/sections/EnhancedAppsSection';
-import LatestPostsStrip from '@/components/sections/LatestPostsStrip';
-import EnhancedFeaturesSection from '@/components/sections/EnhancedFeaturesSection';
-import EnhancedPricingSection from '@/components/sections/EnhancedPricingSection';
-import EnhancedCTASection from '@/components/sections/EnhancedCTASection';
-import Footer from '@/components/sections/Footer';
-import GSAPPerformance from '@/components/animations/GSAPPerformance';
-import AccessibilityEnhancer from '@/components/ui/accessibility-enhancer';
-import { FeedbackManager, useFeedback } from '@/components/ui/user-feedback';
-import UserFeedback from '@/components/ui/user-feedback';
-import { RippleEffect, MagneticEffect, FloatingAnimation } from '@/components/ui/micro-interactions';
-import { GradientBackground, ParticleSystem, FloatingOrbs, GlowEffect } from '@/components/ui/visual-enhancements';
-import { PremiumShadow, AnimatedBackground, GlowingText, FloatingElements } from '@/components/ui/professional-polish';
+import { SEOHead } from '@/components/ui/seo-head';
+import { SkipLink } from '@/components/ui/accessibility-skip-link';
+import { ScrollToTop } from '@/components/ui/scroll-to-top';
+import Navigation from '@/components/Navigation';
+import HeroSectionD from '@/components/sections/HeroSectionD';
+import AppSwitcherSection from '@/components/sections/AppSwitcherSection';
+import QuoteSection from '@/components/sections/QuoteSection';
+import BlogGridSection from '@/components/sections/BlogGridSection';
+import CTASectionD from '@/components/sections/CTASectionD';
+import FooterD from '@/components/sections/FooterD';
 
 const Index = () => {
   usePerformanceMonitor('Index');
-  const { feedbacks, removeFeedback, success, error, warning, info } = useFeedback();
-  const [showEffects, setShowEffects] = React.useState(false);
-
-  // Defer heavy visual effects until after initial paint
-  React.useEffect(() => {
-    const timer = requestAnimationFrame(() => {
-      setTimeout(() => setShowEffects(true), 100);
-    });
-    return () => cancelAnimationFrame(timer);
-  }, []);
-
-  // Demo feedback on component mount
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      success('Witamy w RenoHub!', 'Sukces', 3000);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
-    <GSAPPerformance autoRefresh={true} refreshPriority="high" throttleTime={16}>
-      <AccessibilityEnhancer skipToContent={true} announceChanges={true}>
-        <GradientBackground
-          colors={['from-black', 'via-slate-900', 'to-black']}
-          direction="to-br"
-          animated={true}
-          speed={30}
-          className="min-h-screen relative"
-        >
-          {/* Deferred Background Effects — load after initial paint for better LCP */}
-          {showEffects && (
-            <>
-              <ParticleSystem count={25} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-              <FloatingOrbs count={6} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-              <FloatingElements count={10} elements={['star', 'circle', 'triangle']}>
-                <div />
-              </FloatingElements>
-            </>
-          )}
-          <SEOHead
-            title="RenoHub - Platforma aplikacji remontowych"
-            description="Jedna platforma – wszystkie Twoje aplikacje remontowe. CalcReno do obliczeń materiałów i RenoTimeline do zarządzania projektami."
-            keywords="remont, aplikacje remontowe, kalkulatory budowlane, zarządzanie projektami remontowymi, CalcReno, RenoTimeline"
-          />
+    <div className="min-h-screen" style={{ background: '#0A0B1E' }}>
+      <SEOHead
+        title="RenoHub — Aplikacje remontowe"
+        description="RenoHub to rodzina aplikacji, które pomagają zaplanować remont — od pierwszego kosztorysu przez harmonogram po decyzje inwestycyjne. CalcReno, RenoTimeline, RenoScout."
+        keywords="remont, aplikacje remontowe, kalkulator remontu, CalcReno, RenoTimeline, RenoScout"
+      />
+      <SkipLink href="#main-content">Skip to main content</SkipLink>
+      <Navigation />
 
-          <SkipLink href="#main-content">Skip to main content</SkipLink>
-          <Navigation />
+      <main id="main-content">
+        <HeroSectionD />
+        <AppSwitcherSection />
+        <QuoteSection />
+        <BlogGridSection />
+        <CTASectionD />
+      </main>
 
-          {/* Enhanced Hero Section with GSAP */}
-          <GSAPHero />
-
-          {/* Main Content with Enhanced Sections */}
-          <main id="main-content">
-            <EnhancedAppsSection />
-            <LatestPostsStrip />
-            <EnhancedFeaturesSection />
-            <EnhancedPricingSection />
-            <EnhancedCTASection />
-          </main>
-
-          {/* Footer */}
-          <Footer />
-
-          <ScrollToTop />
-
-          {/* User Feedback Manager */}
-          <FeedbackManager>
-            {feedbacks.map((feedback) => (
-              <UserFeedback
-                key={feedback.id}
-                type={feedback.type}
-                title={feedback.title}
-                message={feedback.message}
-                duration={feedback.duration}
-                onDismiss={() => removeFeedback(feedback.id)}
-              />
-            ))}
-          </FeedbackManager>
-        </GradientBackground>
-      </AccessibilityEnhancer>
-    </GSAPPerformance>
+      <FooterD />
+      <ScrollToTop />
+    </div>
   );
 };
 
