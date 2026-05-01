@@ -157,7 +157,7 @@ Deno.serve(async (req: Request) => {
             body: JSON.stringify({
               email: cleanEmail,
               listIds: [BREVO_LIST_ID],
-              attributes: { SOURCE: "quiz_remontowy" },
+              attributes: { SOURCE: "quiz_remontowy", ROOM_TYPE: answers.room },
               updateEnabled: true,
             }),
           }),

@@ -217,6 +217,21 @@ export default function SzablonBudzetuRemontu() {
                     Oblicz dokładny kosztorys jednego pomieszczenia →
                   </a>
                 </div>
+
+                <div className="border border-teal-500/30 bg-teal-500/5 rounded-xl p-4 space-y-2.5">
+                  <p className="text-sm font-semibold text-white">
+                    Chcesz pełne doświadczenie mobilne?
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Zarejestruj konto teraz i zablokuj 3 miesiące za darmo przy starcie.
+                  </p>
+                  <a
+                    href="/register"
+                    className="block w-full text-center border border-teal-500 text-teal-400 hover:bg-teal-500 hover:text-white font-semibold py-2.5 rounded-xl text-sm transition-colors"
+                  >
+                    Zarejestruj konto w RenoHub →
+                  </a>
+                </div>
               </div>
             )}
           </div>
