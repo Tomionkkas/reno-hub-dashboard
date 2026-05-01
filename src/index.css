@@ -80,7 +80,8 @@
 
   body {
     overflow-x: hidden;
-    @apply bg-background text-foreground;
+    background: #0A0B1E;
+    @apply text-foreground;
     font-family: "Inter", sans-serif;
   }
 }
