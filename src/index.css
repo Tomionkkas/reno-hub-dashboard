@@ -73,11 +73,13 @@
     @apply border-border;
   }
 
-  html, body {
+  html {
     overflow-x: hidden;
+    background: #0A0B1E;
   }
 
   body {
+    overflow-x: hidden;
     @apply bg-background text-foreground;
     font-family: "Inter", sans-serif;
   }
