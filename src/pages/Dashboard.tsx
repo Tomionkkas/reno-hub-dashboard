@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ConstellationExplorer } from '@/components/dashboard/ConstellationExplorer';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserApps } from '@/hooks/use-user-apps';
 import Navigation from '@/components/Navigation';
@@ -91,7 +92,23 @@ const Dashboard = () => {
 
   const { apps, allApps, isLoading: appsLoading, error: appsError } = useUserApps();
 
+  // Must be called unconditionally (Rules of Hooks) — used in the full dashboard JSX below.
+  const backgroundEffects = useMemo(() => (
+    <>
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900/50 to-black opacity-60"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
+    </>
+  ), []);
+
   if (!user) return null;
+
+  // Show the interactive constellation screen until at least one app has a real
+  // paid subscription. In beta mode hasSubscription is always false, so this
+  // correctly hides the dashboard for everyone until subscriptions go live.
+  const hasAnySubscription = allApps.some(app => app.hasSubscription);
+  if (!hasAnySubscription) {
+    return <ConstellationExplorer />;
+  }
 
   // Update userTier type to include 'expert'
   const userTier: 'free' | 'pro' | 'expert' = user.tier || 'free';
@@ -99,9 +116,6 @@ const Dashboard = () => {
 
   // Calculate current projects from actual app data
   const currentProjects = allApps.reduce((sum, app) => sum + app.projectCount, 0);
-
-  // Calculate active subscriptions count
-  const activeSubscriptions = allApps.filter(app => app.status === 'active').length;
 
   const getTierInfo = () => {
     switch (userTier) {
@@ -138,13 +152,7 @@ const Dashboard = () => {
       speed={30}
       className="min-h-screen relative"
     >
-      {/* Subtle background effects for better usability */}
-      {useMemo(() => (
-        <>
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900/50 to-black opacity-60"></div>
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
-        </>
-      ), [])}
+      {backgroundEffects}
 
       <Navigation />
 
