@@ -42,6 +42,7 @@ const SzablonBudzetuRemontu = React.lazy(() => import('./pages/SzablonBudzetuRem
 const QuizRemontowy = React.lazy(() => import('./pages/QuizRemontowy'));
 const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
 const Pomoc = React.lazy(() => import('./pages/Pomoc'));
+const TermsOfUse = React.lazy(() => import('./pages/TermsOfUse'));
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -96,6 +97,7 @@ const App = () => (
                   <Route path="/szablon-budzetu-remontu" element={<SzablonBudzetuRemontu />} />
                   <Route path="/quiz-remontowy" element={<QuizRemontowy />} />
                   <Route path="/pomoc" element={<Pomoc />} />
+                  <Route path="/terms-of-use" element={<TermsOfUse />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
