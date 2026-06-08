@@ -79,20 +79,10 @@
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then((registration) => {
-            console.log('SW registered: ', registration);
-          })
-          .catch((registrationError) => {
-            console.log('SW registration failed: ', registrationError);
-          });
-      });
-    }
-  </script>
+  <!-- No service worker is registered. /sw.js is now a kill-switch that
+       unregisters any previously-installed worker so it cannot pin a stale
+       build. Browsers re-check the SW script against the network, so existing
+       workers are replaced by the kill-switch and then removed. -->
 </body>
 
 </html>
