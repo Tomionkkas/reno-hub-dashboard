@@ -205,7 +205,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         email,
         password,
         options: {
-          emailRedirectTo: 'https://renohub.org/auth/confirm?app=renohub',
+          // Use the current origin so the confirmation link returns to the exact
+          // domain the user signed up on (www vs apex). Hardcoding the apex broke
+          // confirmation once apex started 307-redirecting to www, dropping the
+          // session token from the URL hash.
+          emailRedirectTo: `${window.location.origin}/auth/confirm?app=renohub`,
           data: {
             first_name: firstName,
             last_name: lastName,
@@ -257,7 +261,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const resetPassword = async (email: string): Promise<void> => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://renohub.org/auth/reset-password?app=renohub',
+      redirectTo: `${window.location.origin}/auth/reset-password?app=renohub`,
     });
     if (error) throw error;
   };
