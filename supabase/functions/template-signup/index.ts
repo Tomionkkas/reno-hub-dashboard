@@ -144,8 +144,7 @@ Deno.serve(async (req: Request) => {
       }
     };
 
-    // deno-lint-ignore no-explicit-any
-    (EdgeRuntime as any).waitUntil(bgWork());
+    (EdgeRuntime as { waitUntil(p: Promise<unknown>): void }).waitUntil(bgWork());
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -1,14 +1,15 @@
+// src/pages/RenoScout.tsx
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SEOHead } from '@/components/ui/seo-head';
-import { EnhancedButton } from '@/components/ui/enhanced-button';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { Badge } from '@/components/ui/badge';
-import { ProgressIndicator } from '@/components/ui/user-feedback';
+import { RenoScoutDemo } from '@/components/renoscout/RenoScoutDemo';
+import { track } from '@/utils/funnelTracking';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const GRAD = 'linear-gradient(135deg, #6366F1 0%, #FF6B35 100%)';
 
 const features = [
   {
@@ -18,7 +19,7 @@ const features = [
       </svg>
     ),
     title: 'Automatyczne wyszukiwanie',
-    description: 'AI skanuje rynek nieruchomości 24/7, automatycznie zbierając oferty z wielu źródeł i filtrując je pod kątem potencjału inwestycyjnego.',
+    description: 'AI skanuje 40+ portali 24/7, zbiera oferty i filtruje je pod kątem potencjału inwestycyjnego.',
   },
   {
     icon: (
@@ -27,7 +28,7 @@ const features = [
       </svg>
     ),
     title: 'Analiza rynku',
-    description: 'Głęboka analiza trendów cenowych, historii transakcji i porównanie z rynkiem lokalnym — wszystko w jednym miejscu.',
+    description: 'Porównanie z cenami transakcyjnymi w okolicy, trendy i mediany — w jednym widoku.',
   },
   {
     icon: (
@@ -36,7 +37,7 @@ const features = [
       </svg>
     ),
     title: 'Scoring inwestycji',
-    description: 'Każda nieruchomość otrzymuje automatyczny wynik inwestycyjny oparty na danych — potencjał wzrostu, rentowność i ryzyko w jednej liczbie.',
+    description: 'Każda nieruchomość dostaje wynik 0–10: potencjał, rentowność i ryzyko w jednej liczbie.',
   },
   {
     icon: (
@@ -45,196 +46,158 @@ const features = [
       </svg>
     ),
     title: 'Raporty na żądanie',
-    description: 'Generuj szczegółowe raporty inwestycyjne dla dowolnej nieruchomości — gotowe do prezentacji partnerom i bankom.',
+    description: 'Generuj raport ROI dla dowolnej oferty — gotowy do prezentacji partnerom i bankom.',
   },
 ];
 
 const audiences = [
   { label: 'Inwestorzy', desc: 'Znajdź okazje zanim zrobi to konkurencja' },
-  { label: 'Flipperzy', desc: 'Szybka analiza potencjału remontowego' },
+  { label: 'Flipperzy', desc: 'Szybka analiza potencjału remontowego i ROI' },
   { label: 'Agenci', desc: 'Dane rynkowe dla lepszych rekomendacji' },
 ];
+
+const OFFER_LINE = 'Tydzień gratis · +1 miesiąc za konto przed startem';
 
 export default function RenoScoutPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    track('promo_view', 'renoscout_page');
     const ctx = gsap.context(() => {
-      // Animate from slightly offset — elements are already visible via CSS
-      gsap.from(
-        heroRef.current?.querySelectorAll('.hero-item'),
-        { y: 20, duration: 0.6, stagger: 0.1, ease: 'power3.out' }
-      );
-
-      gsap.from(
-        featuresRef.current?.querySelectorAll('.feature-card'),
-        {
-          y: 30, duration: 0.5, stagger: 0.1, ease: 'power3.out',
-          scrollTrigger: { trigger: featuresRef.current, start: 'top bottom-=100' }
-        }
-      );
+      gsap.from(heroRef.current?.querySelectorAll('.hero-item'), {
+        y: 20, duration: 0.6, stagger: 0.1, ease: 'power3.out',
+      });
+      gsap.from(featuresRef.current?.querySelectorAll('.feature-card'), {
+        y: 30, duration: 0.5, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: featuresRef.current, start: 'top bottom-=100' },
+      });
     });
-
     return () => ctx.revert();
   }, []);
 
+  const onTryClick = () => track('promo_click', 'renoscout_page');
+
   return (
-    <div className="min-h-screen bg-[#060d1a] text-white">
+    <div className="min-h-screen bg-[#0A0B1E] text-white">
       <SEOHead
-        title="RenoScout – AI dla inwestorów nieruchomości | RenoHub"
-        description="RenoScout – platforma AI do wyszukiwania i analizy okazji inwestycyjnych na rynku nieruchomości. Automatyzacja, scoring, dane rynkowe. Już wkrótce!"
-        keywords="RenoScout, inwestycje, nieruchomości, AI, analiza rynku, scoring, remonty"
+        title="RenoScout – AI znajduje okazje inwestycyjne | RenoHub"
+        description="RenoScout wyszukuje okazje na 40+ portalach, liczy ROI i ocenia inwestycję wynikiem 0–10. Wypróbuj za darmo — tydzień gratis."
+        keywords="RenoScout, inwestycje, nieruchomości, AI, analiza ROI, scoring, flip, okazje"
       />
 
       {/* ── HERO ──────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative pt-14 pb-10 md:pt-24 md:pb-20 px-4 flex flex-col items-center text-center overflow-hidden min-h-[60vh]">
+      <section ref={heroRef} className="relative pt-14 pb-12 md:pt-24 md:pb-16 px-4 flex flex-col items-center text-center overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[120px] pointer-events-none" style={{ background: 'rgba(99,102,241,0.18)' }} />
+        <div className="absolute top-24 right-1/4 w-[300px] h-[300px] rounded-full blur-[100px] pointer-events-none" style={{ background: 'rgba(255,107,53,0.12)' }} />
 
-        {/* Glow orbs */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute top-20 right-1/4 w-[300px] h-[300px] bg-cyan-500/8 rounded-full blur-[100px] pointer-events-none" />
+        <p className="hero-item text-xs font-mono tracking-[2px] uppercase text-white/50 mb-4">
+          ⟶ AI · Inwestycje · Nieruchomości
+        </p>
 
-        {/* Logo */}
-        <div className="hero-item w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#0c2340] via-[#0e3158] to-[#0a2540] rounded-2xl flex items-center justify-center mb-4 md:mb-6 shadow-2xl border border-cyan-500/30 relative">
-          <OptimizedImage
-            src="/renoscout-logo.webp"
-            alt="RenoScout"
-            className="w-11 h-11 md:w-16 md:h-16 object-contain"
-          />
-          <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-purple-500/20 border border-purple-400/40 text-purple-300 text-xs font-semibold rounded-full">
-            Wkrótce
+        <h1 className="hero-item text-4xl md:text-6xl font-bold mb-4 leading-tight max-w-3xl">
+          Okazje pod remont.{' '}
+          <span style={{ background: GRAD, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            Zanim znikną.
           </span>
-        </div>
+        </h1>
 
-        {/* Title */}
-        <h1 className="hero-item text-4xl md:text-6xl font-bold mb-3 md:mb-4 gradient-text">RenoScout</h1>
-
-        {/* Subtitle */}
-        <p className="hero-item text-lg md:text-2xl text-gray-300 font-medium mb-3 md:mb-6 max-w-xl">
-          AI-powered platforma inwestycji w nieruchomości
+        <p className="hero-item text-gray-300 text-base md:text-xl max-w-2xl leading-relaxed mb-4">
+          RenoScout (AI) przegląda 40+ portali, liczy ROI i ocenia każdą ofertę wynikiem inwestycyjnym 0–10.
         </p>
 
-        {/* Tags */}
-        <div className="hero-item flex gap-2 justify-center mb-4 md:mb-8">
-          <Badge className="px-3 py-1 bg-cyan-500/20 text-cyan-400 border-cyan-500/30">Web App</Badge>
-          <Badge className="px-3 py-1 bg-purple-500/20 text-purple-400 border-purple-500/30">AI</Badge>
-          <Badge className="px-3 py-1 bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Beta wkrótce</Badge>
+        <div className="hero-item flex gap-2 justify-center mb-5">
+          <span className="px-3 py-1 rounded-full text-xs font-semibold border border-white/15 text-white/80">Web App</span>
+          <span className="px-3 py-1 rounded-full text-xs font-semibold border border-white/15 text-white/80">AI</span>
         </div>
 
-        {/* Description */}
-        <p className="hero-item text-gray-400 text-sm md:text-lg max-w-2xl leading-relaxed mb-5 md:mb-10">
-          RenoScout automatycznie wyszukuje, analizuje i ocenia okazje inwestycyjne na polskim rynku nieruchomości.
-          Scoring AI, analiza trendów i automatyczne raporty — wszystko w jednym miejscu.
-        </p>
-
-        {/* Progress */}
-        <div className="hero-item w-full max-w-sm mb-5 md:mb-10">
-          <ProgressIndicator
-            progress={60}
-            label="Postęp rozwoju"
-            showPercentage={true}
-            animated={true}
-          />
-        </div>
-
-        {/* CTA */}
-        <div className="hero-item flex flex-col sm:flex-row gap-3 justify-center">
-          <Link to="/">
-            <EnhancedButton
-              variant="outline"
-              className="border-white/20 text-white hover:border-cyan-400/60 hover:text-cyan-400 transition-colors"
-            >
-              ← Powrót na stronę główną
-            </EnhancedButton>
+        <div className="hero-item flex flex-col items-center gap-2 mb-8">
+          <Link
+            to="/register?ref=renoscout_page"
+            onClick={onTryClick}
+            className="inline-block bg-white text-[#0A0B1E] font-semibold rounded-full px-8 py-4 text-[15px] hover:bg-white/90 transition-colors"
+          >
+            Wypróbuj za darmo →
           </Link>
+          <p className="text-xs text-white/50">{OFFER_LINE}</p>
+        </div>
+
+        {/* Embedded scripted demo (replaces the old static frame) */}
+        <div className="hero-item w-full">
+          <RenoScoutDemo />
         </div>
       </section>
 
-      {/* ── FEATURES ──────────────────────────────────────────────────── */}
-      <section ref={featuresRef} className="py-10 md:py-20 px-4 relative">
+      {/* ── § 01 — MOŻLIWOŚCI ─────────────────────────────────────────── */}
+      <section ref={featuresRef} className="py-12 md:py-20 px-4 relative">
         <div className="container mx-auto max-w-5xl">
+          <p className="text-xs font-mono tracking-[2px] uppercase text-white/50 mb-3 text-center">§ 01 — Możliwości</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-8 md:mb-12">Co potrafi RenoScout?</h2>
 
-          <div className="text-center mb-6 md:mb-12">
-            <p className="text-xs font-bold tracking-[3px] uppercase text-cyan-400 mb-3">Możliwości</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Co potrafi RenoScout?
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6">
+          <div className="grid grid-cols-2 gap-3 md:gap-6">
             {features.map((f, i) => (
               <div
                 key={i}
-                className="feature-card group relative p-3 md:p-6 rounded-2xl border border-white/8 bg-white/3 hover:border-cyan-500/40 hover:bg-cyan-500/5 transition-all duration-300"
+                className="feature-card group relative p-4 md:p-6 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-300"
               >
-                {/* Icon */}
-                <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-[#0d2535] border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-2 md:mb-4 group-hover:border-cyan-400/60 transition-colors">
+                <div
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-white mb-3 md:mb-4"
+                  style={{ background: GRAD }}
+                >
                   {f.icon}
                 </div>
                 <h3 className="text-sm md:text-lg font-bold text-white mb-1 md:mb-2">{f.title}</h3>
-                <p className="hidden md:block text-gray-400 text-sm leading-relaxed">{f.description}</p>
-
-                {/* Hover accent line */}
-                <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <p className="text-gray-400 text-xs md:text-sm leading-relaxed">{f.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── FOR WHO ───────────────────────────────────────────────────── */}
-      <section className="py-8 md:py-16 px-4">
+      {/* ── § 02 — DLA KOGO ───────────────────────────────────────────── */}
+      <section className="py-10 md:py-16 px-4">
         <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-5 md:mb-10">
-            <p className="text-xs font-bold tracking-[3px] uppercase text-cyan-400 mb-3">Dla kogo</p>
-            <h2 className="text-3xl font-bold text-white">Idealne narzędzie dla</h2>
-          </div>
+          <p className="text-xs font-mono tracking-[2px] uppercase text-white/50 mb-3 text-center">§ 02 — Dla kogo</p>
+          <h2 className="text-3xl font-bold text-white text-center mb-8 md:mb-10">Idealne narzędzie dla</h2>
 
-          <div className="grid grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
             {audiences.map((a, i) => (
-              <div
-                key={i}
-                className="p-3 md:p-6 rounded-2xl bg-[#0d1526] border border-white/8 hover:border-cyan-500/30 transition-colors text-center"
-              >
-                <p className="text-sm md:text-base font-bold text-cyan-400 mb-1">{a.label}</p>
-                <p className="text-xs md:text-sm text-gray-400">{a.desc}</p>
+              <div key={i} className="p-5 md:p-6 rounded-2xl bg-white/[0.03] border border-white/10 text-center">
+                <p
+                  className="text-base font-bold mb-1"
+                  style={{ background: GRAD, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+                >
+                  {a.label}
+                </p>
+                <p className="text-sm text-gray-400">{a.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── COMING SOON BANNER ────────────────────────────────────────── */}
-      <section className="py-10 md:py-20 px-4">
+      {/* ── FINAL CTA ─────────────────────────────────────────────────── */}
+      <section className="py-12 md:py-20 px-4">
         <div className="container mx-auto max-w-2xl">
-          <div className="relative rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-[#0d1f3c] to-[#0a1628] p-6 md:p-10 text-center overflow-hidden">
-
-            {/* Background glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-
+          <div className="relative rounded-3xl border border-white/10 bg-[#12142b] p-8 md:p-12 text-center overflow-hidden">
+            <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ background: GRAD }} />
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/15 border border-purple-400/30 rounded-full text-purple-300 text-sm font-semibold mb-6">
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                W trakcie rozwoju — 60%
-              </div>
-
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Wkrótce dostępny
-              </h2>
-              <p className="text-gray-400 text-base mb-5 md:mb-8 max-w-md mx-auto">
-                RenoScout jest aktualnie w fazie intensywnego rozwoju. Wróć wkrótce lub zapisz się na newsletter CalcReno, aby być pierwszym w RenoHub.
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Wypróbuj RenoScout za darmo</h2>
+              <p className="text-gray-300 text-base mb-2 max-w-md mx-auto">
+                Tydzień gratis dla każdego. Załóż konto przed startem i dostań dodatkowy miesiąc.
               </p>
-
-              <Link to="/">
-                <EnhancedButton className="bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-semibold px-8">
-                  Powrót na stronę główną
-                </EnhancedButton>
+              <p className="text-xs text-white/50 mb-6">{OFFER_LINE}</p>
+              <Link
+                to="/register?ref=renoscout_page"
+                onClick={onTryClick}
+                className="inline-block bg-white text-[#0A0B1E] font-semibold rounded-full px-8 py-4 text-[15px] hover:bg-white/90 transition-colors"
+              >
+                Załóż konto RenoScout →
               </Link>
             </div>
           </div>
         </div>
       </section>
-
     </div>
   );
 }

@@ -19,7 +19,7 @@ const rawFiles = import.meta.glob<string>('../content/blog/*.mdx', {
 // Browser-safe frontmatter parser — replaces gray-matter which requires Node.js Buffer.
 // Handles string fields and YAML list fields (keywords: \n  - item).
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
-  const stripped = raw.replace(/^﻿/, '');
+  const stripped = raw.replace(/^\uFEFF/, '');
   const match = stripped.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!match) return { data: {}, content: stripped };
 

@@ -168,12 +168,8 @@ const AdminPanel = () => {
       className="min-h-screen relative"
     >
       {/* Subtle background effects for better usability */}
-      {useMemo(() => (
-        <>
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900/50 to-black opacity-60"></div>
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
-        </>
-      ), [])}
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900/50 to-black opacity-60"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
 
       <Navigation />
 
@@ -446,9 +442,6 @@ const AdminPanel = () => {
                             />
                           </div>
                           {app.name}
-                          {app.name === 'RenoScout' && (
-                            <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-200/20 text-blue-500 text-xs font-semibold">Coming soon</span>
-                          )}
                         </GSAPCardTitle>
                       </GSAPCardHeader>
                       <GSAPCardContent className="space-y-4">

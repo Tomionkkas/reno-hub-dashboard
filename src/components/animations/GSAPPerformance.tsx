@@ -118,9 +118,9 @@ const GSAPPerformance: React.FC<GSAPPerformanceProps> = ({
 // Utility functions for performance optimization
 export const gsapPerformanceUtils = {
   // Debounce function for performance
-  debounce: (func: Function, wait: number) => {
+  debounce: (func: (...args: unknown[]) => unknown, wait: number) => {
     let timeout: NodeJS.Timeout;
-    return function executedFunction(...args: any[]) {
+    return function executedFunction(...args: unknown[]) {
       const later = () => {
         clearTimeout(timeout);
         func(...args);
@@ -131,9 +131,9 @@ export const gsapPerformanceUtils = {
   },
 
   // Throttle function for performance
-  throttle: (func: Function, limit: number) => {
+  throttle: (func: (...args: unknown[]) => unknown, limit: number) => {
     let inThrottle: boolean;
-    return function executedFunction(...args: any[]) {
+    return function executedFunction(...args: unknown[]) {
       if (!inThrottle) {
         func.apply(this, args);
         inThrottle = true;
@@ -143,7 +143,7 @@ export const gsapPerformanceUtils = {
   },
 
   // Batch animation updates
-  batchAnimations: (elements: Element[], animation: Function, stagger = 0.1) => {
+  batchAnimations: (elements: Element[], animation: (...args: unknown[]) => unknown, stagger = 0.1) => {
     const batchSize = 5;
     const batches = [];
     

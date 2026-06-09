@@ -26,7 +26,7 @@ const MicroInteraction: React.FC<MicroInteractionProps> = ({
 
     const ctx = gsap.context(() => {
       switch (type) {
-        case 'hover':
+        case 'hover': {
           const handleHover = () => {
             gsap.to(element, {
               scale: 1.02,
@@ -53,8 +53,9 @@ const MicroInteraction: React.FC<MicroInteractionProps> = ({
             element.removeEventListener('mouseenter', handleHover);
             element.removeEventListener('mouseleave', handleLeave);
           };
+        }
 
-        case 'click':
+        case 'click': {
           const handleClick = () => {
             gsap.to(element, {
               scale: 0.95,
@@ -68,8 +69,9 @@ const MicroInteraction: React.FC<MicroInteractionProps> = ({
 
           element.addEventListener('click', handleClick);
           return () => element.removeEventListener('click', handleClick);
+        }
 
-        case 'focus':
+        case 'focus': {
           const handleFocus = () => {
             gsap.to(element, {
               boxShadow: "0 0 0 3px rgba(139, 92, 246, 0.3)",
@@ -96,8 +98,9 @@ const MicroInteraction: React.FC<MicroInteractionProps> = ({
             element.removeEventListener('focus', handleFocus);
             element.removeEventListener('blur', handleBlur);
           };
+        }
 
-        case 'typing':
+        case 'typing': {
           const handleInput = () => {
             gsap.to(element, {
               scale: 1.01,
@@ -111,8 +114,9 @@ const MicroInteraction: React.FC<MicroInteractionProps> = ({
 
           element.addEventListener('input', handleInput);
           return () => element.removeEventListener('input', handleInput);
+        }
 
-        case 'loading':
+        case 'loading': {
           // Continuous loading animation
           const tl = gsap.timeline({ repeat: -1 });
           tl.to(element, {
@@ -126,6 +130,7 @@ const MicroInteraction: React.FC<MicroInteractionProps> = ({
           });
 
           return () => tl.kill();
+        }
       }
     }, element);
 

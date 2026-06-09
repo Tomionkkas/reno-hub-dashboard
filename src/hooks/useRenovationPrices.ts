@@ -68,10 +68,16 @@ export function useRenovationPrices(tier: PricingTier) {
             : 'premium_price';
 
         const fetched: Partial<MaterialPrices> = {};
-        data.forEach((row: any) => {
+        data.forEach((row: {
+          materials?: { code?: string } | null;
+          budget_price?: number | null;
+          mid_range_price?: number | null;
+          premium_price?: number | null;
+        }) => {
           const code = row.materials?.code;
           if (!code) return;
-          let price = row[priceKey];
+          let price: number | null | undefined =
+            row[priceKey as 'budget_price' | 'mid_range_price' | 'premium_price'];
           if (price == null) {
             price = row.mid_range_price ?? row.budget_price ?? row.premium_price;
           }

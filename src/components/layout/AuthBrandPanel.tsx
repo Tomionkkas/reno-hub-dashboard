@@ -3,7 +3,7 @@ const GRAD = 'linear-gradient(135deg, #00D4FF 0%, #7F67FF 50%, #FF0080 100%)';
 const APP_CHIPS = [
   { name: 'CalcReno', color: '#00D4FF' },
   { name: 'RenoTimeline', color: '#00D4AA' },
-  { name: 'RenoScout', color: '#FF0080' },
+  { name: 'RenoScout', color: '#6366F1' },
 ];
 
 export default function AuthBrandPanel() {

@@ -26,10 +26,11 @@ const Login = () => {
       await login(email, password);
       toast.success('Zalogowano pomyślnie!');
       navigate('/dashboard');
-    } catch (error: any) {
-      if (error?.message?.includes('Invalid login credentials')) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '';
+      if (message.includes('Invalid login credentials')) {
         toast.error('Nieprawidłowy email lub hasło.');
-      } else if (error?.message?.includes('Nie można połączyć się z serwerem')) {
+      } else if (message.includes('Nie można połączyć się z serwerem')) {
         toast.error('Błąd połączenia z serwerem.');
       } else {
         toast.error('Błąd logowania. Sprawdź dane i spróbuj ponownie.');
