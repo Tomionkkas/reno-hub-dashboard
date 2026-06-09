@@ -112,7 +112,7 @@ export default function AppSwitcherSection() {
         </div>
 
         {/* Main panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center">
+        <div className={`grid grid-cols-1 gap-16 items-center ${app.key === 'renoscout' ? 'lg:grid-cols-[0.78fr_1.55fr]' : 'lg:grid-cols-[1fr_1.2fr]'}`}>
 
           {/* Left: text */}
           <div>
