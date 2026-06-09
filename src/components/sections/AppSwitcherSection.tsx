@@ -44,7 +44,7 @@ const APPS = [
     key: 'renoscout',
     name: 'RenoScout',
     tag: 'AI · Inwestycje',
-    status: 'Dostępne',
+    status: 'Wkrótce',
     color: '#6366F1',
     desc: 'AI przegląda oferty mieszkań w Polsce i pokazuje, które realnie opłaca się kupić pod remont.',
     bullets: ['Wyszukiwanie ofert', 'Analiza rynku', 'Scoring 0–10', 'Raport ROI'],

@@ -106,6 +106,13 @@ export default function RenoScoutPage() {
           RenoScout (AI) przegląda portale ogłoszeniowe, liczy ROI i ocenia każdą ofertę wynikiem inwestycyjnym 0–10.
         </p>
 
+        <div className="hero-item mb-5">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-[#6366F1]/40 bg-[#6366F1]/10 text-[#A5B4FC]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
+            Wkrótce — aplikacja nie jest jeszcze dostępna
+          </span>
+        </div>
+
         <div className="hero-item flex gap-2 justify-center mb-5">
           <span className="px-3 py-1 rounded-full text-xs font-semibold border border-white/15 text-white/80">Web App</span>
           <span className="px-3 py-1 rounded-full text-xs font-semibold border border-white/15 text-white/80">AI</span>
@@ -117,7 +124,7 @@ export default function RenoScoutPage() {
             onClick={onTryClick}
             className="inline-block bg-white text-[#0A0B1E] font-semibold rounded-full px-8 py-4 text-[15px] hover:bg-white/90 transition-colors"
           >
-            Wypróbuj za darmo →
+            Załóż konto przed startem →
           </Link>
           <p className="text-xs text-white/50">{OFFER_LINE}</p>
         </div>
