@@ -165,7 +165,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Provide more helpful error messages
         if (error.message?.includes('Failed to fetch') || error.message?.includes('ERR_NAME_NOT_RESOLVED')) {
           const networkError = new Error('Nie można połączyć się z serwerem. Sprawdź połączenie internetowe lub czy projekt Supabase jest aktywny.');
-          (networkError as any).originalError = error;
+          (networkError as { originalError?: unknown }).originalError = error;
           throw networkError;
         }
         

@@ -180,19 +180,21 @@ export const accessibilityUtils = {
   ) => {
     switch (event.key) {
       case 'ArrowDown':
-      case 'ArrowRight':
+      case 'ArrowRight': {
         event.preventDefault();
         const nextIndex = (currentIndex + 1) % items.length;
         onIndexChange(nextIndex);
         items[nextIndex]?.focus();
         break;
+      }
       case 'ArrowUp':
-      case 'ArrowLeft':
+      case 'ArrowLeft': {
         event.preventDefault();
         const prevIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
         onIndexChange(prevIndex);
         items[prevIndex]?.focus();
         break;
+      }
       case 'Home':
         event.preventDefault();
         onIndexChange(0);

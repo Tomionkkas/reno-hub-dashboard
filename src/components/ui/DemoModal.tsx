@@ -163,7 +163,7 @@ export const DemoModal: React.FC<DemoModalProps> = ({ open, onClose }) => {
   const handleTouchEnd = (e: React.TouchEvent) => {
     const delta = touchStartX.current - e.changedTouches[0].clientX;
     if (Math.abs(delta) < 50) return;
-    delta > 0 ? goNext() : goPrev();
+    if (delta > 0) goNext(); else goPrev();
   };
 
   if (!mounted) return null;
