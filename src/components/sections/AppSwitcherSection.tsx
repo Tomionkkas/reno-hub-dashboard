@@ -51,10 +51,12 @@ const APPS = [
     cta: 'Wypróbuj RenoScout',
     ctaAction: 'internal' as const,
     href: '/renoscout',
-    image: null,
-    imageKind: 'placeholder' as const,
-    strip: null,
-    stripKind: null,
+    image: '/renoscout/screenshots/listings.png',
+    imageKind: 'desktop' as const,
+    strip: [
+      { src: '/renoscout/screenshots/analysis.png', label: 'Analiza i scoring 0–10' },
+    ],
+    stripKind: 'desktop' as const,
   },
 ] as const;
 
@@ -197,9 +199,9 @@ export default function AppSwitcherSection() {
             <div className="flex items-baseline justify-between pb-3.5 mb-6 border-b border-white/[0.08]"
                  style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#6B7280' }}>
               <span>Z aplikacji · {app.name}</span>
-              <span>{app.strip.length} widoki</span>
+              <span>{app.strip.length} {app.strip.length === 1 ? 'widok' : 'widoki'}</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className={`grid gap-6 ${app.strip.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
               {app.strip.map((s, i) => (
                 <figure key={i} className="m-0">
                   <div
