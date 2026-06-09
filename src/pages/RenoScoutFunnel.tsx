@@ -22,7 +22,7 @@ export default function RenoScoutFunnel() {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState<FunnelStats | null>(null);
-  const [denied, setDenied] = useState(false);
+  const [denied, setDenied] = useState<string | null>(null);
 
   // UX guard: bounce users who clearly aren't admins. Real enforcement is the edge function.
   useEffect(() => {
@@ -31,13 +31,18 @@ export default function RenoScoutFunnel() {
 
   useEffect(() => {
     fetchFunnelStats(LAUNCH_DATE).then((s) => {
-      if (!s.success) setDenied(true);
+      if (!s.success) setDenied(s.error ?? 'unknown');
       else setStats(s);
     });
   }, []);
 
   if (denied) {
-    return <div className="min-h-screen bg-[#0A0B1E] text-white flex items-center justify-center">Brak dostępu.</div>;
+    return (
+      <div className="min-h-screen bg-[#0A0B1E] text-white flex flex-col items-center justify-center gap-2">
+        <div>Brak dostępu.</div>
+        <div className="text-white/30 text-xs">({denied})</div>
+      </div>
+    );
   }
   if (!stats) {
     return <div className="min-h-screen bg-[#0A0B1E] text-white flex items-center justify-center">Ładowanie…</div>;
