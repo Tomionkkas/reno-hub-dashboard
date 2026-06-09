@@ -446,9 +446,6 @@ const AdminPanel = () => {
                             />
                           </div>
                           {app.name}
-                          {app.name === 'RenoScout' && (
-                            <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-200/20 text-blue-500 text-xs font-semibold">Coming soon</span>
-                          )}
                         </GSAPCardTitle>
                       </GSAPCardHeader>
                       <GSAPCardContent className="space-y-4">
