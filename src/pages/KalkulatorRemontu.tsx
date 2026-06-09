@@ -11,6 +11,7 @@ import {
 } from '../utils/renovationCalculator';
 import { useRenovationPrices } from '../hooks/useRenovationPrices';
 import { addToCalculatorWaitlist } from '../utils/calculatorSignup';
+import { track } from '../utils/funnelTracking';
 
 const DEFAULT_INPUTS: RoomInputs = {
   width: 4,
@@ -942,6 +943,30 @@ function CrossPromoCards() {
           Zarejestruj konto w RenoHub →
         </a>
       </div>
+
+      {/* RenoScout cross-promo (audience-filter headline; indigo/coral = second product) */}
+      <a
+        href="/renoscout?ref=calc_card"
+        onClick={() => track('promo_click', 'calc_card')}
+        className="block rounded-xl p-4 space-y-2 border"
+        style={{ borderColor: 'rgba(99,102,241,0.35)', background: 'rgba(99,102,241,0.06)' }}
+      >
+        <p className="text-[11px] font-semibold tracking-wide" style={{ color: '#8b8ff5' }}>
+          AI · INWESTYCJE · NOWOŚĆ
+        </p>
+        <p className="text-sm font-semibold text-white">
+          Kupujesz mieszkania pod remont i sprzedaż?
+        </p>
+        <p className="text-xs text-gray-400">
+          RenoScout (AI) wyszukuje okazje na 40+ portalach i liczy ROI. Załóż konto przed startem → dodatkowy miesiąc gratis.
+        </p>
+        <span
+          className="inline-block mt-1 text-xs font-semibold rounded-lg px-3 py-1.5 text-white"
+          style={{ background: 'linear-gradient(135deg, #6366F1 0%, #FF6B35 100%)' }}
+        >
+          Wypróbuj RenoScout →
+        </span>
+      </a>
     </div>
   );
 }
