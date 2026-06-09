@@ -52,11 +52,11 @@ const APPS = [
     ctaAction: 'internal' as const,
     href: '/renoscout',
     image: '/renoscout/screenshots/listings.png',
-    imageKind: 'desktop' as const,
+    imageKind: 'wide' as const,
     strip: [
       { src: '/renoscout/screenshots/analysis.png', label: 'Analiza i scoring 0–10' },
     ],
-    stripKind: 'desktop' as const,
+    stripKind: 'wide' as const,
   },
 ] as const;
 
@@ -147,7 +147,7 @@ export default function AppSwitcherSection() {
           <div
             className="relative rounded-3xl overflow-hidden flex items-center justify-center border border-white/[0.08]"
             style={{
-              aspectRatio: app.imageKind === 'phone' ? '9/17' : app.imageKind === 'desktop' ? '4/5' : '4/5',
+              aspectRatio: app.imageKind === 'phone' ? '9/17' : app.imageKind === 'wide' ? undefined : '4/5',
               background: app.imageKind === 'phone' ? '#0A0B1E' : 'rgba(255,255,255,0.02)',
             }}
           >
@@ -180,6 +180,14 @@ export default function AppSwitcherSection() {
                 }}
               />
             )}
+            {app.imageKind === 'wide' && app.image && (
+              <img
+                src={app.image}
+                alt={app.name}
+                className="relative block"
+                style={{ zIndex: 1, width: '100%', height: 'auto', objectFit: 'contain', borderRadius: 16 }}
+              />
+            )}
             {app.imageKind === 'placeholder' && (
               <div className="relative text-center px-6" style={{ zIndex: 1 }}>
                 <p className="eyebrow mb-1" style={{ color: '#6B7280', fontFamily: 'ui-monospace, monospace' }}>
@@ -207,7 +215,7 @@ export default function AppSwitcherSection() {
                   <div
                     className="relative rounded-2xl overflow-hidden flex items-center justify-center border border-white/[0.08]"
                     style={{
-                      aspectRatio: app.stripKind === 'phone' ? '9/15' : '16/10',
+                      aspectRatio: app.stripKind === 'phone' ? '9/15' : app.stripKind === 'wide' ? undefined : '16/10',
                       background: app.stripKind === 'phone' ? '#0A0B1E' : 'rgba(255,255,255,0.02)',
                     }}
                   >
@@ -220,10 +228,10 @@ export default function AppSwitcherSection() {
                       className="relative"
                       style={{
                         zIndex: 1,
-                        width: app.stripKind === 'phone' ? '60%' : '94%',
-                        maxHeight: '90%',
+                        width: app.stripKind === 'phone' ? '60%' : app.stripKind === 'wide' ? '100%' : '94%',
+                        maxHeight: app.stripKind === 'wide' ? 'none' : '90%',
                         objectFit: 'contain',
-                        borderRadius: app.stripKind === 'phone' ? 18 : 8,
+                        borderRadius: app.stripKind === 'phone' ? 18 : app.stripKind === 'wide' ? 14 : 8,
                         boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)',
                       }}
                     />
