@@ -94,23 +94,47 @@ const PROMOS = {
     cta: 'Zrób quiz →',
     href: '/quiz-remontowy',
   },
+  renoscout: {
+    headline: 'Kupujesz mieszkania pod remont?',
+    sub: 'RenoScout (AI) znajduje okazje na 40+ portalach i liczy ROI.',
+    cta: 'Wypróbuj RenoScout →',
+    href: '/renoscout?ref=calc_toast',
+  },
 } as const;
+
+type PromoKey = keyof typeof PROMOS;
+
+// Launch-week weighting: RenoScout shows ~half the time, template/quiz split the rest.
+const PROMO_WEIGHTS: Array<[PromoKey, number]> = [
+  ['renoscout', 0.5],
+  ['template', 0.25],
+  ['quiz', 0.25],
+];
+
+function pickPromo(): PromoKey {
+  const r = Math.random();
+  let acc = 0;
+  for (const [key, w] of PROMO_WEIGHTS) {
+    acc += w;
+    if (r < acc) return key;
+  }
+  return 'renoscout';
+}
 
 function PromoToast() {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [promo] = useState<'template' | 'quiz'>(() =>
-    Math.random() > 0.5 ? 'template' : 'quiz'
-  );
+  const [promo] = useState<PromoKey>(() => pickPromo());
 
   useEffect(() => {
     if (sessionStorage.getItem('promo-toast-shown')) return;
     const timer = setTimeout(() => {
       setVisible(true);
       sessionStorage.setItem('promo-toast-shown', '1');
+      if (promo === 'renoscout') track('promo_view', 'calc_toast');
     }, 15000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [promo]);
 
   if (!visible || dismissed) return null;
 
@@ -130,7 +154,7 @@ function PromoToast() {
         <p className="text-xs text-gray-400 mt-1">{config.sub}</p>
         <a
           href={config.href}
-          onClick={() => setDismissed(true)}
+          onClick={() => { if (promo === 'renoscout') track('promo_click', 'calc_toast'); setDismissed(true); }}
           className="inline-block mt-3 text-xs font-semibold text-teal-400 hover:text-teal-300"
         >
           {config.cta}
