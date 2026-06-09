@@ -36,18 +36,23 @@ export function getFunnelSessionId(): string {
 /**
  * Fire-and-forget funnel event. Never throws, never blocks the UI.
  * No-ops silently if the edge function is not deployed yet (Plan 2).
+ *
+ * `userId` is forwarded as a top-level column (not metadata) so a
+ * `signup_complete` event can be tied to the resulting profile for
+ * true-conversion attribution. Pass null/omit for anonymous events.
  */
 export function track(
   eventType: FunnelEvent,
   source: FunnelSource,
   metadata: Record<string, unknown> = {},
+  userId: string | null = null,
 ): void {
   try {
     const session_id = getFunnelSessionId();
     // Intentionally not awaited — analytics must not block rendering.
     void supabase.functions
       .invoke('renoscout-funnel-event', {
-        body: { event_type: eventType, source, session_id, metadata },
+        body: { event_type: eventType, source, session_id, user_id: userId, metadata },
       })
       .catch(() => {
         /* swallow — function may not be deployed yet (Plan 2) */

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import AuthLayout from '@/components/layout/AuthLayout';
 import { toast } from 'sonner';
+import { track, type FunnelSource } from '@/utils/funnelTracking';
+import { supabase } from '@/integrations/supabase/client';
 
 const INPUT_CLS = 'bg-white/[0.04] border-white/10 text-white placeholder-white/30 focus:border-[#7F67FF]/50 rounded-xl h-12';
 const LABEL_CLS = 'text-[11px] font-medium text-white/50 tracking-[0.14em] uppercase block mb-2';
@@ -56,6 +58,12 @@ const Register = () => {
   const [registeredEmail, setRegisteredEmail] = useState('');
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const refSource = (searchParams.get('ref') as FunnelSource) || 'renoscout_page';
+
+  useEffect(() => {
+    track('signup_view', refSource);
+  }, [refSource]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +74,10 @@ const Register = () => {
     setIsLoading(true);
     try {
       const result = await registerUser(email, password, firstName, lastName);
+      // Account created — record the conversion. On confirmation-pending signups
+      // there's no session yet, so user_id may be null (account exists but unconfirmed).
+      const { data: sess } = await supabase.auth.getUser();
+      track('signup_complete', refSource, { confirmationPending: result.confirmationPending }, sess?.user?.id ?? null);
       if (result.confirmationPending) {
         setRegisteredEmail(email);
         setRegistrationPending(true);
