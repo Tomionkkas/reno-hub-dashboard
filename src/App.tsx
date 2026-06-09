@@ -27,6 +27,7 @@ const Login = React.lazy(() => import("./pages/Login"));
 const Register = React.lazy(() => import("./pages/Register"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const AdminPanel = React.lazy(() => import("./pages/AdminPanel"));
+const RenoScoutFunnel = React.lazy(() => import("./pages/RenoScoutFunnel"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 const RenoScoutPage = React.lazy(() => import('./pages/RenoScout'));
 const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
@@ -84,6 +85,7 @@ const App = () => (
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/admin/renoscout" element={<RenoScoutFunnel />} />
                   <Route path="/renoscout" element={<RenoScoutPage />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/waitlist" element={<WaitlistPage />} />

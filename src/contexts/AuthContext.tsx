@@ -2,6 +2,58 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/client';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
+// Public project config (same values shipped in src/integrations/supabase/client.ts).
+const SUPABASE_URL = 'https://kralcmyhjvoiywcpntkg.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtyYWxjbXloanZvaXl3Y3BudGtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NzM3OTAsImV4cCI6MjA3MTQ0OTc5MH0.10JbU5SR2bwJyGorKifCVqCqQcnbBR4xup7NnYxz3AE';
+const SESSION_STORAGE_KEY = 'sb-kralcmyhjvoiywcpntkg-auth-token';
+
+function tokenFromStorage(): string | null {
+  try {
+    const raw = localStorage.getItem(SESSION_STORAGE_KEY);
+    return raw ? ((JSON.parse(raw)?.access_token as string) ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Resolve the caller's RenoHub role via a plain, timeout-guarded fetch to the
+ * PostgREST RPC.
+ *
+ * We deliberately avoid supabase.rpc()/getSession here: during the sign-in
+ * transition (and with multiple app tabs open) the supabase-js Web Locks auth
+ * lock can deadlock and never release, hanging login on "Logowanie…" forever.
+ * Pass the access token captured directly from the auth event; otherwise fall
+ * back to the persisted token (lock-free). A hard timeout means this can never
+ * block the auth flow — worst case it resolves to 'user'.
+ */
+async function resolveRole(accessToken?: string | null): Promise<'user' | 'admin'> {
+  const token = accessToken ?? tokenFromStorage();
+  if (!token) return 'user';
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 6000);
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_my_renohub_role`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: '{}',
+      signal: controller.signal,
+    });
+    if (!res.ok) return 'user';
+    const data = await res.json();
+    return data === 'admin' || data === 'owner' ? 'admin' : 'user';
+  } catch {
+    return 'user';
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 interface User {
   id: string;
   email: string;
@@ -53,7 +105,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const userData: User = {
             id: supabaseUser.id,
             email: supabaseUser.email || '',
-            role: supabaseUser.email === 'admin@renohub.com' ? 'admin' : 'user',
+            role: await resolveRole(session.access_token),
             subscriptions: [],
             tier: 'free'
           };
@@ -78,7 +130,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const userData: User = {
             id: currentUser.id,
             email: currentUser.email || '',
-            role: currentUser.email === 'admin@renohub.com' ? 'admin' : 'user',
+            role: await resolveRole(),
             subscriptions: [],
             tier: 'free'
           };
@@ -116,14 +168,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     checkSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('[AuthContext] Auth state changed:', event, session?.user?.id);
       if (session?.user) {
         const supabaseUser = session.user;
         const userData: User = {
           id: supabaseUser.id,
           email: supabaseUser.email || '',
-          role: supabaseUser.email === 'admin@renohub.com' ? 'admin' : 'user',
+          role: await resolveRole(session.access_token),
           subscriptions: [],
           tier: 'free'
         };
@@ -179,7 +231,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const userData: User = {
           id: data.user.id,
           email: data.user.email || email,
-          role: email === 'admin@renohub.com' ? 'admin' : 'user',
+          role: await resolveRole(data.session?.access_token),
           subscriptions: [],
           tier: 'free'
         };

@@ -1,5 +1,4 @@
 // src/utils/funnelTracking.ts
-import { supabase } from '@/integrations/supabase/client';
 
 export type FunnelEvent =
   | 'promo_view'
@@ -18,6 +17,13 @@ export type FunnelSource =
 
 const SESSION_KEY = 'renoscout_session_id';
 
+// Public project config (same values shipped in src/integrations/supabase/client.ts).
+const SUPABASE_URL = 'https://kralcmyhjvoiywcpntkg.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtyYWxjbXloanZvaXl3Y3BudGtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NzM3OTAsImV4cCI6MjA3MTQ0OTc5MH0.10JbU5SR2bwJyGorKifCVqCqQcnbBR4xup7NnYxz3AE';
+// Neutral endpoint name (NOT "funnel"/"event") so ad/tracker blockers don't drop it.
+const COLLECT_ENDPOINT = `${SUPABASE_URL}/functions/v1/rs-collect`;
+
 /** Stable anonymous id for stitching a visitor's funnel steps together. */
 export function getFunnelSessionId(): string {
   try {
@@ -35,23 +41,40 @@ export function getFunnelSessionId(): string {
 
 /**
  * Fire-and-forget funnel event. Never throws, never blocks the UI.
- * No-ops silently if the edge function is not deployed yet (Plan 2).
+ *
+ * Uses a raw fetch (NOT supabase.functions.invoke) deliberately:
+ *  - the neutral 'rs-collect' URL avoids ad/tracker blockers eating events;
+ *  - it sidesteps the supabase-js Web Locks auth lock that can hang invoke,
+ *    which matters because signup_complete fires right after sign-in when that
+ *    lock is contended;
+ *  - `keepalive` lets the request finish even when a click navigates away
+ *    (e.g. promo_click immediately followed by a route change).
+ *
+ * `userId` is forwarded as a top-level column (not metadata) so a
+ * `signup_complete` event can be tied to the resulting profile for
+ * true-conversion attribution. Pass null/omit for anonymous events.
  */
 export function track(
   eventType: FunnelEvent,
   source: FunnelSource,
   metadata: Record<string, unknown> = {},
+  userId: string | null = null,
 ): void {
   try {
     const session_id = getFunnelSessionId();
-    // Intentionally not awaited — analytics must not block rendering.
-    void supabase.functions
-      .invoke('renoscout-funnel-event', {
-        body: { event_type: eventType, source, session_id, metadata },
-      })
-      .catch(() => {
-        /* swallow — function may not be deployed yet (Plan 2) */
-      });
+    const body = JSON.stringify({ event_type: eventType, source, session_id, user_id: userId, metadata });
+    void fetch(COLLECT_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body,
+      keepalive: true,
+    }).catch(() => {
+      /* swallow — analytics must never break the page */
+    });
   } catch {
     /* never let tracking break the page */
   }

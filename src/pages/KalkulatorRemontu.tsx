@@ -96,7 +96,7 @@ const PROMOS = {
   },
   renoscout: {
     headline: 'Kupujesz mieszkania pod remont?',
-    sub: 'RenoScout (AI) znajduje okazje na 40+ portalach i liczy ROI.',
+    sub: 'RenoScout (AI) znajduje okazje na portalach ogłoszeniowych i liczy ROI.',
     cta: 'Wypróbuj RenoScout →',
     href: '/renoscout?ref=calc_toast',
   },
@@ -982,7 +982,7 @@ function CrossPromoCards() {
           Kupujesz mieszkania pod remont i sprzedaż?
         </p>
         <p className="text-xs text-gray-400">
-          RenoScout (AI) wyszukuje okazje na 40+ portalach i liczy ROI. Załóż konto przed startem → dodatkowy miesiąc gratis.
+          RenoScout (AI) wyszukuje okazje na portalach ogłoszeniowych i liczy ROI. Załóż konto przed startem → dodatkowy miesiąc gratis.
         </p>
         <span
           className="inline-block mt-1 text-xs font-semibold rounded-lg px-3 py-1.5 text-white"

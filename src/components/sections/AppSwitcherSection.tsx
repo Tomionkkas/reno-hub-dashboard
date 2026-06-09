@@ -44,17 +44,19 @@ const APPS = [
     key: 'renoscout',
     name: 'RenoScout',
     tag: 'AI · Inwestycje',
-    status: 'Dostępne',
+    status: 'Wkrótce',
     color: '#6366F1',
     desc: 'AI przegląda oferty mieszkań w Polsce i pokazuje, które realnie opłaca się kupić pod remont.',
-    bullets: ['40+ portali', 'Analiza ROI', 'Alerty', 'Raport PDF'],
+    bullets: ['Wyszukiwanie ofert', 'Analiza rynku', 'Scoring 0–10', 'Raport ROI'],
     cta: 'Wypróbuj RenoScout',
     ctaAction: 'internal' as const,
     href: '/renoscout',
-    image: null,
-    imageKind: 'placeholder' as const,
-    strip: null,
-    stripKind: null,
+    image: '/renoscout/screenshots/listings.png',
+    imageKind: 'wide' as const,
+    strip: [
+      { src: '/renoscout/screenshots/analysis.png', label: 'Analiza i scoring 0–10' },
+    ],
+    stripKind: 'wide' as const,
   },
 ] as const;
 
@@ -110,7 +112,7 @@ export default function AppSwitcherSection() {
         </div>
 
         {/* Main panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 items-center">
+        <div className={`grid grid-cols-1 gap-16 items-center ${app.key === 'renoscout' ? 'lg:grid-cols-[0.78fr_1.55fr]' : 'lg:grid-cols-[1fr_1.2fr]'}`}>
 
           {/* Left: text */}
           <div>
@@ -145,7 +147,7 @@ export default function AppSwitcherSection() {
           <div
             className="relative rounded-3xl overflow-hidden flex items-center justify-center border border-white/[0.08]"
             style={{
-              aspectRatio: app.imageKind === 'phone' ? '9/17' : app.imageKind === 'desktop' ? '4/5' : '4/5',
+              aspectRatio: app.imageKind === 'phone' ? '9/17' : app.imageKind === 'wide' ? undefined : '4/5',
               background: app.imageKind === 'phone' ? '#0A0B1E' : 'rgba(255,255,255,0.02)',
             }}
           >
@@ -178,6 +180,14 @@ export default function AppSwitcherSection() {
                 }}
               />
             )}
+            {app.imageKind === 'wide' && app.image && (
+              <img
+                src={app.image}
+                alt={app.name}
+                className="relative block"
+                style={{ zIndex: 1, width: '100%', height: 'auto', objectFit: 'contain', borderRadius: 16 }}
+              />
+            )}
             {app.imageKind === 'placeholder' && (
               <div className="relative text-center px-6" style={{ zIndex: 1 }}>
                 <p className="eyebrow mb-1" style={{ color: '#6B7280', fontFamily: 'ui-monospace, monospace' }}>
@@ -197,15 +207,15 @@ export default function AppSwitcherSection() {
             <div className="flex items-baseline justify-between pb-3.5 mb-6 border-b border-white/[0.08]"
                  style={{ fontFamily: 'ui-monospace, monospace', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#6B7280' }}>
               <span>Z aplikacji · {app.name}</span>
-              <span>{app.strip.length} widoki</span>
+              <span>{app.strip.length} {app.strip.length === 1 ? 'widok' : 'widoki'}</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className={`grid gap-6 ${app.strip.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
               {app.strip.map((s, i) => (
                 <figure key={i} className="m-0">
                   <div
                     className="relative rounded-2xl overflow-hidden flex items-center justify-center border border-white/[0.08]"
                     style={{
-                      aspectRatio: app.stripKind === 'phone' ? '9/15' : '16/10',
+                      aspectRatio: app.stripKind === 'phone' ? '9/15' : app.stripKind === 'wide' ? undefined : '16/10',
                       background: app.stripKind === 'phone' ? '#0A0B1E' : 'rgba(255,255,255,0.02)',
                     }}
                   >
@@ -218,10 +228,10 @@ export default function AppSwitcherSection() {
                       className="relative"
                       style={{
                         zIndex: 1,
-                        width: app.stripKind === 'phone' ? '60%' : '94%',
-                        maxHeight: '90%',
+                        width: app.stripKind === 'phone' ? '60%' : app.stripKind === 'wide' ? '100%' : '94%',
+                        maxHeight: app.stripKind === 'wide' ? 'none' : '90%',
                         objectFit: 'contain',
-                        borderRadius: app.stripKind === 'phone' ? 18 : 8,
+                        borderRadius: app.stripKind === 'phone' ? 18 : app.stripKind === 'wide' ? 14 : 8,
                         boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)',
                       }}
                     />
