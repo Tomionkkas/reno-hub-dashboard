@@ -40,6 +40,14 @@ drop function if exists public.get_my_renohub_role();
 --    the FK to auth.users and the indexes.
 drop table if exists shared_schema.renoscout_funnel_events cascade;
 
+-- Note: two extra hardening migrations were applied beyond the original plan:
+--   * grant_service_role_funnel_events  — grants service_role table privileges
+--     (a fresh table in shared_schema does not inherit them automatically).
+--   * harden_get_my_renohub_role_anon   — revokes anon EXECUTE on the RPC to
+--     clear the anon SECURITY DEFINER advisory (authenticated-only by design).
+-- Both are fully reversed by the `drop function` / `drop table cascade` above
+-- (dropping the object removes its grants), so no extra rollback steps needed.
+
 -- Edge functions (renoscout-funnel-event, renoscout-funnel-stats) are not
 -- DB objects; remove them from the dashboard or via:
 --   supabase functions delete renoscout-funnel-event  --project-ref kralcmyhjvoiywcpntkg
