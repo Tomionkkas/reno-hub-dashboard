@@ -2,6 +2,16 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/client';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
+async function resolveRole(): Promise<'user' | 'admin'> {
+  try {
+    const { data, error } = await supabase.rpc('get_my_renohub_role');
+    if (error) return 'user';
+    return data === 'admin' || data === 'owner' ? 'admin' : 'user';
+  } catch {
+    return 'user';
+  }
+}
+
 interface User {
   id: string;
   email: string;
@@ -53,7 +63,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const userData: User = {
             id: supabaseUser.id,
             email: supabaseUser.email || '',
-            role: supabaseUser.email === 'admin@renohub.com' ? 'admin' : 'user',
+            role: await resolveRole(),
             subscriptions: [],
             tier: 'free'
           };
@@ -78,7 +88,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const userData: User = {
             id: currentUser.id,
             email: currentUser.email || '',
-            role: currentUser.email === 'admin@renohub.com' ? 'admin' : 'user',
+            role: await resolveRole(),
             subscriptions: [],
             tier: 'free'
           };
@@ -116,14 +126,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     checkSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('[AuthContext] Auth state changed:', event, session?.user?.id);
       if (session?.user) {
         const supabaseUser = session.user;
         const userData: User = {
           id: supabaseUser.id,
           email: supabaseUser.email || '',
-          role: supabaseUser.email === 'admin@renohub.com' ? 'admin' : 'user',
+          role: await resolveRole(),
           subscriptions: [],
           tier: 'free'
         };
@@ -179,7 +189,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const userData: User = {
           id: data.user.id,
           email: data.user.email || email,
-          role: email === 'admin@renohub.com' ? 'admin' : 'user',
+          role: await resolveRole(),
           subscriptions: [],
           tier: 'free'
         };
