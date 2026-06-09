@@ -188,6 +188,15 @@ const AdminPanel = () => {
               Panel Administratora
             </h1>
             <p className="text-gray-300 text-lg md:text-xl">Monitoruj wyniki i zarządzaj nowym modelem subskrypcji</p>
+            <button
+              type="button"
+              onClick={() => navigate('/admin/renoscout')}
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#6366F1] hover:bg-[#5457e5] text-white font-semibold px-5 py-2.5 transition-colors"
+            >
+              <TrendingUp className="w-4 h-4" />
+              RenoScout — lejek konwersji
+              <span aria-hidden>→</span>
+            </button>
           </div>
 
           {/* Key Metrics Overview */}
