@@ -19,7 +19,7 @@ const features = [
       </svg>
     ),
     title: 'Automatyczne wyszukiwanie',
-    description: 'AI skanuje 40+ portali 24/7, zbiera oferty i filtruje je pod kątem potencjału inwestycyjnego.',
+    description: 'AI skanuje portale ogłoszeniowe 24/7, zbiera oferty i filtruje je pod kątem potencjału inwestycyjnego.',
   },
   {
     icon: (
@@ -82,7 +82,7 @@ export default function RenoScoutPage() {
     <div className="min-h-screen bg-[#0A0B1E] text-white">
       <SEOHead
         title="RenoScout – AI znajduje okazje inwestycyjne | RenoHub"
-        description="RenoScout wyszukuje okazje na 40+ portalach, liczy ROI i ocenia inwestycję wynikiem 0–10. Wypróbuj za darmo — tydzień gratis."
+        description="RenoScout wyszukuje okazje na portalach ogłoszeniowych, liczy ROI i ocenia inwestycję wynikiem 0–10. Wypróbuj za darmo — tydzień gratis."
         keywords="RenoScout, inwestycje, nieruchomości, AI, analiza ROI, scoring, flip, okazje"
       />
 
@@ -103,7 +103,7 @@ export default function RenoScoutPage() {
         </h1>
 
         <p className="hero-item text-gray-300 text-base md:text-xl max-w-2xl leading-relaxed mb-4">
-          RenoScout (AI) przegląda 40+ portali, liczy ROI i ocenia każdą ofertę wynikiem inwestycyjnym 0–10.
+          RenoScout (AI) przegląda portale ogłoszeniowe, liczy ROI i ocenia każdą ofertę wynikiem inwestycyjnym 0–10.
         </p>
 
         <div className="hero-item flex gap-2 justify-center mb-5">

@@ -47,7 +47,7 @@ const APPS = [
     status: 'Dostępne',
     color: '#6366F1',
     desc: 'AI przegląda oferty mieszkań w Polsce i pokazuje, które realnie opłaca się kupić pod remont.',
-    bullets: ['40+ portali', 'Analiza ROI', 'Alerty', 'Raport PDF'],
+    bullets: ['Wyszukiwanie ofert', 'Analiza rynku', 'Scoring 0–10', 'Raport ROI'],
     cta: 'Wypróbuj RenoScout',
     ctaAction: 'internal' as const,
     href: '/renoscout',
