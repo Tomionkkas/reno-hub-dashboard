@@ -1110,7 +1110,6 @@ const RENOSCOUT_BULLETS = [
 
 function RenoScoutPromoSection() {
   const ref = usePromoView('calc_section');
-  const onCtaClick = () => track('promo_click', 'calc_section');
 
   return (
     <section ref={ref as React.RefObject<HTMLElement>} className="max-w-6xl mx-auto px-4 pb-10">
@@ -1130,7 +1129,7 @@ function RenoScoutPromoSection() {
         {/* left column */}
         <div className="relative">
           <p className="text-[11px] font-mono tracking-[2px] uppercase text-white/50 mb-3.5">
-            ⟶ AI · Inwestycje · Nieruchomości
+            <span aria-hidden="true">⟶</span> AI · Inwestycje · Nieruchomości
           </p>
           <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold border border-[#6366F1]/40 bg-[#6366F1]/10 text-[#A5B4FC] mb-3.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
@@ -1153,6 +1152,7 @@ function RenoScoutPromoSection() {
             {RENOSCOUT_BULLETS.map((b) => (
               <li key={b} className="flex items-start gap-2.5 text-sm text-gray-200">
                 <span
+                  aria-hidden="true"
                   className="shrink-0 w-[18px] h-[18px] rounded-md flex items-center justify-center text-white text-[11px] font-bold mt-0.5"
                   style={{ background: 'linear-gradient(135deg, #6366F1 0%, #FF6B35 100%)' }}
                 >
@@ -1165,14 +1165,14 @@ function RenoScoutPromoSection() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
             <a
               href="/register?ref=calc_section"
-              onClick={onCtaClick}
+              onClick={() => track('promo_click', 'calc_section', { cta: 'register' })}
               className="inline-block bg-white text-[#0A0B1E] font-semibold rounded-full px-6 py-3 text-sm hover:bg-white/90 transition-colors"
             >
               Załóż konto przed startem →
             </a>
             <a
               href="/renoscout?ref=calc_section"
-              onClick={onCtaClick}
+              onClick={() => track('promo_click', 'calc_section', { cta: 'demo' })}
               className="text-sm font-semibold text-[#A5B4FC] hover:text-white transition-colors"
             >
               Zobacz jak działa →
@@ -1191,6 +1191,8 @@ function RenoScoutPromoSection() {
           <img
             src="/renoscout/screenshots/analysis.png"
             alt="RenoScout — analiza inwestycji i scoring 0–10"
+            width={1285}
+            height={1080}
             loading="lazy"
             className="block w-full h-auto"
           />
