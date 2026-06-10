@@ -11,7 +11,7 @@ import {
 } from '../utils/renovationCalculator';
 import { useRenovationPrices } from '../hooks/useRenovationPrices';
 import { addToCalculatorWaitlist } from '../utils/calculatorSignup';
-import { track } from '../utils/funnelTracking';
+import { track, type FunnelSource } from '../utils/funnelTracking';
 
 const DEFAULT_INPUTS: RoomInputs = {
   width: 4,
@@ -23,6 +23,19 @@ const DEFAULT_INPUTS: RoomInputs = {
   switchesCount: 3,
   pricingTier: 'mid_range',
 };
+
+/** Fires promo_view for `source` once, when the referenced element first scrolls into view. */
+function usePromoView(source: FunnelSource) {
+  const [ref, inView] = useInView(0.3);
+  const viewed = useRef(false);
+  useEffect(() => {
+    if (inView && !viewed.current) {
+      viewed.current = true;
+      track('promo_view', source);
+    }
+  }, [inView, source]);
+  return ref;
+}
 
 export default function KalkulatorRemontu() {
   const [inputs, setInputs] = useState<RoomInputs>(DEFAULT_INPUTS);
@@ -62,6 +75,7 @@ export default function KalkulatorRemontu() {
 
         <TrustSection />
         <MoreToolsSection />
+        <RenoScoutPromoSection />
         <AppTeaserSection />
 
         <StickyMobileBar result={result} onOpen={() => setSheetOpen(true)} />
@@ -104,11 +118,11 @@ const PROMOS = {
 
 type PromoKey = keyof typeof PROMOS;
 
-// Launch-week weighting: RenoScout shows ~half the time, template/quiz split the rest.
+// Pre-launch: RenoScout takes every toast slot. Restore the split below after launch.
 const PROMO_WEIGHTS: Array<[PromoKey, number]> = [
-  ['renoscout', 0.5],
-  ['template', 0.25],
-  ['quiz', 0.25],
+  ['renoscout', 1.0],
+  // ['template', 0.25],
+  // ['quiz', 0.25],
 ];
 
 function pickPromo(): PromoKey {
@@ -533,6 +547,7 @@ function ResultsPanel({
       ) : (
         <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
       )}
+      <RenoScoutResultsCard />
     </div>
   );
 }
@@ -745,6 +760,7 @@ function BottomSheet({
           ) : (
             <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
           )}
+          <RenoScoutResultsCard />
         </div>
       </div>
     </>
@@ -967,7 +983,17 @@ function CrossPromoCards() {
           Zarejestruj konto w RenoHub →
         </a>
       </div>
+    </div>
+  );
+}
 
+// ── RenoScout results card (ungated — shows even behind the email gate) ──────
+
+function RenoScoutResultsCard() {
+  const ref = usePromoView('calc_card');
+
+  return (
+    <div ref={ref as React.RefObject<HTMLDivElement>}>
       {/* RenoScout cross-promo (audience-filter headline; indigo/coral = second product) */}
       <a
         href="/renoscout?ref=calc_card"
@@ -1003,7 +1029,7 @@ function MoreToolsSection() {
       <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
         Więcej narzędzi do planowania remontu
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <a
           href="/szablon-budzetu-remontu"
           className="flex flex-col gap-2 rounded-2xl border border-gray-800 bg-gray-900 p-5 hover:border-gray-700 transition-colors group"
@@ -1029,6 +1055,148 @@ function MoreToolsSection() {
           </p>
           <span className="text-sm font-semibold text-teal-400">Sprawdź w 2 min →</span>
         </a>
+
+        <RenoScoutToolCard />
+      </div>
+    </section>
+  );
+}
+
+function RenoScoutToolCard() {
+  const ref = usePromoView('calc_tools');
+
+  return (
+    <div ref={ref as React.RefObject<HTMLDivElement>}>
+      <a
+        href="/renoscout?ref=calc_tools"
+        onClick={() => track('promo_click', 'calc_tools')}
+        className="flex flex-col gap-2 rounded-2xl border p-5 h-full"
+        style={{ borderColor: 'rgba(99,102,241,0.35)', background: 'rgba(99,102,241,0.06)' }}
+      >
+        <p className="font-semibold text-white">
+          RenoScout
+          <span className="ml-2 align-middle text-[10px] font-semibold text-[#A5B4FC] border border-[#6366F1]/40 rounded-full px-2 py-0.5">
+            Wkrótce
+          </span>
+        </p>
+        <p className="text-sm text-gray-400">
+          AI wyszukuje okazje inwestycyjne na portalach ogłoszeniowych i liczy ROI.
+        </p>
+        <span
+          className="text-sm font-semibold"
+          style={{
+            background: 'linear-gradient(135deg, #6366F1 0%, #FF6B35 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Poznaj RenoScout →
+        </span>
+      </a>
+    </div>
+  );
+}
+
+// ── RenoScout promo section (pre-launch) ─────────────────────────────────────
+
+const RENOSCOUT_OFFER_LINE = 'Tydzień gratis · +1 miesiąc za konto przed startem';
+
+const RENOSCOUT_BULLETS = [
+  'Scoring inwestycji 0–10 dla każdej oferty',
+  'Analiza ROI i porównanie z cenami w okolicy',
+  'Portale ogłoszeniowe skanowane 24/7',
+];
+
+function RenoScoutPromoSection() {
+  const ref = usePromoView('calc_section');
+
+  return (
+    <section ref={ref as React.RefObject<HTMLElement>} className="max-w-6xl mx-auto px-4 pb-10">
+      <div
+        className="relative overflow-hidden rounded-3xl border p-7 md:p-9 grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-8 lg:gap-9 items-center"
+        style={{
+          borderColor: 'rgba(99,102,241,0.3)',
+          background: 'linear-gradient(160deg, rgba(99,102,241,0.10) 0%, rgba(17,24,39,0.6) 45%, rgba(255,107,53,0.06) 100%)',
+        }}
+      >
+        {/* glow blob */}
+        <div
+          className="absolute -top-28 -left-16 w-[380px] h-[380px] rounded-full pointer-events-none"
+          style={{ background: 'rgba(99,102,241,0.16)', filter: 'blur(80px)' }}
+        />
+
+        {/* left column */}
+        <div className="relative">
+          <p className="text-[11px] font-mono tracking-[2px] uppercase text-white/50 mb-3.5">
+            <span aria-hidden="true">⟶</span> AI · Inwestycje · Nieruchomości
+          </p>
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold border border-[#6366F1]/40 bg-[#6366F1]/10 text-[#A5B4FC] mb-3.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
+            Wkrótce — załóż konto przed startem
+          </span>
+          <h2 className="text-2xl md:text-[27px] font-bold leading-tight tracking-tight mb-3">
+            Remontujesz, żeby zarobić?{' '}
+            <span
+              className="block"
+              style={{ background: 'linear-gradient(135deg, #6366F1 0%, #FF6B35 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+            >
+              RenoScout znajdzie ci następną okazję.
+            </span>
+          </h2>
+          <p className="text-gray-300 text-sm md:text-[14.5px] leading-relaxed mb-[18px]">
+            Policzyłeś koszt remontu — teraz sprawdź, które mieszkania w ogóle opłaca się remontować.
+            RenoScout (AI) przegląda portale ogłoszeniowe i ocenia każdą ofertę.
+          </p>
+          <ul className="space-y-2.5 mb-5">
+            {RENOSCOUT_BULLETS.map((b) => (
+              <li key={b} className="flex items-start gap-2.5 text-sm text-gray-200">
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 w-[18px] h-[18px] rounded-md flex items-center justify-center text-white text-[11px] font-bold mt-0.5"
+                  style={{ background: 'linear-gradient(135deg, #6366F1 0%, #FF6B35 100%)' }}
+                >
+                  ✓
+                </span>
+                {b}
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <a
+              href="/register?ref=calc_section"
+              onClick={() => track('promo_click', 'calc_section', { cta: 'register' })}
+              className="inline-block bg-white text-[#0A0B1E] font-semibold rounded-full px-6 py-3 text-sm hover:bg-white/90 transition-colors"
+            >
+              Załóż konto przed startem →
+            </a>
+            <a
+              href="/renoscout?ref=calc_section"
+              onClick={() => track('promo_click', 'calc_section', { cta: 'demo' })}
+              className="text-sm font-semibold text-[#A5B4FC] hover:text-white transition-colors"
+            >
+              Zobacz jak działa →
+            </a>
+          </div>
+          <p className="text-[11.5px] text-white/50 mt-2.5">{RENOSCOUT_OFFER_LINE}</p>
+        </div>
+
+        {/* right column — screenshot in a browser frame */}
+        <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#0A0B1E] shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
+          <div className="flex gap-1.5 px-3 py-2.5 border-b border-white/10">
+            <span className="w-2 h-2 rounded-full bg-white/15" />
+            <span className="w-2 h-2 rounded-full bg-white/15" />
+            <span className="w-2 h-2 rounded-full bg-white/15" />
+          </div>
+          <img
+            src="/renoscout/screenshots/analysis.png"
+            alt="RenoScout — analiza inwestycji i scoring 0–10"
+            width={1285}
+            height={1080}
+            loading="lazy"
+            className="block w-full h-auto"
+          />
+        </div>
       </div>
     </section>
   );

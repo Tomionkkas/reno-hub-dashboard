@@ -54,6 +54,7 @@ Thumbs.db
 
 # AI agent / tool files (local only)
 .agent/
+.superpowers/
 GEMINI.md
 CLAUDE.md
 

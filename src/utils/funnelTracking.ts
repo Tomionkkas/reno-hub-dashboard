@@ -13,7 +13,9 @@ export type FunnelSource =
   | 'calc_toast'
   | 'hub_appswitcher'
   | 'renoscout_page'
-  | 'email';
+  | 'email'
+  | 'calc_tools'
+  | 'calc_section';
 
 const SESSION_KEY = 'renoscout_session_id';
 
