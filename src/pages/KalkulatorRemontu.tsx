@@ -1023,7 +1023,7 @@ function MoreToolsSection() {
       <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
         Więcej narzędzi do planowania remontu
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <a
           href="/szablon-budzetu-remontu"
           className="flex flex-col gap-2 rounded-2xl border border-gray-800 bg-gray-900 p-5 hover:border-gray-700 transition-colors group"
@@ -1049,7 +1049,53 @@ function MoreToolsSection() {
           </p>
           <span className="text-sm font-semibold text-teal-400">Sprawdź w 2 min →</span>
         </a>
+
+        <RenoScoutToolCard />
       </div>
     </section>
+  );
+}
+
+function RenoScoutToolCard() {
+  const [ref, inView] = useInView(0.3);
+  const viewed = useRef(false);
+
+  useEffect(() => {
+    if (inView && !viewed.current) {
+      viewed.current = true;
+      track('promo_view', 'calc_tools');
+    }
+  }, [inView]);
+
+  return (
+    <div ref={ref as React.RefObject<HTMLDivElement>}>
+      <a
+        href="/renoscout?ref=calc_tools"
+        onClick={() => track('promo_click', 'calc_tools')}
+        className="flex flex-col gap-2 rounded-2xl border p-5 transition-colors group"
+        style={{ borderColor: 'rgba(99,102,241,0.35)', background: 'rgba(99,102,241,0.06)' }}
+      >
+        <p className="font-semibold text-white">
+          RenoScout
+          <span className="ml-2 align-middle text-[10px] font-semibold text-[#A5B4FC] border border-[#6366F1]/40 rounded-full px-2 py-0.5">
+            Wkrótce
+          </span>
+        </p>
+        <p className="text-sm text-gray-400">
+          AI wyszukuje okazje inwestycyjne na portalach ogłoszeniowych i liczy ROI.
+        </p>
+        <span
+          className="text-sm font-semibold"
+          style={{
+            background: 'linear-gradient(135deg, #6366F1 0%, #FF6B35 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Poznaj RenoScout →
+        </span>
+      </a>
+    </div>
   );
 }
