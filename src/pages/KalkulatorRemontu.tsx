@@ -104,11 +104,11 @@ const PROMOS = {
 
 type PromoKey = keyof typeof PROMOS;
 
-// Launch-week weighting: RenoScout shows ~half the time, template/quiz split the rest.
+// Pre-launch: RenoScout takes every toast slot. Restore the split below after launch.
 const PROMO_WEIGHTS: Array<[PromoKey, number]> = [
-  ['renoscout', 0.5],
-  ['template', 0.25],
-  ['quiz', 0.25],
+  ['renoscout', 1.0],
+  // ['template', 0.25],
+  // ['quiz', 0.25],
 ];
 
 function pickPromo(): PromoKey {
@@ -533,6 +533,7 @@ function ResultsPanel({
       ) : (
         <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
       )}
+      <RenoScoutResultsCard />
     </div>
   );
 }
@@ -745,6 +746,7 @@ function BottomSheet({
           ) : (
             <EmailGate onSubmit={onEmailSubmit} result={result} inputs={inputs} />
           )}
+          <RenoScoutResultsCard />
         </div>
       </div>
     </>
@@ -967,7 +969,25 @@ function CrossPromoCards() {
           Zarejestruj konto w RenoHub →
         </a>
       </div>
+    </div>
+  );
+}
 
+// ── RenoScout results card (ungated — shows even behind the email gate) ──────
+
+function RenoScoutResultsCard() {
+  const [ref, inView] = useInView(0.3);
+  const viewed = useRef(false);
+
+  useEffect(() => {
+    if (inView && !viewed.current) {
+      viewed.current = true;
+      track('promo_view', 'calc_card');
+    }
+  }, [inView]);
+
+  return (
+    <div ref={ref as React.RefObject<HTMLDivElement>}>
       {/* RenoScout cross-promo (audience-filter headline; indigo/coral = second product) */}
       <a
         href="/renoscout?ref=calc_card"
