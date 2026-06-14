@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, AlertTriangle, Loader2, ArrowRight } from 'lucide-react';
+import type { EmailOtpType } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import AuthLayout from '@/components/layout/AuthLayout';
 
@@ -51,19 +52,35 @@ const Confirm = () => {
   const isKnownApp = Boolean(appConfig);
 
   useEffect(() => {
-    // Supabase's detectSessionInUrl processes the URL hash during client initialization
-    // and stores the session before this component mounts. Use getSession() to read it.
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error || !session) {
-        setErrorMessage('Link potwierdzający jest nieprawidłowy lub wygasł. Spróbuj zarejestrować się ponownie.');
-        setPageState('error');
-      } else {
+    const onResult = (ok: boolean) => {
+      if (ok) {
         // Universal confirmation page for every app — show the "done" state and
         // offer a per-app return CTA instead of redirecting to the RenoHub root.
         setPageState('success');
+      } else {
+        setErrorMessage('Link potwierdzający jest nieprawidłowy lub wygasł. Spróbuj zarejestrować się ponownie.');
+        setPageState('error');
       }
-    });
-  }, []);
+    };
+
+    // Preferred: token_hash flow. This verifies the email server-side and works
+    // ACROSS DOMAINS — no PKCE code_verifier needed — so an app that signed the
+    // user up on its own domain (RenoTimeline, CalcReno mobile) can still confirm
+    // on this shared renohub.org page. Requires the Supabase "Confirm signup"
+    // email template to link here with &token_hash={{ .TokenHash }}&type=signup.
+    const tokenHash = searchParams.get('token_hash');
+    if (tokenHash) {
+      const type = (searchParams.get('type') as EmailOtpType | null) ?? 'signup';
+      supabase.auth
+        .verifyOtp({ token_hash: tokenHash, type })
+        .then(({ data, error }) => onResult(!error && !!data.session));
+      return;
+    }
+
+    // Fallback: same-domain PKCE/implicit flow. detectSessionInUrl has already
+    // exchanged the ?code= / #access_token into a session by the time this runs.
+    supabase.auth.getSession().then(({ data: { session }, error }) => onResult(!error && !!session));
+  }, [searchParams]);
 
   const eyebrow = pageState === 'error' ? '§ Błąd weryfikacji' : '§ Potwierdzenie konta';
 
