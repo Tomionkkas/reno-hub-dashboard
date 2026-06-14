@@ -47,7 +47,20 @@ const Confirm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const appParam = searchParams.get('app');
+  // App id can arrive either as a top-level ?app= (email links straight here) or
+  // nested inside ?redirect_to=…?app=… (template passes the app's emailRedirectTo
+  // through). Support both so one email-template change works for every app.
+  const appParam = (() => {
+    const direct = searchParams.get('app');
+    if (direct) return direct;
+    const rt = searchParams.get('redirect_to');
+    if (!rt) return null;
+    try {
+      return new URL(rt).searchParams.get('app');
+    } catch {
+      return null;
+    }
+  })();
   const appConfig = appParam ? APP_CONFIG[appParam] : undefined;
   const isKnownApp = Boolean(appConfig);
 
