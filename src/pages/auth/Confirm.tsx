@@ -17,12 +17,41 @@ gsap.registerPlugin(ScrollTrigger);
 
 type PageState = 'loading' | 'success' | 'error' | 'already_confirmed';
 
+interface AppConfig {
+  /** Success message. Falls back to a generic "you can log in now" when omitted. */
+  message?: string;
+  /**
+   * Return CTA. Omit entirely for apps with no button (e.g. CalcReno, which has no
+   * app-store build yet — a `calcreno://` deep-link button would just dead-end).
+   */
+  cta?: {
+    label: string;
+    /** External URL or custom scheme (deep link). */
+    href?: string;
+    /** Internal SPA route — used for RenoHub itself. */
+    internal?: string;
+  };
+}
+
+// Per-app content for this universal confirmation page. The `?app=` query param
+// (set by each app's emailRedirectTo) selects the entry. Add every app that points
+// its Supabase confirm/redirect links at www.renohub.org/auth/confirm here.
+const APP_CONFIG: Record<string, AppConfig> = {
+  renohub: { cta: { label: 'Przejdź do panelu', internal: '/dashboard' } },
+  renotimeline: { cta: { label: 'Przejdź do RenoTimeline', href: 'https://www.renotimeline.com' } },
+  renoscout: { cta: { label: 'Przejdź do RenoScout', href: 'https://renoscout.pl' } },
+  // No button — CalcReno users just return to the mobile app to log in.
+  calcreno: { message: 'Twoje konto zostało aktywowane. Wróć do aplikacji CalcReno i zaloguj się.' },
+};
+
 const Confirm = () => {
   const [pageState, setPageState] = useState<PageState>('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const appParam = searchParams.get('app');
+  const appConfig = appParam ? APP_CONFIG[appParam] : undefined;
+  const confirmedMessage = appConfig?.message ?? 'Twoje konto zostało aktywowane. Możesz teraz się zalogować.';
 
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -45,13 +74,13 @@ const Confirm = () => {
       if (error || !session) {
         setErrorMessage('Link potwierdzający jest nieprawidłowy lub wygasł.');
         setPageState('error');
-      } else if (appParam === 'renohub') {
-        navigate('/dashboard');
       } else {
+        // Universal confirmation page for every app — show the "done" state and
+        // offer a per-app return CTA instead of redirecting to the RenoHub root.
         setPageState('success');
       }
     });
-  }, [navigate, appParam]);
+  }, []);
 
   const backgroundEffects = useMemo(() => (
     <>
@@ -59,6 +88,39 @@ const Confirm = () => {
       <FloatingOrbs count={6} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
     </>
   ), []);
+
+  const renderReturnButton = () => {
+    // Known app: render its CTA, or nothing (CalcReno has no button).
+    if (appConfig) {
+      const cta = appConfig.cta;
+      if (!cta) {
+        return null;
+      }
+      return (
+        <button
+          onClick={() => {
+            if (cta.internal) {
+              navigate(cta.internal);
+            } else if (cta.href) {
+              window.location.href = cta.href;
+            }
+          }}
+          className="w-full bg-gradient-to-r from-reno-purple to-reno-blue text-white font-bold py-3 px-6 rounded-lg border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300 mt-4"
+        >
+          {cta.label}
+        </button>
+      );
+    }
+    // Unknown / missing app param — fall back to the RenoHub login.
+    return (
+      <button
+        onClick={() => navigate('/login')}
+        className="text-reno-blue hover:text-reno-purple transition-colors text-sm"
+      >
+        Przejdź do logowania
+      </button>
+    );
+  };
 
   const renderCardContent = () => {
     if (pageState === 'loading') {
@@ -92,22 +154,7 @@ const Confirm = () => {
         <div className="text-center space-y-4 py-4">
           <div className="text-4xl">✅</div>
           <p className="text-gray-300 text-sm">Twój email był już wcześniej potwierdzony.</p>
-          {appParam === 'calcreno' && (
-            <button
-              onClick={() => { window.location.href = 'calcreno://'; }}
-              className="w-full bg-gradient-to-r from-reno-purple to-reno-blue text-white font-bold py-3 px-6 rounded-lg border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300 mt-4"
-            >
-              Otwórz CalcReno
-            </button>
-          )}
-          {(!appParam || appParam === 'renohub') && (
-            <button
-              onClick={() => navigate('/login')}
-              className="text-reno-blue hover:text-reno-purple transition-colors text-sm"
-            >
-              Przejdź do logowania
-            </button>
-          )}
+          {renderReturnButton()}
         </div>
       );
     }
@@ -117,24 +164,9 @@ const Confirm = () => {
       <div className="text-center space-y-4 py-4">
         <div className="text-4xl">🎉</div>
         <p className="text-gray-300 text-sm">
-          Twoje konto zostało aktywowane. Możesz teraz się zalogować.
+          {confirmedMessage}
         </p>
-        {appParam === 'calcreno' && (
-          <button
-            onClick={() => { window.location.href = 'calcreno://'; }}
-            className="w-full bg-gradient-to-r from-reno-purple to-reno-blue text-white font-bold py-3 px-6 rounded-lg border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300 mt-4"
-          >
-            Otwórz CalcReno
-          </button>
-        )}
-        {(!appParam || appParam === 'renohub') && (
-          <button
-            onClick={() => navigate('/login')}
-            className="text-reno-blue hover:text-reno-purple transition-colors text-sm"
-          >
-            Przejdź do logowania
-          </button>
-        )}
+        {renderReturnButton()}
       </div>
     );
   };
@@ -146,9 +178,7 @@ const Confirm = () => {
       ? 'Błąd weryfikacji'
       : pageState === 'already_confirmed'
       ? 'Już potwierdzono'
-      : appParam === 'calcreno'
-      ? 'Email potwierdzony!'
-      : 'Witaj w RenoHub!';
+      : 'Email potwierdzony!';
 
   const cardDescription =
     pageState === 'loading'
