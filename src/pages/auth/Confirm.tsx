@@ -1,19 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { CheckCircle2, AlertTriangle, Loader2, ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import {
-  GSAPCard,
-  GSAPCardContent,
-  GSAPCardHeader,
-  GSAPCardTitle,
-  GSAPCardDescription,
-} from '@/components/animations/GSAPCard';
-import { GradientBackground, ParticleSystem, FloatingOrbs } from '@/components/ui/visual-enhancements';
-import { RippleEffect } from '@/components/ui/micro-interactions';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import AuthLayout from '@/components/layout/AuthLayout';
 
 type PageState = 'loading' | 'success' | 'error' | 'already_confirmed';
 
@@ -44,6 +33,14 @@ const APP_CONFIG: Record<string, AppConfig> = {
   calcreno: { message: 'Twoje konto zostało aktywowane. Wróć do aplikacji CalcReno i zaloguj się.' },
 };
 
+// Visual treatment per state — tinted icon chip + accent, cohesive with the auth palette.
+const STATUS_VISUAL: Record<PageState, { color: string; tint: string; ring: string }> = {
+  loading: { color: '#7F67FF', tint: 'rgba(127,103,255,0.10)', ring: 'rgba(127,103,255,0.28)' },
+  success: { color: '#00D4FF', tint: 'rgba(0,212,255,0.10)', ring: 'rgba(0,212,255,0.32)' },
+  already_confirmed: { color: '#00D4FF', tint: 'rgba(0,212,255,0.08)', ring: 'rgba(0,212,255,0.22)' },
+  error: { color: '#FF4D6D', tint: 'rgba(255,77,109,0.10)', ring: 'rgba(255,77,109,0.30)' },
+};
+
 const Confirm = () => {
   const [pageState, setPageState] = useState<PageState>('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,28 +48,14 @@ const Confirm = () => {
   const [searchParams] = useSearchParams();
   const appParam = searchParams.get('app');
   const appConfig = appParam ? APP_CONFIG[appParam] : undefined;
-  const confirmedMessage = appConfig?.message ?? 'Twoje konto zostało aktywowane. Możesz teraz się zalogować.';
-
-  const sectionRef = useRef<HTMLElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        cardRef.current,
-        { y: 100, opacity: 0, scale: 0.8 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.7)', delay: 0.2 }
-      );
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+  const isKnownApp = Boolean(appConfig);
 
   useEffect(() => {
     // Supabase's detectSessionInUrl processes the URL hash during client initialization
     // and stores the session before this component mounts. Use getSession() to read it.
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error || !session) {
-        setErrorMessage('Link potwierdzający jest nieprawidłowy lub wygasł.');
+        setErrorMessage('Link potwierdzający jest nieprawidłowy lub wygasł. Spróbuj zarejestrować się ponownie.');
         setPageState('error');
       } else {
         // Universal confirmation page for every app — show the "done" state and
@@ -82,159 +65,130 @@ const Confirm = () => {
     });
   }, []);
 
-  const backgroundEffects = useMemo(() => (
-    <>
-      <ParticleSystem count={30} speed={20} size="sm" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-      <FloatingOrbs count={6} size="md" colors={['#00D4FF', '#FF0080', '#7F67FF']} />
-    </>
-  ), []);
+  const eyebrow = pageState === 'error' ? '§ Błąd weryfikacji' : '§ Potwierdzenie konta';
 
-  const renderReturnButton = () => {
-    // Known app: render its CTA, or nothing (CalcReno has no button).
-    if (appConfig) {
-      const cta = appConfig.cta;
-      if (!cta) {
-        return null;
-      }
-      return (
-        <button
-          onClick={() => {
-            if (cta.internal) {
-              navigate(cta.internal);
-            } else if (cta.href) {
-              window.location.href = cta.href;
-            }
-          }}
-          className="w-full bg-gradient-to-r from-reno-purple to-reno-blue text-white font-bold py-3 px-6 rounded-lg border-2 border-white/20 hover:border-white/40 transform hover:scale-105 transition-all duration-300 mt-4"
-        >
-          {cta.label}
-        </button>
-      );
-    }
-    // Unknown / missing app param — fall back to the RenoHub login.
-    return (
-      <button
-        onClick={() => navigate('/login')}
-        className="text-reno-blue hover:text-reno-purple transition-colors text-sm"
-      >
-        Przejdź do logowania
-      </button>
-    );
-  };
-
-  const renderCardContent = () => {
-    if (pageState === 'loading') {
-      return (
-        <div className="text-center py-8">
-          <p className="text-gray-300">Weryfikowanie emaila...</p>
-        </div>
-      );
-    }
-
-    if (pageState === 'error') {
-      return (
-        <div className="text-center space-y-4 py-4">
-          <div className="text-4xl">⚠️</div>
-          <p className="text-red-400">{errorMessage}</p>
-          <p className="text-gray-400 text-sm">
-            Spróbuj zarejestrować się ponownie lub skontaktuj się z pomocą techniczną.
-          </p>
-          <button
-            onClick={() => navigate('/login')}
-            className="text-reno-blue hover:text-reno-purple transition-colors text-sm"
-          >
-            Wróć do logowania
-          </button>
-        </div>
-      );
-    }
-
-    if (pageState === 'already_confirmed') {
-      return (
-        <div className="text-center space-y-4 py-4">
-          <div className="text-4xl">✅</div>
-          <p className="text-gray-300 text-sm">Twój email był już wcześniej potwierdzony.</p>
-          {renderReturnButton()}
-        </div>
-      );
-    }
-
-    // success state
-    return (
-      <div className="text-center space-y-4 py-4">
-        <div className="text-4xl">🎉</div>
-        <p className="text-gray-300 text-sm">
-          {confirmedMessage}
-        </p>
-        {renderReturnButton()}
-      </div>
-    );
-  };
-
-  const cardTitle =
+  const title =
     pageState === 'loading'
-      ? 'Weryfikacja emaila'
+      ? 'Weryfikacja e-maila'
       : pageState === 'error'
-      ? 'Błąd weryfikacji'
+      ? 'Coś poszło nie tak'
       : pageState === 'already_confirmed'
       ? 'Już potwierdzono'
       : 'Email potwierdzony!';
 
-  const cardDescription =
+  const body =
     pageState === 'loading'
-      ? 'Trwa weryfikacja Twojego adresu email...'
+      ? 'Trwa weryfikacja Twojego adresu e-mail…'
       : pageState === 'error'
-      ? 'Wystąpił problem z linkiem potwierdzającym'
+      ? errorMessage
       : pageState === 'already_confirmed'
-      ? 'Twoje konto jest już aktywne.'
-      : '';
+      ? 'Twój adres e-mail był już wcześniej potwierdzony.'
+      : appConfig?.message ?? 'Twoje konto zostało aktywowane. Możesz teraz się zalogować.';
+
+  const visual = STATUS_VISUAL[pageState];
+  const StatusIcon =
+    pageState === 'loading' ? Loader2 : pageState === 'error' ? AlertTriangle : CheckCircle2;
+
+  const goTo = (cta: NonNullable<AppConfig['cta']>) => {
+    if (cta.internal) {
+      navigate(cta.internal);
+    } else if (cta.href) {
+      window.location.href = cta.href;
+    }
+  };
+
+  const renderCta = () => {
+    if (pageState === 'loading') return null;
+
+    if (pageState === 'error') {
+      return (
+        <button
+          onClick={() => navigate('/login')}
+          className="text-[13px] text-[#7F67FF] hover:text-[#00D4FF] transition-colors"
+          style={{ fontFamily: 'ui-monospace, monospace', letterSpacing: '0.04em' }}
+        >
+          Wróć do logowania →
+        </button>
+      );
+    }
+
+    // success / already_confirmed
+    if (appConfig?.cta) {
+      const cta = appConfig.cta;
+      return (
+        <button
+          onClick={() => goTo(cta)}
+          className="group w-full flex items-center justify-center gap-2 bg-white text-[#0A0B1E] font-semibold rounded-xl h-12 text-[15px] border-0 hover:bg-white/90 transition-colors"
+        >
+          {cta.label}
+          <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+        </button>
+      );
+    }
+
+    // Known app with no button (CalcReno) — just a quiet "you can close this" hint.
+    if (isKnownApp) {
+      return (
+        <p
+          className="text-white/30 text-[12px]"
+          style={{ fontFamily: 'ui-monospace, monospace', letterSpacing: '0.04em' }}
+        >
+          Możesz zamknąć tę kartę.
+        </p>
+      );
+    }
+
+    // Unknown / missing app param — fall back to the RenoHub login.
+    return (
+      <button
+        onClick={() => navigate('/login')}
+        className="text-[13px] text-[#7F67FF] hover:text-[#00D4FF] transition-colors"
+        style={{ fontFamily: 'ui-monospace, monospace', letterSpacing: '0.04em' }}
+      >
+        Przejdź do logowania →
+      </button>
+    );
+  };
 
   return (
-    <GradientBackground
-      colors={['from-black', 'via-slate-900', 'to-black']}
-      direction="to-br"
-      animated={true}
-      speed={30}
-      className="min-h-screen relative"
-    >
-      {backgroundEffects}
-
-      <section
-        ref={sectionRef}
-        className="min-h-screen flex items-center justify-center px-4 relative"
-      >
-        <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-8">
-            <span className="gradient-text">RenoHub</span>
-          </h1>
-
-          <div ref={cardRef} className="max-w-md mx-auto">
-            <RippleEffect>
-              <GSAPCard
-                className="glass-card border-white/10 hover:border-reno-purple/30 hover:shadow-2xl hover:shadow-reno-purple/30 transition-all duration-300"
-                hover="glow"
-                trigger="scroll"
-              >
-                <GSAPCardHeader className="text-center">
-                  <GSAPCardTitle className="text-white text-2xl md:text-3xl mb-2">
-                    {cardTitle}
-                  </GSAPCardTitle>
-                  {cardDescription && (
-                    <GSAPCardDescription className="text-gray-300 text-base">
-                      {cardDescription}
-                    </GSAPCardDescription>
-                  )}
-                </GSAPCardHeader>
-
-                <GSAPCardContent>
-                  {renderCardContent()}
-                </GSAPCardContent>
-              </GSAPCard>
-            </RippleEffect>
-          </div>
+    <AuthLayout>
+      <div className="animate-fade-in-up">
+        {/* Status chip */}
+        <div
+          className="mb-7 inline-flex items-center justify-center"
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 18,
+            background: visual.tint,
+            border: `1px solid ${visual.ring}`,
+            boxShadow: `0 0 44px -10px ${visual.color}`,
+          }}
+        >
+          <StatusIcon
+            size={28}
+            strokeWidth={2}
+            color={visual.color}
+            className={pageState === 'loading' ? 'animate-spin' : ''}
+          />
         </div>
-      </section>
-    </GradientBackground>
+
+        <p className="eyebrow mb-4">{eyebrow}</p>
+
+        <h1
+          className="text-white font-bold mb-3"
+          style={{ fontSize: 40, letterSpacing: '-0.03em', lineHeight: 1.05 }}
+        >
+          {title}
+        </h1>
+
+        <p className="text-[#B8BCC8] mb-8" style={{ fontSize: 15, lineHeight: 1.6 }}>
+          {body}
+        </p>
+
+        {renderCta()}
+      </div>
+    </AuthLayout>
   );
 };
 
